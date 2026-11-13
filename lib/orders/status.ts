@@ -134,6 +134,8 @@ export function navFor(role: string): NavItem[] {
     items.push({ href: "/commandes", label: "Commandes" });
   }
   if (["admin", "order_operator", "picker"].includes(role)) items.push({ href: "/preparation", label: "Préparation" });
+  if (["admin", "stock_keeper", "picker", "buyer"].includes(role)) items.push({ href: "/stock", label: "Stock" });
+  if (["admin", "support"].includes(role)) items.push({ href: "/reclamations", label: "Réclamations" });
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/regulation", label: "Régulation" });
   if (role === "courier") items.push({ href: "/tournee", label: "Ma tournée" });
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/livraison", label: "Zones et créneaux" });
