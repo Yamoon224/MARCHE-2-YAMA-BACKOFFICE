@@ -139,6 +139,7 @@ export function navFor(role: string): NavItem[] {
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/regulation", label: "Régulation" });
   if (role === "courier") items.push({ href: "/tournee", label: "Ma tournée" });
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/livraison", label: "Zones et créneaux" });
+  if (["admin", "order_operator"].includes(role)) items.push({ href: "/caisse", label: "Remise de fonds" });
   if (["admin", "accountant"].includes(role)) items.push({ href: "/comptabilite", label: "Comptabilité" });
 
   return items;

@@ -158,6 +158,58 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/delivery/cash": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Espèces détenues par chaque livreur (encaissées, non remises) */
+        get: operations["fabf2e4b1cb9f95c81a99c5394148b89"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/delivery/cash/handovers": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Historique des remises de fonds */
+        get: operations["af0ec6c4499eb97264cda206404d9485"];
+        put?: never;
+        /** Enregistrer la remise de fonds d'un livreur (solde tout ce qu'il détient) */
+        post: operations["dc1d67c5c3d4d18c0ce8d0213d8d1dea"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/delivery/my-cash": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Espèces que le livreur connecté détient encore */
+        get: operations["a9c741f9f4d7ae9b269750060e4e3a46"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/delivery/my-tour": {
         parameters: {
             query?: never;
@@ -809,6 +861,25 @@ export interface components {
             items: components["schemas"]["ClaimItem"][];
             photos: components["schemas"]["ClaimPhoto"][];
         };
+        CourierCash: {
+            /** @description Remise de fonds : ce que chaque livreur détient en espèces, et le comptage à son retour au magasin. */
+            courier_id: number;
+            courier_name?: string | null;
+            held_minor: number;
+            deliveries_count: number;
+        };
+        CashHandover: {
+            id: number;
+            courier_id: number;
+            received_by?: number;
+            expected_minor: number;
+            counted_minor: number;
+            /** @description Compté - attendu : négatif = manquant */
+            variance_minor: number;
+            deliveries_count: number;
+            note?: string | null;
+            created_at?: string | null;
+        };
         Delivery: {
             id: number;
             order_id: number;
@@ -1392,6 +1463,121 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content?: never;
+            };
+        };
+    };
+    fabf2e4b1cb9f95c81a99c5394148b89: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Soldes par livreur */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CourierCash"][];
+                    };
+                };
+            };
+        };
+    };
+    af0ec6c4499eb97264cda206404d9485: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Remises (les plus récentes en premier) */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CashHandover"][];
+                    };
+                };
+            };
+        };
+    };
+    dc1d67c5c3d4d18c0ce8d0213d8d1dea: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    courier_id: number;
+                    /** @description Montant compté en F CFA */
+                    counted_minor: number;
+                    /** @description Obligatoire s'il y a un écart */
+                    note?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Remise enregistrée */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: components["schemas"]["CashHandover"];
+                    };
+                };
+            };
+            /** @description Interdit */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Rien à remettre, pas un livreur, ou écart non expliqué */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    a9c741f9f4d7ae9b269750060e4e3a46: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Solde du livreur */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data: {
+                            held_minor: number;
+                            deliveries_count: number;
+                        };
+                    };
+                };
             };
         };
     };

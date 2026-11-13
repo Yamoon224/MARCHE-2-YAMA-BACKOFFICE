@@ -1,5 +1,6 @@
 import { Suspense } from "react";
 import { TourStop } from "@/components/TourStop";
+import { formatXof } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
 export const metadata = { title: "Ma tournée — Backoffice Marché de Yama" };
@@ -21,7 +22,10 @@ async function Stops() {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Réseau indisponible. Réessayez dans un instant.</p>;
   }
 
-  const result = await staff.api.GET("/api/v1/delivery/my-tour").catch(() => null);
+  const [result, cash] = await Promise.all([
+    staff.api.GET("/api/v1/delivery/my-tour").catch(() => null),
+    staff.api.GET("/api/v1/delivery/my-cash").catch(() => null),
+  ]);
 
   if (result?.response.status === 403) {
     return <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">Cet écran est réservé aux livreurs.</p>;
@@ -30,11 +34,22 @@ async function Stops() {
   const stops = result?.data?.data;
   if (!stops) return <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">Impossible de charger votre tournée.</p>;
 
-  if (stops.length === 0) return <p className="text-black/70">Aucune livraison pour le moment. Bonne pause !</p>;
+  const held = cash?.data?.data.held_minor ?? 0;
 
   return (
-    <ul className="flex flex-col gap-4">
-      {stops.map((stop) => <TourStop key={stop.id} delivery={stop} />)}
-    </ul>
+    <>
+      {held > 0 && (
+        <p role="status" className="mb-4 rounded-lg bg-brand-green/10 p-3 text-sm">
+          Espèces à remettre au magasin : <strong>{formatXof(held)}</strong> ({cash?.data?.data.deliveries_count} livraison(s)).
+        </p>
+      )}
+      {stops.length === 0 ? (
+        <p className="text-black/70">Aucune livraison pour le moment. Bonne pause !</p>
+      ) : (
+        <ul className="flex flex-col gap-4">
+          {stops.map((stop) => <TourStop key={stop.id} delivery={stop} />)}
+        </ul>
+      )}
+    </>
   );
 }
