@@ -778,6 +778,40 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/auth/guest": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Commander sans compte : ouvre une session invité */
+        post: operations["8e0eba98d782f73443316db3f7cecad4"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/claim-account": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Transformer une session invité en compte (e-mail de la commande + mot de passe choisi) */
+        post: operations["1e9145af49124db5a3781b7f14d0aa4a"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/auth/login": {
         parameters: {
             query?: never;
@@ -944,6 +978,23 @@ export interface paths {
         put?: never;
         /** Passer une commande (prix calculés par le serveur) */
         post: operations["cd756986bd0949a71013b59d6de8cc8a"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/orders/lookup": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Suivre une commande avec son numéro et l'e-mail de la commande (sans compte) */
+        post: operations["a6405961adb22b4952ff61c1862b712f"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1385,6 +1436,8 @@ export interface components {
             email?: string | null;
             phone?: string | null;
             role: string;
+            /** @description Client sans compte (commande invité) */
+            is_guest?: boolean;
         };
         AuthResult: {
             user: components["schemas"]["User"];
@@ -1522,6 +1575,8 @@ export interface components {
             amount_minor: number;
             /** @example EUR */
             currency: string;
+            /** @description Page de paiement hébergée où rediriger le client (paiement par carte en attente) */
+            action_url?: string | null;
         };
         Refund: {
             id: number;
@@ -2107,6 +2162,8 @@ export interface operations {
                 featured?: boolean;
                 /** @description Produits en promotion uniquement */
                 promo?: boolean;
+                /** @description Numéro de page (à partir de 1) */
+                page?: number;
                 /** @description 1 à 50 (20 par défaut) */
                 per_page?: number;
                 /** @description Recherche par nom */
@@ -3330,6 +3387,87 @@ export interface operations {
             };
         };
     };
+    "8e0eba98d782f73443316db3f7cecad4": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Awa Koné */
+                    name: string;
+                    /** @example awa@example.com */
+                    email: string;
+                    /** @example +33612345678 */
+                    phone: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Session invité */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": components["schemas"]["AuthResult"];
+                };
+            };
+            /** @description Validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "1e9145af49124db5a3781b7f14d0aa4a": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example secret1234 */
+                    password: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Compte créé */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["User"];
+                    };
+                };
+            };
+            /** @description Non authentifié */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Mot de passe invalide, déjà un compte, ou e-mail déjà utilisé */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "488c2daac977b1c161dc751145d9dfe3": {
         parameters: {
             query?: never;
@@ -3714,6 +3852,51 @@ export interface operations {
             };
         };
     };
+    a6405961adb22b4952ff61c1862b712f: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example CMD-00000123 */
+                    number: string;
+                    /** @example awa@example.com */
+                    email: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Commande */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Order"];
+                    };
+                };
+            };
+            /** @description Aucune commande ne correspond */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Trop de tentatives */
+            429: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     c74a658d8b9d269ab6b1c98c37253955: {
         parameters: {
             query?: never;
@@ -3839,6 +4022,13 @@ export interface operations {
             };
             /** @description Commande non payable */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Paiement par carte indisponible (agrégateur non configuré ou injoignable) */
+            503: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -3976,8 +4166,9 @@ export interface operations {
     "6d549f1934115ff1af2f0a74f39509a4": {
         parameters: {
             query?: never;
-            header: {
-                "X-Signature": string;
+            header?: {
+                /** @description Signature HMAC (simulateur) ; Stripe envoie Stripe-Signature */
+                "X-Signature"?: string;
             };
             path: {
                 provider: string;
