@@ -10,10 +10,10 @@ type Category = components["schemas"]["Category"];
 function CategoryFields({ c }: { c?: Category }) {
   return (
     <>
-      <label className="text-sm font-medium">Nom<input name="name" required defaultValue={c?.name} className={field} /></label>
-      <label className="text-sm font-medium">Identifiant d&apos;URL<input name="slug" required defaultValue={c?.slug} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="fruits-legumes" className={field} /></label>
-      <label className="text-sm font-medium">Icône (emoji)<input name="icon" maxLength={16} defaultValue={c?.icon ?? ""} className={field} /></label>
-      <label className="text-sm font-medium">Position<input name="position" inputMode="numeric" defaultValue={c?.position ?? 0} className={field} /></label>
+      <label className="text-sm font-medium">Nom<input name="name" required placeholder="Ex. Fruits et légumes" defaultValue={c?.name} className={field} /></label>
+      <label className="text-sm font-medium">Identifiant d&apos;URL<input name="slug" required defaultValue={c?.slug} pattern="[a-z0-9]+(-[a-z0-9]+)*" placeholder="Ex. fruits-legumes" className={field} /></label>
+      <label className="text-sm font-medium">Icône (emoji)<input name="icon" placeholder="Ex. 🥬" maxLength={16} defaultValue={c?.icon ?? ""} className={field} /></label>
+      <label className="text-sm font-medium">Position<input name="position" placeholder="0" inputMode="numeric" defaultValue={c?.position ?? 0} className={field} /></label>
       <ImageField name="image" defaultValue={c?.image_url} />
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={c?.is_active ?? true} /> Visible sur la vitrine</label>
     </>

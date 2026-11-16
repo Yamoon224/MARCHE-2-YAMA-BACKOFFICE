@@ -27,7 +27,7 @@ function IngredientRows({ rows, setRows, products }: { rows: Row[]; setRows: (r:
               <option value="">Choisir un produit…</option>
               {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
-            <input aria-label="Quantité" inputMode="numeric" value={r.quantity} onChange={(e) => patch(r.key, { quantity: e.target.value })} className={`${field} mt-0 w-24`} />
+            <input aria-label="Quantité" placeholder="Quantité" inputMode="numeric" value={r.quantity} onChange={(e) => patch(r.key, { quantity: e.target.value })} className={`${field} mt-0 w-24`} />
             <span className="text-xs text-black/60">{unitOf(r.productId)}</span>
             <button type="button" onClick={() => setRows(rows.filter((x) => x.key !== r.key))} className="text-xs text-brand-red underline">Retirer</button>
           </li>
@@ -72,10 +72,10 @@ function RecipeForm({ recipe, products, busy, submitLabel, onSubmit, onDelete }:
 
   return (
     <form onSubmit={submit} className="grid gap-3 sm:grid-cols-2">
-      <label className="text-sm font-medium">Nom<input name="name" required defaultValue={recipe?.name} className={field} /></label>
-      <label className="text-sm font-medium">Identifiant d&apos;URL<input name="slug" required defaultValue={recipe?.slug} pattern="[a-z0-9]+(-[a-z0-9]+)*" className={field} /></label>
-      <label className="text-sm font-medium">Icône (emoji)<input name="icon" maxLength={16} defaultValue={recipe?.icon ?? ""} className={field} /></label>
-      <label className="text-sm font-medium">Position<input name="position" inputMode="numeric" defaultValue={recipe?.position ?? 0} className={field} /></label>
+      <label className="text-sm font-medium">Nom<input name="name" required placeholder="Ex. Kèdjenou de poulet" defaultValue={recipe?.name} className={field} /></label>
+      <label className="text-sm font-medium">Identifiant d&apos;URL<input name="slug" required placeholder="kedjenou-de-poulet" defaultValue={recipe?.slug} pattern="[a-z0-9]+(-[a-z0-9]+)*" className={field} /></label>
+      <label className="text-sm font-medium">Icône (emoji)<input name="icon" placeholder="Ex. 🍗" maxLength={16} defaultValue={recipe?.icon ?? ""} className={field} /></label>
+      <label className="text-sm font-medium">Position<input name="position" placeholder="0" inputMode="numeric" defaultValue={recipe?.position ?? 0} className={field} /></label>
       <ImageField name="image" defaultValue={recipe?.image_url} />
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={recipe?.is_active ?? true} /> Affichée sur la vitrine</label>
       <IngredientRows rows={rows} setRows={setRows} products={products} />

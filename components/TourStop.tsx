@@ -125,10 +125,10 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
       {mode === "handover" && (
         <form onSubmit={handover} className="mt-3 flex max-w-sm flex-col gap-3 rounded-lg border border-black/10 p-3" noValidate>
           <label className="text-sm font-medium">Code du client (6 chiffres)
-            <input value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={6} className={`${field} mt-1 block w-full tracking-widest`} />
+            <input value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="000000" className={`${field} mt-1 block w-full tracking-widest`} />
           </label>
           <label className="text-sm font-medium">Espèces encaissées (F CFA)
-            <input value={cash} onChange={(e) => setCash(e.target.value)} inputMode="numeric" className={`${field} mt-1 block w-full`} />
+            <input value={cash} onChange={(e) => setCash(e.target.value)} inputMode="numeric" placeholder="Ex. 25000" className={`${field} mt-1 block w-full`} />
           </label>
           <button type="submit" disabled={busy} className="rounded-full bg-brand-red py-2 text-sm font-medium text-white disabled:opacity-50">Confirmer la remise</button>
         </form>

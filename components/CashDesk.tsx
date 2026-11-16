@@ -119,11 +119,11 @@ function HolderRow({ holder }: { holder: CourierCash }) {
       <form onSubmit={submit} className="mt-3 flex flex-wrap items-end gap-3" noValidate>
         <label className="text-sm font-medium">
           Montant compté (F CFA)
-          <input value={counted} onChange={(e) => setCounted(e.target.value)} inputMode="numeric" className={`${field} w-44`} />
+          <input value={counted} onChange={(e) => setCounted(e.target.value)} inputMode="numeric" placeholder="Ex. 25000" className={`${field} w-44`} />
         </label>
         <label className="grow text-sm font-medium">
           Note {gap !== null && gap !== 0 ? "(obligatoire : écart)" : "(facultative)"}
-          <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={255} className={field} />
+          <input value={note} onChange={(e) => setNote(e.target.value)} maxLength={255} placeholder="Ex. écart expliqué par un rendu de monnaie" className={field} />
         </label>
         <button type="submit" disabled={busy} className="rounded-full bg-brand-green px-5 py-2 text-sm font-medium text-white disabled:opacity-60">
           {busy ? "Enregistrement…" : "Enregistrer la remise"}

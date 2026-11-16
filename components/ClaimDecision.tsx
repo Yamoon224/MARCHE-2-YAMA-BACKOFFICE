@@ -74,7 +74,7 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
 
           {draft.resolution === "refund" && (
             <label className="text-sm font-medium">Montant remboursé (F CFA) — plafond {formatXof(ceilingMinor)}
-              <input value={draft.amount} onChange={(e) => set({ amount: e.target.value })} inputMode="numeric" className={field} />
+              <input value={draft.amount} onChange={(e) => set({ amount: e.target.value })} inputMode="numeric" placeholder="Ex. 1500" className={field} />
             </label>
           )}
 
@@ -88,7 +88,7 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
       )}
 
       <label className="text-sm font-medium">Motif de la décision (obligatoire)
-        <textarea value={draft.note} onChange={(e) => set({ note: e.target.value })} rows={3} maxLength={1000} className={field} />
+        <textarea value={draft.note} onChange={(e) => set({ note: e.target.value })} rows={3} maxLength={1000} placeholder="Motif de la décision…" className={field} />
       </label>
 
       {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}

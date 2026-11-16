@@ -101,11 +101,11 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
 
       <form onSubmit={createZone} className="rounded-xl border border-black/10 bg-white p-4" noValidate>
         <h2 className="mb-2 font-semibold">Nouvelle zone</h2>
-        <label className="block text-sm font-medium">Nom<input name="name" required className={field} /></label>
+        <label className="block text-sm font-medium">Nom<input name="name" required placeholder="Ex. Cocody" className={field} /></label>
         <div className="mt-3 grid grid-cols-3 gap-3">
-          <label className="text-sm font-medium">Frais (F CFA)<input name="fee" inputMode="numeric" required className={field} /></label>
-          <label className="text-sm font-medium">Offerts dès<input name="freeAbove" inputMode="numeric" className={field} /></label>
-          <label className="text-sm font-medium">Minimum<input name="minimum" inputMode="numeric" className={field} /></label>
+          <label className="text-sm font-medium">Frais (F CFA)<input name="fee" inputMode="numeric" required placeholder="Ex. 1500" className={field} /></label>
+          <label className="text-sm font-medium">Offerts dès<input name="freeAbove" inputMode="numeric" placeholder="Ex. 25000" className={field} /></label>
+          <label className="text-sm font-medium">Minimum<input name="minimum" inputMode="numeric" placeholder="Ex. 5000" className={field} /></label>
         </div>
         <button type="submit" disabled={busy} className="mt-4 rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Créer la zone</button>
       </form>
@@ -119,10 +119,10 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
           </select>
         </label>
         <div className="mt-3 grid grid-cols-2 gap-3">
-          <label className="text-sm font-medium">Début<input name="start" type="datetime-local" required className={field} /></label>
-          <label className="text-sm font-medium">Fin<input name="end" type="datetime-local" required className={field} /></label>
+          <label className="text-sm font-medium">Début<input name="start" type="datetime-local" required placeholder="jj/mm/aaaa hh:mm" className={field} /></label>
+          <label className="text-sm font-medium">Fin<input name="end" type="datetime-local" required placeholder="jj/mm/aaaa hh:mm" className={field} /></label>
         </div>
-        <label className="mt-3 block text-sm font-medium">Capacité (commandes)<input name="capacity" inputMode="numeric" required className={field} /></label>
+        <label className="mt-3 block text-sm font-medium">Capacité (commandes)<input name="capacity" inputMode="numeric" required placeholder="Ex. 20" className={field} /></label>
         <button type="submit" disabled={busy || zones.length === 0} className="mt-4 rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Ouvrir le créneau</button>
       </form>
 

@@ -99,7 +99,7 @@ function LotRow({ lot, canRecall, today }: { lot: Lot; canRecall: boolean; today
             {open && (
               <form onSubmit={recall} className="flex flex-wrap items-end gap-2" noValidate>
                 <label className="text-sm font-medium">Motif du rappel
-                  <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={255} className="mt-1 block w-80 rounded-lg border border-black/20 bg-white px-3 py-2 text-sm" />
+                  <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={255} placeholder="Ex. rappel fournisseur du 16/11" className="mt-1 block w-80 rounded-lg border border-black/20 bg-white px-3 py-2 text-sm" />
                 </label>
                 <button type="submit" disabled={busy} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">{busy ? "Rappel…" : "Bloquer et rappeler le lot"}</button>
               </form>

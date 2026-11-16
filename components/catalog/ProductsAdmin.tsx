@@ -61,7 +61,7 @@ export function ProductsAdmin({ products, categories, query }: { products: Produ
                 </span>
               </summary>
               <form onSubmit={(e) => save(p, e)} className="grid gap-3 border-t border-black/10 p-3 sm:grid-cols-2" noValidate>
-                <label className="text-sm font-medium">Prix (F CFA)<input name="price" inputMode="numeric" defaultValue={p.price_minor} required className={field} /></label>
+                <label className="text-sm font-medium">Prix (F CFA)<input name="price" inputMode="numeric" defaultValue={p.price_minor} required placeholder="Ex. 1500" className={field} /></label>
                 <label className="text-sm font-medium">Ancien prix barré (promotion)<input name="compare" inputMode="numeric" defaultValue={p.compare_at_price_minor ?? ""} placeholder="Vide = pas de promo" className={field} /></label>
                 <label className="text-sm font-medium">Rayon
                   <select name="category" defaultValue={p.category_id} className={field}>
@@ -69,7 +69,7 @@ export function ProductsAdmin({ products, categories, query }: { products: Produ
                   </select>
                 </label>
                 <ImageField name="image" defaultValue={p.image_url} />
-                <label className="text-sm font-medium sm:col-span-2">Description<textarea name="description" rows={2} defaultValue={p.description ?? ""} className={field} /></label>
+                <label className="text-sm font-medium sm:col-span-2">Description<textarea name="description" rows={2} placeholder="Description visible sur la fiche produit" defaultValue={p.description ?? ""} className={field} /></label>
                 <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" defaultChecked={p.is_featured} /> Mettre en avant (best seller)</label>
                 <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={p.is_active} /> Visible sur la vitrine</label>
                 <div className="sm:col-span-2"><button type="submit" disabled={busy} className={primary}>Enregistrer</button></div>

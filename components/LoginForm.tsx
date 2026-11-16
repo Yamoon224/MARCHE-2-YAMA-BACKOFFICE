@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { PasswordInput } from "@/components/PasswordInput";
 import { extractApiError, safeNext } from "@/lib/format";
 
 export function LoginForm({ next }: { next?: string }) {
@@ -45,12 +46,12 @@ export function LoginForm({ next }: { next?: string }) {
 
       <label className="text-sm font-medium">
         E-mail ou téléphone
-        <input name="login" required autoComplete="username" className={field} />
+        <input name="login" required autoComplete="username" placeholder="E-mail ou téléphone" className={field} />
       </label>
 
       <label className="text-sm font-medium">
         Mot de passe
-        <input name="password" type="password" required autoComplete="current-password" className={field} />
+        <PasswordInput name="password" required autoComplete="current-password" placeholder="Votre mot de passe" className={field} />
       </label>
 
       {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}

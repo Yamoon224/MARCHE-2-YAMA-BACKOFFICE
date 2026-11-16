@@ -63,11 +63,11 @@ export function RefundPanel({ orderId, refundableMinor }: Props) {
 
       <label className="text-sm font-medium">
         Montant (F CFA)
-        <input value={amount} onChange={(e) => { setAmount(e.target.value); attempt.current = null; }} inputMode="numeric" className={field} />
+        <input value={amount} onChange={(e) => { setAmount(e.target.value); attempt.current = null; }} inputMode="numeric" placeholder="Ex. 1500" className={field} />
       </label>
       <label className="text-sm font-medium">
         Motif
-        <input value={reason} onChange={(e) => { setReason(e.target.value); attempt.current = null; }} maxLength={255} className={field} />
+        <input value={reason} onChange={(e) => { setReason(e.target.value); attempt.current = null; }} maxLength={255} placeholder="Ex. produit abîmé" className={field} />
       </label>
 
       {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}

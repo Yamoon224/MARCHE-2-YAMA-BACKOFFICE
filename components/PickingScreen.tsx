@@ -140,7 +140,7 @@ function PickLineCard({ line, editable, busy, onPick, onSubstitute }: CardProps)
         <form onSubmit={save} className="mt-3 flex flex-wrap items-end gap-2" noValidate>
           <label className="text-sm font-medium">
             Quantité servie ({unitSuffix(line.sale_unit)}, max {line.max_quantity})
-            <input value={input} onChange={(e) => setInput(e.target.value)} inputMode="numeric" aria-label={`Quantité servie pour ${line.name}`} className={`${field} mt-1 block w-40`} />
+            <input value={input} onChange={(e) => setInput(e.target.value)} inputMode="numeric" placeholder="Quantité" aria-label={`Quantité servie pour ${line.name}`} className={`${field} mt-1 block w-40`} />
           </label>
           <button type="submit" disabled={busy} className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Enregistrer</button>
           <button type="button" disabled={busy} onClick={() => onPick(line.id, 0)} className="rounded-full border border-black/20 px-4 py-2 text-sm disabled:opacity-60">Rupture</button>
@@ -190,8 +190,8 @@ function SubstitutePicker({ line, busy, onChoose }: { line: PickLine; busy: bool
   return (
     <div className="mt-3 rounded-lg border border-black/10 bg-black/[0.02] p-3">
       <form onSubmit={search} className="flex flex-wrap items-end gap-2">
-        <label className="text-sm font-medium">Rechercher un remplaçant<input value={query} onChange={(e) => setQuery(e.target.value)} className={`${field} mt-1 block w-56`} /></label>
-        <label className="text-sm font-medium">Quantité ({unitSuffix(line.sale_unit)})<input value={quantity} onChange={(e) => setQuantity(e.target.value)} inputMode="numeric" className={`${field} mt-1 block w-28`} /></label>
+        <label className="text-sm font-medium">Rechercher un remplaçant<input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Nom du produit…" className={`${field} mt-1 block w-56`} /></label>
+        <label className="text-sm font-medium">Quantité ({unitSuffix(line.sale_unit)})<input value={quantity} onChange={(e) => setQuantity(e.target.value)} inputMode="numeric" placeholder="Ex. 500" className={`${field} mt-1 block w-28`} /></label>
         <button type="submit" className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white">Chercher</button>
       </form>
 
