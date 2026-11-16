@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { browserApi } from "@/lib/api/client";
-import { extractApiError } from "@/lib/format";
+import { extractApiError, parseEuros } from "@/lib/format";
 
 export const field = "mt-1 w-full rounded-lg border border-black/20 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green";
 export const primary = "rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60";
@@ -105,8 +105,8 @@ export function Section({ title, children }: { title: string; children: ReactNod
 export const str = (data: FormData, key: string) => String(data.get(key) ?? "").trim();
 export const optional = (data: FormData, key: string) => str(data, key) || null;
 export const int = (data: FormData, key: string) => Number.parseInt(str(data, key), 10);
-/** Entier ≥ 0 saisi dans un champ texte ; `null` si vide, `NaN` si invalide. */
+/** Montant en euros saisi dans un champ texte, converti en centimes ; `null` si vide, `NaN` si invalide. */
 export function amount(data: FormData, key: string): number | null {
   const text = str(data, key);
-  return text === "" ? null : /^\d+$/.test(text) ? Number(text) : Number.NaN;
+  return text === "" ? null : (parseEuros(text) ?? Number.NaN);
 }

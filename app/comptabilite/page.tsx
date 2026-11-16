@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
 export const metadata = { title: "Comptabilité — Backoffice Marché de Yama" };
@@ -55,17 +55,17 @@ async function TrialBalance() {
               <tr key={account.code}>
                 <td className="px-4 py-2 font-mono">{account.code}</td>
                 <td className="px-4 py-2">{account.name}</td>
-                <td className="px-4 py-2 text-right">{formatXof(account.debit_minor)}</td>
-                <td className="px-4 py-2 text-right">{formatXof(account.credit_minor)}</td>
-                <td className="px-4 py-2 text-right font-semibold">{formatXof(account.balance_minor)}</td>
+                <td className="px-4 py-2 text-right">{formatMoney(account.debit_minor)}</td>
+                <td className="px-4 py-2 text-right">{formatMoney(account.credit_minor)}</td>
+                <td className="px-4 py-2 text-right font-semibold">{formatMoney(account.balance_minor)}</td>
               </tr>
             ))}
           </tbody>
           <tfoot className="border-t-2 border-black/20 font-bold">
             <tr>
               <td className="px-4 py-3" colSpan={2}>Totaux</td>
-              <td className="px-4 py-3 text-right">{formatXof(balance.total_debit_minor)}</td>
-              <td className="px-4 py-3 text-right">{formatXof(balance.total_credit_minor)}</td>
+              <td className="px-4 py-3 text-right">{formatMoney(balance.total_debit_minor)}</td>
+              <td className="px-4 py-3 text-right">{formatMoney(balance.total_credit_minor)}</td>
               <td />
             </tr>
           </tfoot>

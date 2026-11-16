@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { buildDecisionBody, canDecideClaims, initialDecision, parseAmount, validateDecision, type DecisionDraft } from "./claims";
 
 const accept = (over: Partial<DecisionDraft> = {}): DecisionDraft => ({
-  decision: "accept", resolution: "refund", costBearer: "supplier", amount: "1500", note: "Briques percées", ...over,
+  decision: "accept", resolution: "refund", costBearer: "supplier", amount: "15", note: "Briques percées", ...over,
 });
 
 describe("canDecideClaims", () => {
@@ -14,8 +14,8 @@ describe("canDecideClaims", () => {
 });
 
 describe("parseAmount", () => {
-  it.each([["1500", 1500], [" 1 500 ", 1500], ["1 500", 1500], ["1", 1]])("accepts %j", (input, expected) => expect(parseAmount(input)).toBe(expected));
-  it.each(["", "0", "-5", "12,5", "12.5", "abc", "1e3", "1234567890"])("rejects %j", (input) => expect(parseAmount(input)).toBeNull());
+  it.each([["15", 1500], [" 1 500 ", 150000], ["1,5", 150], ["0,01", 1]])("accepts %j", (input, expected) => expect(parseAmount(input)).toBe(expected));
+  it.each(["", "0", "-5", "12,555", "abc", "1e3", "1234567890"])("rejects %j", (input) => expect(parseAmount(input)).toBeNull());
 });
 
 describe("validateDecision", () => {
@@ -23,11 +23,11 @@ describe("validateDecision", () => {
 
   it("accepts a valid refund up to the ceiling", () => {
     expect(validateDecision(accept(), ceiling)).toBeNull();
-    expect(validateDecision(accept({ amount: "2000" }), ceiling)).toBeNull();
+    expect(validateDecision(accept({ amount: "20" }), ceiling)).toBeNull();
   });
 
   it("refuses a refund above the ceiling", () => {
-    expect(validateDecision(accept({ amount: "2001" }), ceiling)).toContain("dépasser");
+    expect(validateDecision(accept({ amount: "20,01" }), ceiling)).toContain("dépasser");
   });
 
   it("always requires a reason, even to reject", () => {
@@ -53,13 +53,13 @@ describe("buildDecisionBody", () => {
   });
 
   it("sends the amount for a refund and none for a new shipment", () => {
-    expect(buildDecisionBody(accept({ amount: " 1 500 " }))).toEqual({ decision: "accept", note: "Briques percées", resolution: "refund", cost_bearer: "supplier", amount_minor: 1500 });
+    expect(buildDecisionBody(accept({ amount: " 15 " }))).toEqual({ decision: "accept", note: "Briques percées", resolution: "refund", cost_bearer: "supplier", amount_minor: 1500 });
     expect(buildDecisionBody(accept({ resolution: "redelivery" }))).toEqual({ decision: "accept", note: "Briques percées", resolution: "redelivery", cost_bearer: "supplier" });
   });
 });
 
 describe("initialDecision", () => {
   it("proposes to refund the full value of the claimed items, with no cost bearer chosen for the agent", () => {
-    expect(initialDecision(2000)).toEqual({ decision: "accept", resolution: "refund", costBearer: "", amount: "2000", note: "" });
+    expect(initialDecision(2000)).toEqual({ decision: "accept", resolution: "refund", costBearer: "", amount: "20,00", note: "" });
   });
 });

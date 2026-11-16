@@ -1,10 +1,26 @@
 import { describe, expect, it } from "vitest";
-import { extractApiError, formatXof, safeNext } from "./format";
+import { centsToInput, extractApiError, formatMoney, parseEuros, safeNext } from "./format";
 
-describe("formatXof", () => {
-  it("formats integer amounts with thin spaces replaced", () => {
-    expect(formatXof(13850)).toBe("13 850 F CFA");
-    expect(formatXof(0)).toBe("0 F CFA");
+describe("formatMoney", () => {
+  it("formats cents as euros with plain spaces", () => {
+    expect(formatMoney(1290)).toBe("12,90 €");
+    expect(formatMoney(0)).toBe("0,00 €");
+    expect(formatMoney(138500)).toBe("1 385,00 €");
+  });
+});
+
+describe("parseEuros", () => {
+  it.each([["12", 1200], ["12,5", 1250], ["12.50", 1250], [" 1 250,00 ", 125000], ["0,01", 1], ["0", 0]])("%j -> %d", (input, expected) => {
+    expect(parseEuros(input)).toBe(expected);
+  });
+
+  it.each(["", "-1", "12,555", "1,", "abc", "1e3", "12345678"])("rejects %j", (input) => {
+    expect(parseEuros(input)).toBeNull();
+  });
+
+  it("round-trips with centsToInput", () => {
+    expect(centsToInput(1250)).toBe("12,50");
+    expect(parseEuros(centsToInput(99))).toBe(99);
   });
 });
 

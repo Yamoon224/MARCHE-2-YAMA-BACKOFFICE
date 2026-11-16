@@ -1,3 +1,4 @@
+import { parseEuros } from "../format";
 export type DeliveryStatus = "pending" | "assigned" | "out_for_delivery" | "delivered" | "failed" | "returned";
 
 export const DELIVERY_STATUS_LABEL: Record<DeliveryStatus, string> = {
@@ -14,18 +15,16 @@ export function isValidCode(input: string): boolean {
   return /^\d{6}$/.test(input.trim());
 }
 
-/** Espèces encaissées en F CFA : entier ≥ 0 (0 = commande déjà payée) ; `null` si invalide. */
+/** Espèces encaissées en euros (ex. 25,50) : ≥ 0 (0 = commande déjà payée) ; `null` si invalide. */
 export function parseCash(input: string): number | null {
-  const text = input.replace(/[\s  ]/g, "");
-  if (text === "") return 0;
-  if (!/^\d{1,9}$/.test(text)) return null;
+  if (input.trim() === "") return 0;
 
-  return Number(text);
+  return parseEuros(input);
 }
 
 export function validateHandover(code: string, cashInput: string): string | null {
   if (!isValidCode(code)) return "Saisissez le code à 6 chiffres donné par le client.";
-  if (parseCash(cashInput) === null) return "Saisissez un montant entier en F CFA (0 si déjà payée).";
+  if (parseCash(cashInput) === null) return "Saisissez un montant en euros (ex. 25,50 ; 0 si déjà payée).";
 
   return null;
 }

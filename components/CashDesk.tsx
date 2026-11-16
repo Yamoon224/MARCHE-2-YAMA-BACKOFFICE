@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
 import { parseCounted, validateHandover, variance, varianceLabel } from "@/lib/cash/cash";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 
 export type CourierCash = { courier_id: number; courier_name?: string | null; held_minor: number; deliveries_count: number };
 export type Handover = {
@@ -45,10 +45,10 @@ export function CashDesk({ holders, handovers }: { holders: CourierCash[]; hando
                   <tr key={h.id}>
                     <td className="px-4 py-3">#{h.id} <span className="text-black/50">({h.deliveries_count} liv.)</span></td>
                     <td className="px-4 py-3">n° {h.courier_id}</td>
-                    <td className="px-4 py-3 text-right">{formatXof(h.expected_minor)}</td>
-                    <td className="px-4 py-3 text-right">{formatXof(h.counted_minor)}</td>
+                    <td className="px-4 py-3 text-right">{formatMoney(h.expected_minor)}</td>
+                    <td className="px-4 py-3 text-right">{formatMoney(h.counted_minor)}</td>
                     <td className={`px-4 py-3 ${h.variance_minor === 0 ? "" : "font-medium text-brand-red"}`}>
-                      {varianceLabel(h.variance_minor)}{h.variance_minor !== 0 && ` (${formatXof(Math.abs(h.variance_minor))})`}
+                      {varianceLabel(h.variance_minor)}{h.variance_minor !== 0 && ` (${formatMoney(Math.abs(h.variance_minor))})`}
                     </td>
                     <td className="px-4 py-3">{h.note ?? "—"}</td>
                   </tr>
@@ -84,7 +84,7 @@ function HolderRow({ holder }: { holder: CourierCash }) {
     const problem = validateHandover(counted, holder.held_minor, note);
     if (problem) return setError(problem);
 
-    if (!window.confirm(`Enregistrer la remise de ${formatXof(countedNumber as number)} ? Elle ne pourra pas être modifiée.`)) return;
+    if (!window.confirm(`Enregistrer la remise de ${formatMoney(countedNumber as number)} ? Elle ne pourra pas être modifiée.`)) return;
 
     submitting.current = true;
     setBusy(true);
@@ -97,7 +97,7 @@ function HolderRow({ holder }: { holder: CourierCash }) {
 
       if (failure || !data) return setError(extractApiError(failure));
 
-      setDone(`Remise enregistrée : ${formatXof(data.data.counted_minor)} en caisse.`);
+      setDone(`Remise enregistrée : ${formatMoney(data.data.counted_minor)} en caisse.`);
       router.refresh();
     } catch {
       setError("Service momentanément indisponible. Vérifiez l'historique avant de réessayer.");
@@ -113,13 +113,13 @@ function HolderRow({ holder }: { holder: CourierCash }) {
     <li className="rounded-xl border border-black/10 bg-white p-4">
       <p className="font-semibold">{holder.courier_name ?? `Livreur n° ${holder.courier_id}`}</p>
       <p className="text-sm text-black/70">
-        Attendu : <strong>{formatXof(holder.held_minor)}</strong> sur {holder.deliveries_count} livraison(s)
+        Attendu : <strong>{formatMoney(holder.held_minor)}</strong> sur {holder.deliveries_count} livraison(s)
       </p>
 
       <form onSubmit={submit} className="mt-3 flex flex-wrap items-end gap-3" noValidate>
         <label className="text-sm font-medium">
-          Montant compté (F CFA)
-          <input value={counted} onChange={(e) => setCounted(e.target.value)} inputMode="numeric" placeholder="Ex. 25000" className={`${field} w-44`} />
+          Montant compté (€)
+          <input value={counted} onChange={(e) => setCounted(e.target.value)} inputMode="decimal" placeholder="Ex. 250,00" className={`${field} w-44`} />
         </label>
         <label className="grow text-sm font-medium">
           Note {gap !== null && gap !== 0 ? "(obligatoire : écart)" : "(facultative)"}
@@ -131,7 +131,7 @@ function HolderRow({ holder }: { holder: CourierCash }) {
       </form>
 
       {gap !== null && gap !== 0 && (
-        <p className="mt-2 text-sm font-medium text-brand-red">{varianceLabel(gap)} : {formatXof(Math.abs(gap))}</p>
+        <p className="mt-2 text-sm font-medium text-brand-red">{varianceLabel(gap)} : {formatMoney(Math.abs(gap))}</p>
       )}
       {error && <p role="alert" className="mt-2 rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}
       {done && <p role="status" className="mt-2 rounded-lg bg-brand-green/10 p-3 text-sm text-brand-green">{done}</p>}

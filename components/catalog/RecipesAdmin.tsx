@@ -3,7 +3,7 @@
 import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { danger, Feedback, field, ImageField, int, optional, primary, Section, str, useAction } from "./shared";
 
 type Recipe = components["schemas"]["Recipe"];
@@ -100,7 +100,7 @@ export function RecipesAdmin({ recipes, products }: { recipes: Recipe[]; product
             <details>
               <summary className="flex cursor-pointer flex-wrap justify-between gap-2 p-3 text-sm">
                 <span className="font-medium"><span aria-hidden="true">{r.icon ?? "🍲"}</span> {r.name} {!r.is_active && <span className="ml-2 rounded-full bg-black/10 px-2 text-xs">Masquée</span>}</span>
-                <span className="text-black/60">{r.items.length} ingrédients · {formatXof(r.total_minor)}</span>
+                <span className="text-black/60">{r.items.length} ingrédients · {formatMoney(r.total_minor)}</span>
               </summary>
               <div className="border-t border-black/10 p-3">
                 <RecipeForm

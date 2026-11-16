@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 import {
   canComplete, describeAdjustment, formatQuantity, LINE_STATUS_LABEL, pendingCount, unitSuffix, validateQuantity,
   type PickLine,
@@ -64,7 +64,7 @@ export function PickingScreen({ listId, status, lines }: Props) {
 
       if (failure || !data) return setError(extractApiError(failure));
 
-      setResult(describeAdjustment(data.adjustment_minor, formatXof));
+      setResult(describeAdjustment(data.adjustment_minor, formatMoney));
       router.refresh();
     } catch {
       setError("Service momentanément indisponible. Réessayez.");
@@ -201,7 +201,7 @@ function SubstitutePicker({ line, busy, onChoose }: { line: PickLine; busy: bool
         <ul className="mt-2 divide-y divide-black/10 text-sm">
           {results.map((p) => (
             <li key={p.id} className="flex items-center justify-between gap-2 py-2">
-              <span>{p.name} <span className="text-black/50">({formatXof(p.price_minor)})</span></span>
+              <span>{p.name} <span className="text-black/50">({formatMoney(p.price_minor)})</span></span>
               <button type="button" disabled={busy} onClick={() => choose(p.id)} className="rounded-full border border-brand-green px-3 py-1 text-brand-green disabled:opacity-60">Choisir</button>
             </li>
           ))}

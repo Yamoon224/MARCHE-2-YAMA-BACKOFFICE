@@ -2,7 +2,7 @@
 
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
-import { formatXof } from "@/lib/format";
+import { centsToInput, formatMoney } from "@/lib/format";
 import type { FormEvent } from "react";
 import { amount, Feedback, field, ImageField, optional, primary, str, useAction } from "./shared";
 
@@ -19,7 +19,7 @@ export function ProductsAdmin({ products, categories, query }: { products: Produ
     const compare = amount(data, "compare");
 
     if (price === null || Number.isNaN(price) || Number.isNaN(compare)) {
-      return setMessage({ kind: "error", text: "Les prix doivent être des montants entiers en F CFA." });
+      return setMessage({ kind: "error", text: "Les prix doivent être des montants en euros (ex. 12,50)." });
     }
 
     void run(
@@ -54,15 +54,15 @@ export function ProductsAdmin({ products, categories, query }: { products: Produ
               <summary className="flex cursor-pointer flex-wrap items-center justify-between gap-2 p-3 text-sm">
                 <span className="font-medium">{p.name} <span className="text-black/50">· {p.sku}</span></span>
                 <span className="flex items-center gap-2">
-                  {p.compare_at_price_minor ? <s className="text-black/50">{formatXof(p.compare_at_price_minor)}</s> : null}
-                  <b>{formatXof(p.price_minor)}</b>
+                  {p.compare_at_price_minor ? <s className="text-black/50">{formatMoney(p.compare_at_price_minor)}</s> : null}
+                  <b>{formatMoney(p.price_minor)}</b>
                   {p.is_featured && <span className="rounded-full bg-brand-green/10 px-2 text-xs text-brand-green">Best seller</span>}
                   {!p.is_active && <span className="rounded-full bg-black/10 px-2 text-xs">Masqué</span>}
                 </span>
               </summary>
               <form onSubmit={(e) => save(p, e)} className="grid gap-3 border-t border-black/10 p-3 sm:grid-cols-2" noValidate>
-                <label className="text-sm font-medium">Prix (F CFA)<input name="price" inputMode="numeric" defaultValue={p.price_minor} required placeholder="Ex. 1500" className={field} /></label>
-                <label className="text-sm font-medium">Ancien prix barré (promotion)<input name="compare" inputMode="numeric" defaultValue={p.compare_at_price_minor ?? ""} placeholder="Vide = pas de promo" className={field} /></label>
+                <label className="text-sm font-medium">Prix (€)<input name="price" inputMode="decimal" defaultValue={centsToInput(p.price_minor)} required placeholder="Ex. 12,50" className={field} /></label>
+                <label className="text-sm font-medium">Ancien prix barré (promotion)<input name="compare" inputMode="decimal" defaultValue={p.compare_at_price_minor ? centsToInput(p.compare_at_price_minor) : ""} placeholder="Vide = pas de promo" className={field} /></label>
                 <label className="text-sm font-medium">Rayon
                   <select name="category" defaultValue={p.category_id} className={field}>
                     {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}

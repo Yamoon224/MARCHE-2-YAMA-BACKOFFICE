@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { StatusBadge } from "@/components/StatusBadge";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 import { STATUSES, statusLabel } from "@/lib/orders/status";
 
@@ -77,7 +77,7 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
                   </td>
                   <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
                   <td className="px-4 py-3">{order.fulfillment === "delivery" ? "Livraison" : "Retrait magasin"}</td>
-                  <td className="px-4 py-3 text-right font-semibold">{formatXof(order.total_minor)}</td>
+                  <td className="px-4 py-3 text-right font-semibold">{formatMoney(order.total_minor)}</td>
                 </tr>
               ))}
             </tbody>

@@ -1,3 +1,4 @@
+import { centsToInput, parseEuros } from "../format";
 export type Issue = "missing" | "damaged" | "expired" | "non_conforming";
 export type Resolution = "refund" | "redelivery";
 export type CostBearer = "supplier" | "preparation" | "delivery" | "store";
@@ -43,14 +44,11 @@ export type DecisionDraft = {
   note: string;
 };
 
-/** Montant entier en F CFA ≥ 1 ; `null` si invalide. */
+/** Montant en euros (ex. 12,50), supérieur à zéro ; `null` si invalide. */
 export function parseAmount(input: string): number | null {
-  const text = input.replace(/[\s  ]/g, "");
-  if (!/^\d{1,9}$/.test(text)) return null;
+  const value = parseEuros(input);
 
-  const value = Number(text);
-
-  return value >= 1 ? value : null;
+  return value !== null && value >= 1 ? value : null;
 }
 
 /** Premier problème de la décision, ou `null` si elle peut partir. `ceilingMinor` : valeur des articles réclamés. */
@@ -62,7 +60,7 @@ export function validateDecision(draft: DecisionDraft, ceilingMinor: number): st
   if (draft.resolution === "redelivery") return null;
 
   const amount = parseAmount(draft.amount);
-  if (amount === null) return "Saisissez un montant de remboursement entier en F CFA.";
+  if (amount === null) return "Saisissez un montant de remboursement en euros (ex. 12,50).";
   if (amount > ceilingMinor) return "Le remboursement ne peut pas dépasser la valeur des articles réclamés.";
 
   return null;
@@ -83,5 +81,5 @@ export function buildDecisionBody(draft: DecisionDraft) {
 }
 
 export function initialDecision(ceilingMinor: number): DecisionDraft {
-  return { decision: "accept", resolution: "refund", costBearer: "", amount: String(ceilingMinor), note: "" };
+  return { decision: "accept", resolution: "refund", costBearer: "", amount: centsToInput(ceilingMinor), note: "" };
 }

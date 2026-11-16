@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { browserApi } from "@/lib/api/client";
 import { DELIVERY_STATUS_LABEL, formatAddress, type Address, type DeliveryStatus } from "@/lib/courier/courier";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 
 export type BoardDelivery = {
   id: number;
@@ -73,7 +73,7 @@ function DeliveryCard({ delivery, couriers }: { delivery: BoardDelivery; courier
       <p className="mt-1 text-sm text-black/60">
         {delivery.slot_starts_at ? `Créneau ${hour.format(new Date(delivery.slot_starts_at))}` : "Sans créneau"}
         {delivery.courier_name ? ` · livreur : ${delivery.courier_name}` : ""}
-        {delivery.cash_due_minor > 0 ? ` · à encaisser : ${formatXof(delivery.cash_due_minor)}` : ""}
+        {delivery.cash_due_minor > 0 ? ` · à encaisser : ${formatMoney(delivery.cash_due_minor)}` : ""}
       </p>
       {delivery.failure_reason && <p className="mt-1 text-sm text-brand-red">Échec : {delivery.failure_reason}</p>}
 

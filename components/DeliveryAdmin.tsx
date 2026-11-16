@@ -3,14 +3,19 @@
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney, parseEuros } from "@/lib/format";
 
 type Zone = { id: number; name: string; fee_minor: number; free_above_minor?: number | null; min_order_minor: number };
 
 const field = "mt-1 w-full rounded-lg border border-black/20 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green";
 
-/** Entier positif ou nul saisi en F CFA ; `null` si vide ou invalide. */
+/** Montant en euros saisi (ex. 4,90) converti en centimes ; `null` si vide ou invalide. */
 function toAmount(value: FormDataEntryValue | null): number | null {
+  return parseEuros(String(value ?? ""));
+}
+
+/** Entier strictement positif (capacité d'un créneau) ; `null` si invalide. */
+function toCount(value: FormDataEntryValue | null): number | null {
   const text = String(value ?? "").trim();
   return /^\d+$/.test(text) ? Number(text) : null;
 }
@@ -46,7 +51,7 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
     const minimum = toAmount(data.get("minimum")) ?? 0;
     const freeAbove = toAmount(data.get("freeAbove"));
 
-    if (fee === null) return setMessage({ kind: "error", text: "Les frais doivent être un montant entier en F CFA." });
+    if (fee === null) return setMessage({ kind: "error", text: "Les frais doivent être un montant en euros (ex. 4,90)." });
 
     void run(
       () => browserApi().POST("/api/v1/delivery/zones", {
@@ -61,7 +66,7 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
     event.preventDefault();
     const form = event.currentTarget;
     const data = new FormData(form);
-    const capacity = toAmount(data.get("capacity"));
+    const capacity = toCount(data.get("capacity"));
 
     if (capacity === null || capacity < 1) return setMessage({ kind: "error", text: "La capacité doit être au moins 1." });
 
@@ -91,7 +96,7 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
               <li key={z.id} className="flex flex-wrap justify-between gap-2 p-3">
                 <span className="font-medium">{z.name}</span>
                 <span className="text-black/70">
-                  Frais {formatXof(z.fee_minor)} · offerts dès {z.free_above_minor != null ? formatXof(z.free_above_minor) : "—"} · minimum {formatXof(z.min_order_minor)}
+                  Frais {formatMoney(z.fee_minor)} · offerts dès {z.free_above_minor != null ? formatMoney(z.free_above_minor) : "—"} · minimum {formatMoney(z.min_order_minor)}
                 </span>
               </li>
             ))}
@@ -101,11 +106,11 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
 
       <form onSubmit={createZone} className="rounded-xl border border-black/10 bg-white p-4" noValidate>
         <h2 className="mb-2 font-semibold">Nouvelle zone</h2>
-        <label className="block text-sm font-medium">Nom<input name="name" required placeholder="Ex. Cocody" className={field} /></label>
+        <label className="block text-sm font-medium">Nom<input name="name" required placeholder="Ex. Paris (75)" className={field} /></label>
         <div className="mt-3 grid grid-cols-3 gap-3">
-          <label className="text-sm font-medium">Frais (F CFA)<input name="fee" inputMode="numeric" required placeholder="Ex. 1500" className={field} /></label>
-          <label className="text-sm font-medium">Offerts dès<input name="freeAbove" inputMode="numeric" placeholder="Ex. 25000" className={field} /></label>
-          <label className="text-sm font-medium">Minimum<input name="minimum" inputMode="numeric" placeholder="Ex. 5000" className={field} /></label>
+          <label className="text-sm font-medium">Frais (€)<input name="fee" inputMode="decimal" required placeholder="Ex. 4,90" className={field} /></label>
+          <label className="text-sm font-medium">Offerts dès<input name="freeAbove" inputMode="decimal" placeholder="Ex. 50" className={field} /></label>
+          <label className="text-sm font-medium">Minimum<input name="minimum" inputMode="decimal" placeholder="Ex. 20" className={field} /></label>
         </div>
         <button type="submit" disabled={busy} className="mt-4 rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Créer la zone</button>
       </form>

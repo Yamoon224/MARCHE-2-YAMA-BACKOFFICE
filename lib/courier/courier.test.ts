@@ -9,22 +9,22 @@ describe("confirmation code", () => {
 });
 
 describe("parseCash", () => {
-  it.each([["", 0], ["0", 0], ["11500", 11500], [" 11 500 ", 11500], ["11 500", 11500]])("accepts %j", (input, expected) => {
+  it.each([["", 0], ["0", 0], ["115", 11500], [" 1 150 ", 115000], ["115,50", 11550]])("accepts %j", (input, expected) => {
     expect(parseCash(input)).toBe(expected);
   });
 
-  it.each(["-1", "11,5", "11.5", "abc", "1e3", "1234567890"])("rejects %j", (input) => expect(parseCash(input)).toBeNull());
+  it.each(["-1", "11,555", "abc", "1e3", "1234567890"])("rejects %j", (input) => expect(parseCash(input)).toBeNull());
 });
 
 describe("validateHandover", () => {
   it("accepts a valid code with cash or none", () => {
-    expect(validateHandover("123456", "11500")).toBeNull();
+    expect(validateHandover("123456", "115")).toBeNull();
     expect(validateHandover("123456", "")).toBeNull();
   });
 
   it("explains what is wrong", () => {
     expect(validateHandover("12", "0")).toContain("6 chiffres");
-    expect(validateHandover("123456", "abc")).toContain("montant entier");
+    expect(validateHandover("123456", "abc")).toContain("montant en euros");
   });
 });
 
@@ -63,8 +63,8 @@ describe("address helpers", () => {
   });
 
   it("builds a call link from a clean phone number only", () => {
-    expect(telUrl("+225 07 00 11 22 33")).toBe("tel:+2250700112233");
-    expect(telUrl("0700112233")).toBe("tel:0700112233");
+    expect(telUrl("+33 6 12 34 56 78")).toBe("tel:+33612345678");
+    expect(telUrl("0612345678")).toBe("tel:0612345678");
     expect(telUrl("abc")).toBeNull();
     expect(telUrl("tel:+1;DROP")).toBeNull();
     expect(telUrl(null)).toBeNull();

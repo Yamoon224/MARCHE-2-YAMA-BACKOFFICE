@@ -10,24 +10,24 @@ describe("canReceiveCash", () => {
 });
 
 describe("parseCounted", () => {
-  it.each([["11500", 11500], [" 11 500 ", 11500], ["0", 0], ["007", 7]])("%j -> %d", (input, expected) => {
+  it.each([["115", 11500], [" 1 150 ", 115000], ["0", 0], ["007", 700], ["12,5", 1250], ["12.50", 1250]])("%j -> %d", (input, expected) => {
     expect(parseCounted(input)).toBe(expected);
   });
 
-  it.each(["", "-1", "1.5", "1,5", "abc", "1e3", "1234567890"])("rejects %j", (input) => {
+  it.each(["", "-1", "1,555", "abc", "1e3", "1234567890"])("rejects %j", (input) => {
     expect(parseCounted(input)).toBeNull();
   });
 });
 
 describe("validateHandover", () => {
   it("accepts an exact count without a note", () => {
-    expect(validateHandover("11500", 11500, "")).toBeNull();
+    expect(validateHandover("115", 11500, "")).toBeNull();
   });
 
   it("requires a note when the count differs", () => {
-    expect(validateHandover("11000", 11500, "")).toContain("expliquez");
-    expect(validateHandover("11000", 11500, " ab ")).toContain("expliquez");
-    expect(validateHandover("11000", 11500, "Monnaie rendue")).toBeNull();
+    expect(validateHandover("110", 11500, "")).toContain("expliquez");
+    expect(validateHandover("110", 11500, " ab ")).toContain("expliquez");
+    expect(validateHandover("110", 11500, "Monnaie rendue")).toBeNull();
     expect(validateHandover("0", 11500, "Sac volé")).toBeNull();
   });
 

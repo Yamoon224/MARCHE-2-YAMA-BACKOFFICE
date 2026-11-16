@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { TourStop } from "@/components/TourStop";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
 export const metadata = { title: "Ma tournée — Backoffice Marché de Yama" };
@@ -40,7 +40,7 @@ async function Stops() {
     <>
       {held > 0 && (
         <p role="status" className="mb-4 rounded-lg bg-brand-green/10 p-3 text-sm">
-          Espèces à remettre au magasin : <strong>{formatXof(held)}</strong> ({cash?.data?.data.deliveries_count} livraison(s)).
+          Espèces à remettre au magasin : <strong>{formatMoney(held)}</strong> ({cash?.data?.data.deliveries_count} livraison(s)).
         </p>
       )}
       {stops.length === 0 ? (

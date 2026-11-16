@@ -3,7 +3,7 @@
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 import { parseAmount, validateRefund } from "@/lib/refunds/refunds";
 
 type Props = { orderId: number; refundableMinor: number };
@@ -41,7 +41,7 @@ export function RefundPanel({ orderId, refundableMinor }: Props) {
       const failed = data.data.some((r) => r.status === "failed");
       setDone(failed
         ? "Le remboursement est enregistré mais l'agrégateur l'a refusé : il sera repris automatiquement."
-        : `Remboursement de ${formatXof(data.data.reduce((sum, r) => sum + r.amount_minor, 0))} effectué.`);
+        : `Remboursement de ${formatMoney(data.data.reduce((sum, r) => sum + r.amount_minor, 0))} effectué.`);
       setAmount("");
       setReason("");
       attempt.current = null;
@@ -59,11 +59,11 @@ export function RefundPanel({ orderId, refundableMinor }: Props) {
 
   return (
     <form onSubmit={submit} className="flex max-w-lg flex-col gap-3" noValidate>
-      <p className="text-sm">Remboursable : <strong>{formatXof(refundableMinor)}</strong> (sur le moyen de paiement d&apos;origine)</p>
+      <p className="text-sm">Remboursable : <strong>{formatMoney(refundableMinor)}</strong> (sur le moyen de paiement d&apos;origine)</p>
 
       <label className="text-sm font-medium">
-        Montant (F CFA)
-        <input value={amount} onChange={(e) => { setAmount(e.target.value); attempt.current = null; }} inputMode="numeric" placeholder="Ex. 1500" className={field} />
+        Montant (€)
+        <input value={amount} onChange={(e) => { setAmount(e.target.value); attempt.current = null; }} inputMode="decimal" placeholder="Ex. 12,50" className={field} />
       </label>
       <label className="text-sm font-medium">
         Motif

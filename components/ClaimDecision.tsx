@@ -6,7 +6,7 @@ import { browserApi } from "@/lib/api/client";
 import {
   buildDecisionBody, COST_BEARER_LABEL, initialDecision, RESOLUTION_LABEL, validateDecision, type CostBearer, type DecisionDraft, type Resolution,
 } from "@/lib/claims/claims";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 
 const field = "mt-1 w-full rounded-lg border border-black/20 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green";
 
@@ -73,8 +73,8 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
           </label>
 
           {draft.resolution === "refund" && (
-            <label className="text-sm font-medium">Montant remboursé (F CFA) — plafond {formatXof(ceilingMinor)}
-              <input value={draft.amount} onChange={(e) => set({ amount: e.target.value })} inputMode="numeric" placeholder="Ex. 1500" className={field} />
+            <label className="text-sm font-medium">Montant remboursé (€) — plafond {formatMoney(ceilingMinor)}
+              <input value={draft.amount} onChange={(e) => set({ amount: e.target.value })} inputMode="decimal" placeholder="Ex. 12,50" className={field} />
             </label>
           )}
 

@@ -6,7 +6,7 @@ import { browserApi } from "@/lib/api/client";
 import {
   courierActions, DELIVERY_STATUS_LABEL, formatAddress, mapsUrl, parseCash, shouldSendLocation, telUrl, validateHandover,
 } from "@/lib/courier/courier";
-import { extractApiError, formatXof } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 import type { BoardDelivery } from "./DispatchBoard";
 
 const field = "rounded-lg border border-black/20 bg-white px-3 py-2 text-sm outline-none focus:border-brand-green";
@@ -101,7 +101,7 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
       </p>
 
       {delivery.cash_due_minor > 0 ? (
-        <p className="mt-2 rounded-lg bg-brand-red/10 p-2 text-sm font-semibold text-brand-red">À encaisser en espèces : {formatXof(delivery.cash_due_minor)}</p>
+        <p className="mt-2 rounded-lg bg-brand-red/10 p-2 text-sm font-semibold text-brand-red">À encaisser en espèces : {formatMoney(delivery.cash_due_minor)}</p>
       ) : (
         <p className="mt-2 text-sm text-black/60">Déjà payée : rien à encaisser.</p>
       )}
@@ -127,8 +127,8 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
           <label className="text-sm font-medium">Code du client (6 chiffres)
             <input value={code} onChange={(e) => setCode(e.target.value)} inputMode="numeric" autoComplete="one-time-code" maxLength={6} placeholder="000000" className={`${field} mt-1 block w-full tracking-widest`} />
           </label>
-          <label className="text-sm font-medium">Espèces encaissées (F CFA)
-            <input value={cash} onChange={(e) => setCash(e.target.value)} inputMode="numeric" placeholder="Ex. 25000" className={`${field} mt-1 block w-full`} />
+          <label className="text-sm font-medium">Espèces encaissées (€)
+            <input value={cash} onChange={(e) => setCash(e.target.value)} inputMode="decimal" placeholder="Ex. 25,50" className={`${field} mt-1 block w-full`} />
           </label>
           <button type="submit" disabled={busy} className="rounded-full bg-brand-red py-2 text-sm font-medium text-white disabled:opacity-50">Confirmer la remise</button>
         </form>

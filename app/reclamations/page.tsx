@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { CLAIM_STATUS_LABEL, COST_BEARER_LABEL, ISSUE_LABEL, type CostBearer, type Issue } from "@/lib/claims/claims";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
 export const metadata = { title: "Réclamations — Backoffice Marché de Yama" };
@@ -46,7 +46,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
           <Stat label="À traiter" value={String(s.open ?? 0)} />
           <Stat label="Acceptées" value={String(s.accepted ?? 0)} />
           <Stat label="Refusées" value={String(s.rejected ?? 0)} />
-          <Stat label="Remboursé" value={formatXof(s.refunded_minor ?? 0)} />
+          <Stat label="Remboursé" value={formatMoney(s.refunded_minor ?? 0)} />
 
           <div className="rounded-xl border border-black/10 bg-white p-4 md:col-span-2">
             <h3 className="mb-2 text-sm font-semibold">Produits les plus réclamés</h3>
@@ -57,7 +57,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
           <div className="rounded-xl border border-black/10 bg-white p-4 md:col-span-2">
             <h3 className="mb-2 text-sm font-semibold">Coût imputé</h3>
             {s.by_cost_bearer.length === 0 ? <p className="text-sm text-black/60">Aucune réclamation acceptée.</p> : (
-              <ul className="text-sm">{s.by_cost_bearer.map((c) => <li key={c.cost_bearer} className="flex justify-between"><span>{COST_BEARER_LABEL[c.cost_bearer as CostBearer] ?? c.cost_bearer}</span><span className="text-black/60">{formatXof(c.refunded_minor)}</span></li>)}</ul>
+              <ul className="text-sm">{s.by_cost_bearer.map((c) => <li key={c.cost_bearer} className="flex justify-between"><span>{COST_BEARER_LABEL[c.cost_bearer as CostBearer] ?? c.cost_bearer}</span><span className="text-black/60">{formatMoney(c.refunded_minor)}</span></li>)}</ul>
             )}
           </div>
         </section>
@@ -85,7 +85,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
                   <td className="px-4 py-3"><Link href={`/commandes/${claim.order_id}`} className="underline">#{claim.order_id}</Link></td>
                   <td className="px-4 py-3">{claim.items.map((i) => `${i.name} (${ISSUE_LABEL[i.issue as Issue] ?? i.issue})`).join(", ")}</td>
                   <td className="px-4 py-3"><span className={`rounded-full px-3 py-1 text-xs font-medium ${claim.status === "open" ? "bg-brand-red/10 text-brand-red" : "bg-black/5"}`}>{CLAIM_STATUS_LABEL[claim.status] ?? claim.status}</span></td>
-                  <td className="px-4 py-3 text-right">{formatXof(claim.claimable_minor)}</td>
+                  <td className="px-4 py-3 text-right">{formatMoney(claim.claimable_minor)}</td>
                 </tr>
               ))}
             </tbody>

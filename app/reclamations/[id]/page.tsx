@@ -6,7 +6,7 @@ import { ClaimDecision } from "@/components/ClaimDecision";
 import {
   canDecideClaims, CLAIM_STATUS_LABEL, COST_BEARER_LABEL, ISSUE_LABEL, RESOLUTION_LABEL, type CostBearer, type Issue, type Resolution,
 } from "@/lib/claims/claims";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
 export const metadata = { title: "Réclamation — Backoffice Marché de Yama" };
@@ -45,7 +45,7 @@ async function Detail({ params }: Props) {
         <h1 className="text-2xl font-bold">Réclamation n° {claim.id}</h1>
         <span className={`rounded-full px-3 py-1 text-xs font-medium ${claim.status === "open" ? "bg-brand-red/10 text-brand-red" : "bg-black/5"}`}>{CLAIM_STATUS_LABEL[claim.status] ?? claim.status}</span>
       </div>
-      <p className="mt-1 text-sm text-black/60">Commande <Link href={`/commandes/${claim.order_id}`} className="underline">#{claim.order_id}</Link> · plafond remboursable {formatXof(claim.claimable_minor)}</p>
+      <p className="mt-1 text-sm text-black/60">Commande <Link href={`/commandes/${claim.order_id}`} className="underline">#{claim.order_id}</Link> · plafond remboursable {formatMoney(claim.claimable_minor)}</p>
 
       {claim.description && <p className="mt-4 rounded-lg bg-black/5 p-3 text-sm">{claim.description}</p>}
 
@@ -55,7 +55,7 @@ async function Detail({ params }: Props) {
           {claim.items.map((item) => (
             <li key={item.id} className="flex flex-wrap justify-between gap-2 p-3">
               <span><strong>{item.name}</strong> — {ISSUE_LABEL[item.issue as Issue] ?? item.issue} · quantité {item.quantity}{item.note ? ` · « ${item.note} »` : ""}</span>
-              <span className="text-black/60">jusqu&apos;à {formatXof(item.claimable_minor)}</span>
+              <span className="text-black/60">jusqu&apos;à {formatMoney(item.claimable_minor)}</span>
             </li>
           ))}
         </ul>
@@ -86,7 +86,7 @@ async function Detail({ params }: Props) {
         ) : (
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
             <dt className="font-medium">Résultat</dt><dd>{CLAIM_STATUS_LABEL[claim.status]}{claim.resolution ? ` — ${RESOLUTION_LABEL[claim.resolution as Resolution]}` : ""}</dd>
-            {claim.refund_amount_minor > 0 && (<><dt className="font-medium">Remboursement</dt><dd>{formatXof(claim.refund_amount_minor)} — {claim.refund_completed ? "effectué" : <span className="font-medium text-brand-red">en attente (repris automatiquement)</span>}</dd></>)}
+            {claim.refund_amount_minor > 0 && (<><dt className="font-medium">Remboursement</dt><dd>{formatMoney(claim.refund_amount_minor)} — {claim.refund_completed ? "effectué" : <span className="font-medium text-brand-red">en attente (repris automatiquement)</span>}</dd></>)}
             {claim.cost_bearer && (<><dt className="font-medium">Coût imputé à</dt><dd>{COST_BEARER_LABEL[claim.cost_bearer as CostBearer]}</dd></>)}
             <dt className="font-medium">Motif</dt><dd>{claim.decision_note}</dd>
           </dl>

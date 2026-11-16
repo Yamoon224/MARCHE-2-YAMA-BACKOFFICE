@@ -1218,7 +1218,7 @@ export interface components {
             /** @enum {string} */
             sale_unit: "piece" | "kg" | "l";
             is_weight_variable?: boolean;
-            /** @description Prix en plus petite unité monétaire (F CFA) */
+            /** @description Prix en centimes (EUR) */
             price_minor: number;
             image_url?: string | null;
             /** @description Ancien prix (promotion) ou null */
@@ -1486,7 +1486,7 @@ export interface components {
             number?: string | null;
             /** @enum {string} */
             status: "draft" | "awaiting_payment" | "payment_failed" | "paid" | "under_review" | "confirmed" | "preparing" | "ready" | "assigned" | "out_for_delivery" | "delivery_failed" | "delivered" | "completed" | "claim" | "refunded" | "returned" | "cancelled";
-            /** @example XOF */
+            /** @example EUR */
             currency?: string;
             subtotal_minor?: number;
             delivery_fee_minor?: number;
@@ -1520,7 +1520,7 @@ export interface components {
             /** @enum {string} */
             status: "pending" | "pending_on_delivery" | "succeeded" | "failed" | "flagged";
             amount_minor: number;
-            /** @example XOF */
+            /** @example EUR */
             currency: string;
         };
         Refund: {
@@ -1528,7 +1528,7 @@ export interface components {
             reference: string;
             order_id: number;
             amount_minor: number;
-            /** @example XOF */
+            /** @example EUR */
             currency: string;
             /** @enum {string} */
             status: "pending" | "succeeded" | "failed";
@@ -2510,7 +2510,7 @@ export interface operations {
             content: {
                 "application/json": {
                     courier_id: number;
-                    /** @description Montant compté en F CFA */
+                    /** @description Montant compté en centimes (EUR) */
                     counted_minor: number;
                     /** @description Obligatoire s'il y a un écart */
                     note?: string | null;
@@ -3304,7 +3304,7 @@ export interface operations {
                     name: string;
                     /** @example awa@example.com */
                     email?: string;
-                    /** @example +2250700000000 */
+                    /** @example +33612345678 */
                     phone?: string;
                     /** @example secret1234 */
                     password: string;
@@ -3674,7 +3674,7 @@ export interface operations {
                     delivery?: {
                         zone_id: number;
                         slot_id: number;
-                        /** @example +2250700112233 */
+                        /** @example +33612345678 */
                         phone: string;
                         address: {
                             neighborhood: string;
@@ -4070,7 +4070,7 @@ export interface operations {
         requestBody: {
             content: {
                 "application/json": {
-                    /** @description Monnaie de départ dans le tiroir, en F CFA */
+                    /** @description Monnaie de départ dans le tiroir, en centimes (EUR) */
                     opening_float_minor: number;
                 };
             };

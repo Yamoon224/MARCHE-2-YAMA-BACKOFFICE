@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { StatusBadge } from "@/components/StatusBadge";
 import { RefundPanel } from "@/components/RefundPanel";
 import { TransitionPanel } from "@/components/TransitionPanel";
-import { formatXof } from "@/lib/format";
+import { formatMoney } from "@/lib/format";
 import { statusLabel } from "@/lib/orders/status";
 import { canRefund, KIND_LABEL, REFUND_STATUS_LABEL } from "@/lib/refunds/refunds";
 import { requireStaff } from "@/lib/server/staff";
@@ -70,20 +70,20 @@ async function OrderDetail({ params }: Props) {
             {(order.lines ?? []).map((line) => (
               <li key={line.product_id} className="flex justify-between gap-3 p-3">
                 <span>{line.name} <span className="text-black/50">× {line.quantity}{line.sale_unit && line.sale_unit !== "piece" ? ` ${line.sale_unit === "kg" ? "g" : "ml"}` : ""}</span></span>
-                <span>{formatXof(line.line_total_minor)}</span>
+                <span>{formatMoney(line.line_total_minor)}</span>
               </li>
             ))}
           </ul>
           <dl className="mt-3 grid grid-cols-[1fr_auto] gap-1 text-sm">
-            <dt>Sous-total</dt><dd className="text-right">{formatXof(order.subtotal_minor ?? 0)}</dd>
-            <dt>Livraison</dt><dd className="text-right">{formatXof(order.delivery_fee_minor ?? 0)}</dd>
-            <dt className="font-bold">Total TTC payé</dt><dd className="text-right font-bold">{formatXof(order.total_minor)}</dd>
+            <dt>Sous-total</dt><dd className="text-right">{formatMoney(order.subtotal_minor ?? 0)}</dd>
+            <dt>Livraison</dt><dd className="text-right">{formatMoney(order.delivery_fee_minor ?? 0)}</dd>
+            <dt className="font-bold">Total TTC payé</dt><dd className="text-right font-bold">{formatMoney(order.total_minor)}</dd>
             {order.final_total_minor != null && (
               <>
-                <dt>Total réel après préparation</dt><dd className="text-right">{formatXof(order.final_total_minor)}</dd>
+                <dt>Total réel après préparation</dt><dd className="text-right">{formatMoney(order.final_total_minor)}</dd>
                 <dt>Écart</dt>
                 <dd className={`text-right font-medium ${adjustment < 0 ? "text-brand-red" : ""}`}>
-                  {adjustment === 0 ? "Aucun" : `${adjustment > 0 ? "+" : "−"}${formatXof(Math.abs(adjustment))}${adjustment < 0 ? " (remboursé)" : " (à encaisser)"}`}
+                  {adjustment === 0 ? "Aucun" : `${adjustment > 0 ? "+" : "−"}${formatMoney(Math.abs(adjustment))}${adjustment < 0 ? " (remboursé)" : " (à encaisser)"}`}
                 </dd>
               </>
             )}
@@ -101,7 +101,7 @@ async function OrderDetail({ params }: Props) {
                   <span>{KIND_LABEL[r.kind] ?? r.kind} <span className="text-black/50">— {r.reason}</span></span>
                   <span className="flex items-center gap-3">
                     <span className={`text-xs font-medium ${r.status === "failed" ? "text-brand-red" : "text-black/60"}`}>{REFUND_STATUS_LABEL[r.status] ?? r.status}</span>
-                    <strong>{formatXof(r.amount_minor)}</strong>
+                    <strong>{formatMoney(r.amount_minor)}</strong>
                   </span>
                 </li>
               ))}

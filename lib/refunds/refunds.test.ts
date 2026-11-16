@@ -10,28 +10,28 @@ describe("canRefund", () => {
 });
 
 describe("parseAmount", () => {
-  it.each([["2500", 2500], [" 2 500 ", 2500], ["1 000", 1000], ["1", 1]])("accepts %j", (input, expected) => {
+  it.each([["25", 2500], [" 2 500 ", 250000], ["10,5", 1050], ["0,01", 1], ["1", 100]])("accepts %j", (input, expected) => {
     expect(parseAmount(input)).toBe(expected);
   });
 
-  it.each(["", "0", "000", "-5", "12,5", "12.5", "abc", "1e3", "1234567890"])("rejects %j", (input) => {
+  it.each(["", "0", "000", "0,00", "-5", "12,555", "abc", "1e3", "1234567890"])("rejects %j", (input) => {
     expect(parseAmount(input)).toBeNull();
   });
 });
 
 describe("validateRefund", () => {
   it("accepts a valid refund within the refundable amount", () => {
-    expect(validateRefund("1000", "Produit abîmé", 5000)).toBeNull();
-    expect(validateRefund("5000", "Tout le solde", 5000)).toBeNull();
-    expect(validateRefund("1000", "Produit abîmé", null)).toBeNull();
+    expect(validateRefund("10", "Produit abîmé", 5000)).toBeNull();
+    expect(validateRefund("50", "Tout le solde", 5000)).toBeNull();
+    expect(validateRefund("10", "Produit abîmé", null)).toBeNull();
   });
 
   it.each([
-    ["", "Motif valide", 5000, "montant entier"],
-    ["abc", "Motif valide", 5000, "montant entier"],
-    ["1000", "", 5000, "motif"],
-    ["1000", "ab", 5000, "motif"],
-    ["5001", "Motif valide", 5000, "dépasse"],
+    ["", "Motif valide", 5000, "montant en euros"],
+    ["abc", "Motif valide", 5000, "montant en euros"],
+    ["10", "", 5000, "motif"],
+    ["10", "ab", 5000, "motif"],
+    ["50,01", "Motif valide", 5000, "dépasse"],
   ])("rejects amount=%j reason=%j", (amount, reason, refundable, keyword) => {
     expect(validateRefund(amount, reason, refundable)).toContain(keyword);
   });
