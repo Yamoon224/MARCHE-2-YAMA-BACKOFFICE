@@ -86,7 +86,7 @@ describe("role permissions (mirror of the server rules)", () => {
 
 describe("navFor", () => {
   it("shows sections according to the role", () => {
-    expect(navFor("admin").map((i) => i.href)).toEqual(["/commandes", "/preparation", "/stock", "/reclamations", "/regulation", "/livraison", "/caisse", "/comptabilite"]);
+    expect(navFor("admin").map((i) => i.href)).toEqual(["/commandes", "/preparation", "/stock", "/reclamations", "/regulation", "/livraison", "/caisse", "/catalogue", "/comptabilite"]);
     expect(navFor("support").map((i) => i.href)).toEqual(["/commandes", "/reclamations"]);
     expect(navFor("stock_keeper").map((i) => i.href)).toEqual(["/stock"]);
     expect(navFor("order_operator").map((i) => i.href)).toEqual(["/commandes", "/preparation", "/regulation", "/livraison", "/caisse"]);

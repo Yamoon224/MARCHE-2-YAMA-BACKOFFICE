@@ -7,6 +7,7 @@ const ALLOWED_PREFIXES = [
   "api/v1/orders",
   "api/v1/payments",
   "api/v1/products",
+  "api/v1/catalog",
   "api/v1/delivery",
   "api/v1/fulfillment",
   "api/v1/claims",
