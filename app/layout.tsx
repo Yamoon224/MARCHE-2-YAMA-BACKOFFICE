@@ -16,10 +16,18 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const TITLE = "Backoffice - Marché de Yama";
+const DESCRIPTION = "Gestion des commandes, de la livraison et de la comptabilité";
+
 export const metadata: Metadata = {
-  title: "Backoffice - Marché de Yama",
-  description: "Gestion des commandes, de la livraison et de la comptabilité",
+  // URL publique du backoffice (obligatoire pour que les images de partage soient en URL absolue).
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001"),
+  title: TITLE,
+  description: DESCRIPTION,
   robots: { index: false, follow: false },
+  // L'image de partage vient de app/opengraph-image.png et app/twitter-image.png.
+  openGraph: { type: "website", siteName: "Marché de Yama", title: TITLE, description: DESCRIPTION, locale: "fr_FR" },
+  twitter: { card: "summary_large_image", title: TITLE, description: DESCRIPTION },
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
