@@ -21,7 +21,7 @@ const DESCRIPTION = "Gestion des commandes, de la livraison et de la comptabilit
 
 export const metadata: Metadata = {
   // URL publique du backoffice (obligatoire pour que les images de partage soient en URL absolue).
-  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3001"),
+  metadataBase: new URL(siteUrl()),
   title: TITLE,
   description: DESCRIPTION,
   robots: { index: false, follow: false },
@@ -51,4 +51,11 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       </body>
     </html>
   );
+}
+
+/** URL publique : variable explicite, sinon domaine de production Vercel, sinon développement local. */
+function siteUrl(): string {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  return "http://localhost:3001";
 }
