@@ -17,7 +17,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Backoffice — Marché de Yama",
+  title: "Backoffice - Marché de Yama",
   description: "Gestion des commandes, de la livraison et de la comptabilité",
   robots: { index: false, follow: false },
 };

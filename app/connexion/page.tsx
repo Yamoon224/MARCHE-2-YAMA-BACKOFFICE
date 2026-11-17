@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { LoginForm } from "@/components/LoginForm";
 
-export const metadata = { title: "Connexion — Backoffice Marché de Yama" };
+export const metadata = { title: "Connexion - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ next?: string | string[] }>;
 

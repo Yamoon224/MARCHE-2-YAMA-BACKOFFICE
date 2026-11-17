@@ -126,14 +126,14 @@ function PickLineCard({ line, editable, busy, onPick, onSubstitute }: CardProps)
     <li className="rounded-xl border border-black/10 bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-medium">
-          {line.name} <span className="font-normal text-black/60">— commandé : {formatQuantity(line.sale_unit, line.ordered_quantity)}</span>
+          {line.name} <span className="font-normal text-black/60">- commandé : {formatQuantity(line.sale_unit, line.ordered_quantity)}</span>
         </p>
         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium">{LINE_STATUS_LABEL[line.status]}</span>
       </div>
 
       {line.substitution === "refuse" && <p className="mt-1 text-xs font-medium text-brand-red">Le client refuse tout remplacement.</p>}
       {line.status === "substituted" && (
-        <p className="mt-1 text-sm">Remplacé par <strong>{line.final_name}</strong> — {formatQuantity(line.sale_unit, line.picked_quantity ?? 0)}</p>
+        <p className="mt-1 text-sm">Remplacé par <strong>{line.final_name}</strong> - {formatQuantity(line.sale_unit, line.picked_quantity ?? 0)}</p>
       )}
 
       {editable && (

@@ -72,7 +72,7 @@ export function TransitionPanel({ orderId, status, role, fulfillment = "pickup" 
 
       {pending && (
         <form onSubmit={confirmReason} className="mt-4 flex max-w-lg flex-col gap-2 rounded-xl border border-black/10 bg-white p-4">
-          <label className="text-sm font-medium" htmlFor="reason">Motif obligatoire — {ACTION_LABEL[pending]}</label>
+          <label className="text-sm font-medium" htmlFor="reason">Motif obligatoire - {ACTION_LABEL[pending]}</label>
           <textarea id="reason" value={reason} onChange={(e) => setReason(e.target.value)} rows={3} maxLength={500} required placeholder="Motif obligatoire…" className="rounded-lg border border-black/20 px-3 py-2 text-sm" />
           <div className="flex gap-2">
             <button type="submit" disabled={busy || reason.trim() === ""} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Confirmer</button>

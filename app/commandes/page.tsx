@@ -5,7 +5,7 @@ import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 import { STATUSES, statusLabel } from "@/lib/orders/status";
 
-export const metadata = { title: "Commandes — Backoffice Marché de Yama" };
+export const metadata = { title: "Commandes - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ status?: string | string[]; page?: string | string[] }>;
 
@@ -88,7 +88,7 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
       {meta && meta.last_page > 1 && (
         <nav aria-label="Pagination" className="mt-4 flex items-center justify-between text-sm">
           {meta.current_page > 1 ? <Link href={href(status, meta.current_page - 1)} className="text-brand-green underline">← Précédent</Link> : <span />}
-          <span className="text-black/60">Page {meta.current_page} sur {meta.last_page} — {meta.total} commande{meta.total > 1 ? "s" : ""}</span>
+          <span className="text-black/60">Page {meta.current_page} sur {meta.last_page} - {meta.total} commande{meta.total > 1 ? "s" : ""}</span>
           {meta.current_page < meta.last_page ? <Link href={href(status, meta.current_page + 1)} className="text-brand-green underline">Suivant →</Link> : <span />}
         </nav>
       )}

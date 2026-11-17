@@ -50,7 +50,7 @@ describe("shouldSendLocation", () => {
 
 describe("address helpers", () => {
   it("formats the address with its landmark", () => {
-    expect(formatAddress({ neighborhood: "Cocody", landmark: "Portail bleu" })).toBe("Cocody — Portail bleu");
+    expect(formatAddress({ neighborhood: "Cocody", landmark: "Portail bleu" })).toBe("Cocody - Portail bleu");
     expect(formatAddress({ neighborhood: "Cocody", landmark: null })).toBe("Cocody");
     expect(formatAddress(null)).toBe("Adresse non renseignée");
     expect(formatAddress({})).toBe("Adresse non renseignée");

@@ -65,7 +65,7 @@ function DeliveryCard({ delivery, couriers }: { delivery: BoardDelivery; courier
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-medium">
           Commande n° {delivery.order_id}
-          <span className="font-normal text-black/60"> — {formatAddress(delivery.address)}</span>
+          <span className="font-normal text-black/60"> - {formatAddress(delivery.address)}</span>
         </p>
         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium">{DELIVERY_STATUS_LABEL[delivery.status]}</span>
       </div>

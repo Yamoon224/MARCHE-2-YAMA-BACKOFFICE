@@ -9,7 +9,7 @@ import { statusLabel } from "@/lib/orders/status";
 import { canRefund, KIND_LABEL, REFUND_STATUS_LABEL } from "@/lib/refunds/refunds";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Commande — Backoffice Marché de Yama" };
+export const metadata = { title: "Commande - Backoffice Marché de Yama" };
 
 const dateTime = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long", timeStyle: "short" });
 
@@ -55,7 +55,7 @@ async function OrderDetail({ params }: Props) {
         <StatusBadge status={order.status} />
       </div>
       <p className="mt-1 text-sm text-black/60">
-        {order.fulfillment === "delivery" ? "Livraison à domicile" : "Retrait en magasin"} · créneau n° {order.delivery_slot_id ?? "—"}
+        {order.fulfillment === "delivery" ? "Livraison à domicile" : "Retrait en magasin"} · créneau n° {order.delivery_slot_id ?? "-"}
       </p>
 
       <section aria-labelledby="actions" className="mt-6 rounded-xl border border-black/10 bg-white p-4">
@@ -98,7 +98,7 @@ async function OrderDetail({ params }: Props) {
             <ul className="divide-y divide-black/10 rounded-xl border border-black/10 bg-white text-sm">
               {refunds.map((r) => (
                 <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 p-3">
-                  <span>{KIND_LABEL[r.kind] ?? r.kind} <span className="text-black/50">— {r.reason}</span></span>
+                  <span>{KIND_LABEL[r.kind] ?? r.kind} <span className="text-black/50">- {r.reason}</span></span>
                   <span className="flex items-center gap-3">
                     <span className={`text-xs font-medium ${r.status === "failed" ? "text-brand-red" : "text-black/60"}`}>{REFUND_STATUS_LABEL[r.status] ?? r.status}</span>
                     <strong>{formatMoney(r.amount_minor)}</strong>
@@ -124,7 +124,7 @@ async function OrderDetail({ params }: Props) {
                 <p className="text-xs text-black/60">
                   {entry.created_at ? dateTime.format(new Date(entry.created_at)) : ""}
                   {entry.user_id ? ` · utilisateur ${entry.user_id}` : " · système"}
-                  {entry.reason ? ` — ${entry.reason}` : ""}
+                  {entry.reason ? ` - ${entry.reason}` : ""}
                 </p>
               </li>
             ))}

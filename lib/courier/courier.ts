@@ -49,7 +49,7 @@ export type Address = { neighborhood?: string; landmark?: string | null; latitud
 export function formatAddress(address: Address): string {
   if (!address) return "Adresse non renseignée";
 
-  return [address.neighborhood, address.landmark].filter(Boolean).join(" — ") || "Adresse non renseignée";
+  return [address.neighborhood, address.landmark].filter(Boolean).join(" - ") || "Adresse non renseignée";
 }
 
 /** Lien de navigation vers le point de livraison, ou `null` si l'adresse n'a pas de coordonnées. */

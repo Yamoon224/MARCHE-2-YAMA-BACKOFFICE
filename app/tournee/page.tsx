@@ -3,7 +3,7 @@ import { TourStop } from "@/components/TourStop";
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Ma tournée — Backoffice Marché de Yama" };
+export const metadata = { title: "Ma tournée - Backoffice Marché de Yama" };
 
 export default function TourneePage() {
   return (

@@ -4,7 +4,7 @@ import { CLAIM_STATUS_LABEL, COST_BEARER_LABEL, ISSUE_LABEL, type CostBearer, ty
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Réclamations — Backoffice Marché de Yama" };
+export const metadata = { title: "Réclamations - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ status?: string | string[] }>;
 

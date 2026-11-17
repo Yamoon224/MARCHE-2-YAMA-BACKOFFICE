@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Comptabilité — Backoffice Marché de Yama" };
+export const metadata = { title: "Comptabilité - Backoffice Marché de Yama" };
 
 export default function ComptabilitePage() {
   return (

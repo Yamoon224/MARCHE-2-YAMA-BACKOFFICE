@@ -4,7 +4,7 @@ import { Suspense } from "react";
 import { PickingScreen } from "@/components/PickingScreen";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Préparation d'une commande — Backoffice Marché de Yama" };
+export const metadata = { title: "Préparation d'une commande - Backoffice Marché de Yama" };
 
 type Props = { params: Promise<{ id: string }> };
 

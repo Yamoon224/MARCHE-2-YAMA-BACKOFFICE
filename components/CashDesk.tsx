@@ -50,7 +50,7 @@ export function CashDesk({ holders, handovers }: { holders: CourierCash[]; hando
                     <td className={`px-4 py-3 ${h.variance_minor === 0 ? "" : "font-medium text-brand-red"}`}>
                       {varianceLabel(h.variance_minor)}{h.variance_minor !== 0 && ` (${formatMoney(Math.abs(h.variance_minor))})`}
                     </td>
-                    <td className="px-4 py-3">{h.note ?? "—"}</td>
+                    <td className="px-4 py-3">{h.note ?? "-"}</td>
                   </tr>
                 ))}
               </tbody>

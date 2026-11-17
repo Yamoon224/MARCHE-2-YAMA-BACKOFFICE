@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { CashDesk } from "@/components/CashDesk";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Remise de fonds — Backoffice Marché de Yama" };
+export const metadata = { title: "Remise de fonds - Backoffice Marché de Yama" };
 
 export default function CaissePage() {
   return (

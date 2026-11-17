@@ -96,7 +96,7 @@ export function DeliveryAdmin({ zones }: { zones: Zone[] }) {
               <li key={z.id} className="flex flex-wrap justify-between gap-2 p-3">
                 <span className="font-medium">{z.name}</span>
                 <span className="text-black/70">
-                  Frais {formatMoney(z.fee_minor)} · offerts dès {z.free_above_minor != null ? formatMoney(z.free_above_minor) : "—"} · minimum {formatMoney(z.min_order_minor)}
+                  Frais {formatMoney(z.fee_minor)} · offerts dès {z.free_above_minor != null ? formatMoney(z.free_above_minor) : "-"} · minimum {formatMoney(z.min_order_minor)}
                 </span>
               </li>
             ))}

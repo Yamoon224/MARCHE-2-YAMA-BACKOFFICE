@@ -73,7 +73,7 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
           </label>
 
           {draft.resolution === "refund" && (
-            <label className="text-sm font-medium">Montant remboursé (€) — plafond {formatMoney(ceilingMinor)}
+            <label className="text-sm font-medium">Montant remboursé (€) - plafond {formatMoney(ceilingMinor)}
               <input value={draft.amount} onChange={(e) => set({ amount: e.target.value })} inputMode="decimal" placeholder="Ex. 12,50" className={field} />
             </label>
           )}

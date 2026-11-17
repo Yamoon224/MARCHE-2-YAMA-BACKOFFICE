@@ -3,7 +3,7 @@ import { LotTable } from "@/components/LotTable";
 import { requireStaff } from "@/lib/server/staff";
 import { canRecall, todayIso } from "@/lib/stock/stock";
 
-export const metadata = { title: "Stock — Backoffice Marché de Yama" };
+export const metadata = { title: "Stock - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ filtre?: string | string[] }>;
 

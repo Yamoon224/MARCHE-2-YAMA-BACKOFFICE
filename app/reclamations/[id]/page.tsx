@@ -9,7 +9,7 @@ import {
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Réclamation — Backoffice Marché de Yama" };
+export const metadata = { title: "Réclamation - Backoffice Marché de Yama" };
 
 type Props = { params: Promise<{ id: string }> };
 
@@ -54,7 +54,7 @@ async function Detail({ params }: Props) {
         <ul className="divide-y divide-black/10 rounded-xl border border-black/10 bg-white text-sm">
           {claim.items.map((item) => (
             <li key={item.id} className="flex flex-wrap justify-between gap-2 p-3">
-              <span><strong>{item.name}</strong> — {ISSUE_LABEL[item.issue as Issue] ?? item.issue} · quantité {item.quantity}{item.note ? ` · « ${item.note} »` : ""}</span>
+              <span><strong>{item.name}</strong> - {ISSUE_LABEL[item.issue as Issue] ?? item.issue} · quantité {item.quantity}{item.note ? ` · « ${item.note} »` : ""}</span>
               <span className="text-black/60">jusqu&apos;à {formatMoney(item.claimable_minor)}</span>
             </li>
           ))}
@@ -85,8 +85,8 @@ async function Detail({ params }: Props) {
             : <p className="text-sm text-black/60">Votre rôle ne permet pas de décider les réclamations.</p>
         ) : (
           <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
-            <dt className="font-medium">Résultat</dt><dd>{CLAIM_STATUS_LABEL[claim.status]}{claim.resolution ? ` — ${RESOLUTION_LABEL[claim.resolution as Resolution]}` : ""}</dd>
-            {claim.refund_amount_minor > 0 && (<><dt className="font-medium">Remboursement</dt><dd>{formatMoney(claim.refund_amount_minor)} — {claim.refund_completed ? "effectué" : <span className="font-medium text-brand-red">en attente (repris automatiquement)</span>}</dd></>)}
+            <dt className="font-medium">Résultat</dt><dd>{CLAIM_STATUS_LABEL[claim.status]}{claim.resolution ? ` - ${RESOLUTION_LABEL[claim.resolution as Resolution]}` : ""}</dd>
+            {claim.refund_amount_minor > 0 && (<><dt className="font-medium">Remboursement</dt><dd>{formatMoney(claim.refund_amount_minor)} - {claim.refund_completed ? "effectué" : <span className="font-medium text-brand-red">en attente (repris automatiquement)</span>}</dd></>)}
             {claim.cost_bearer && (<><dt className="font-medium">Coût imputé à</dt><dd>{COST_BEARER_LABEL[claim.cost_bearer as CostBearer]}</dd></>)}
             <dt className="font-medium">Motif</dt><dd>{claim.decision_note}</dd>
           </dl>

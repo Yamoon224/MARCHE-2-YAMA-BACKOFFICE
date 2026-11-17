@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { DispatchBoard } from "@/components/DispatchBoard";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Régulation — Backoffice Marché de Yama" };
+export const metadata = { title: "Régulation - Backoffice Marché de Yama" };
 
 export default function RegulationPage() {
   return (

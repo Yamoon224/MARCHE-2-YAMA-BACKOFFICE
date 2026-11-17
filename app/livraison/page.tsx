@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import { DeliveryAdmin } from "@/components/DeliveryAdmin";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Livraison — Backoffice Marché de Yama" };
+export const metadata = { title: "Livraison - Backoffice Marché de Yama" };
 
 export default function LivraisonPage() {
   return (

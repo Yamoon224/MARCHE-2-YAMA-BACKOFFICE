@@ -119,11 +119,11 @@ function RecallReport({ report }: { report: Report }) {
       <p className="font-semibold text-brand-red">Lot rappelé : {report.reason}</p>
       <p className="mt-2 font-medium">Clients ayant déjà reçu ce lot (à prévenir) : {report.delivered.length}</p>
       {report.delivered.length > 0 && (
-        <ul className="ml-4 list-disc">{report.delivered.map((o) => <li key={o.order_id}>Commande #{o.order_id} — client n° {o.customer_id ?? "sans compte"} — quantité {o.quantity}</li>)}</ul>
+        <ul className="ml-4 list-disc">{report.delivered.map((o) => <li key={o.order_id}>Commande #{o.order_id} - client n° {o.customer_id ?? "sans compte"} - quantité {o.quantity}</li>)}</ul>
       )}
       <p className="mt-2 font-medium">Commandes en attente qui le réservent (à réallouer) : {report.reserved.length}</p>
       {report.reserved.length > 0 && (
-        <ul className="ml-4 list-disc">{report.reserved.map((o) => <li key={o.order_id}>Commande #{o.order_id} — quantité {o.quantity}</li>)}</ul>
+        <ul className="ml-4 list-disc">{report.reserved.map((o) => <li key={o.order_id}>Commande #{o.order_id} - quantité {o.quantity}</li>)}</ul>
       )}
     </div>
   );

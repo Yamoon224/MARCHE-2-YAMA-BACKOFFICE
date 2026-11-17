@@ -16,7 +16,7 @@ export const KIND_LABEL: Record<string, string> = {
 export const REFUND_STATUS_LABEL: Record<string, string> = {
   pending: "En attente",
   succeeded: "Remboursé",
-  failed: "Échec — repris automatiquement",
+  failed: "Échec - repris automatiquement",
 };
 
 /**

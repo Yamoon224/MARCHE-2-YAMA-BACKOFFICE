@@ -6,7 +6,7 @@ import { ProductsAdmin } from "@/components/catalog/ProductsAdmin";
 import { RecipesAdmin } from "@/components/catalog/RecipesAdmin";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Catalogue — Backoffice Marché de Yama" };
+export const metadata = { title: "Catalogue - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ section?: string | string[]; q?: string | string[] }>;
 

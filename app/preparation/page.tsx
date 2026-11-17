@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/server/staff";
 
-export const metadata = { title: "Préparation — Backoffice Marché de Yama" };
+export const metadata = { title: "Préparation - Backoffice Marché de Yama" };
 
 export default function PreparationPage() {
   return (
