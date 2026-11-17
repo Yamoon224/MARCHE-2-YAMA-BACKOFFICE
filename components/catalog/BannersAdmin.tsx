@@ -11,6 +11,7 @@ function BannerFields({ b }: { b?: Banner }) {
   return (
     <>
       <label className="text-sm font-medium sm:col-span-2">Titre<input name="title" placeholder="Ex. Du frais, tous les jours" required defaultValue={b?.title} className={field} /></label>
+      <label className="text-sm font-medium sm:col-span-2">Accroche (petit texte au-dessus du titre)<input name="eyebrow" placeholder="Ex. Authentique & savoureux" maxLength={80} defaultValue={b?.eyebrow ?? ""} className={field} /></label>
       <label className="text-sm font-medium sm:col-span-2">Texte<input name="text" placeholder="Ex. Fruits, légumes, viandes et poissons suivis par lot" maxLength={500} defaultValue={b?.text ?? ""} className={field} /></label>
       <label className="text-sm font-medium">Bouton : libellé<input name="label" placeholder="Ex. Voir les rayons" required maxLength={80} defaultValue={b?.cta_label} className={field} /></label>
       <label className="text-sm font-medium">Bouton : lien<input name="url" required defaultValue={b?.cta_url} placeholder="/rayons ou https://…" className={field} /></label>
@@ -23,6 +24,7 @@ function BannerFields({ b }: { b?: Banner }) {
 
 const body = (data: FormData) => ({
   title: str(data, "title"),
+  eyebrow: optional(data, "eyebrow"),
   text: optional(data, "text"),
   cta_label: str(data, "label"),
   cta_url: str(data, "url"),

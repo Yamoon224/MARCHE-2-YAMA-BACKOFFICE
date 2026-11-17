@@ -15,6 +15,9 @@ function CategoryFields({ c }: { c?: Category }) {
       <label className="text-sm font-medium">Icône (emoji)<input name="icon" placeholder="Ex. 🥬" maxLength={16} defaultValue={c?.icon ?? ""} className={field} /></label>
       <label className="text-sm font-medium">Position<input name="position" placeholder="0" inputMode="numeric" defaultValue={c?.position ?? 0} className={field} /></label>
       <ImageField name="image" defaultValue={c?.image_url} />
+      <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="home" defaultChecked={c?.show_on_home ?? false} /> Afficher comme section de l&apos;accueil (4 produits du rayon)</label>
+      <label className="text-sm font-medium">Titre de la section<input name="homeTitle" maxLength={120} placeholder="Ex. Du frais, tous les jours" defaultValue={c?.home_title ?? ""} className={field} /></label>
+      <label className="text-sm font-medium">Sous-titre de la section<input name="homeSubtitle" maxLength={255} placeholder="Ex. Fruits et légumes de saison." defaultValue={c?.home_subtitle ?? ""} className={field} /></label>
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={c?.is_active ?? true} /> Visible sur la vitrine</label>
     </>
   );
@@ -27,6 +30,9 @@ const body = (data: FormData) => ({
   image_url: optional(data, "image"),
   position: Number.isNaN(int(data, "position")) ? 0 : int(data, "position"),
   is_active: data.get("active") === "on",
+  show_on_home: data.get("home") === "on",
+  home_title: optional(data, "homeTitle"),
+  home_subtitle: optional(data, "homeSubtitle"),
 });
 
 export function CategoriesAdmin({ categories }: { categories: Category[] }) {
