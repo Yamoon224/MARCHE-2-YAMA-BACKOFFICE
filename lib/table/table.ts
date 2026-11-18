@@ -76,7 +76,7 @@ export function matchingIndexes(rowsText: readonly string[], query: string): num
 export type PageWindow = { start: number; end: number; page: number; pages: number };
 
 /** Fenêtre [start, end) d'une page ; la page demandée est ramenée dans les bornes. */
-export function pageWindow(total: number, size: PageSize, page: number): PageWindow {
+export function pageWindow(total: number, size: number | "all", page: number): PageWindow {
   if (size === "all" || total === 0) return { start: 0, end: total, page: 1, pages: 1 };
 
   const pages = Math.max(1, Math.ceil(total / size));

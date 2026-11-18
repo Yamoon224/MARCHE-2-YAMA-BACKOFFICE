@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { DataTable } from "@/components/DataTable";
 import { Modal } from "@/components/Modal";
+import { Pager, usePageWindow, type PagerSize } from "@/components/Pager";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { productState, SALE_UNIT_LABEL, STATE_LABEL, type ProductState, type TrashedFilter } from "@/lib/catalog/products";
@@ -27,6 +28,8 @@ const STATE_CLASS: Record<ProductState, string> = {
   deleted: "bg-brand-red/10 text-brand-red",
 };
 
+const GRID_SIZES = [12, 24, 48, 96, "all"] as const;
+
 const small = "rounded-lg border border-black/20 bg-white px-3 py-1.5 text-xs font-medium hover:bg-black/5 disabled:opacity-40";
 
 function StateBadge({ product }: { product: Product }) {
@@ -48,6 +51,9 @@ function Cover({ product, className }: { product: Product; className: string }) 
 export function ProductsAdmin({ products, categories, query, trashed, category }: Props) {
   const [tab, setTab] = useState<"grid" | "list">("grid");
   const [dialog, setDialog] = useState<Dialog>(null);
+  const [gridSize, setGridSize] = useState<PagerSize>(12);
+  const [gridPage, setGridPage] = useState(1);
+  const gridWindow = usePageWindow(products.length, gridSize, gridPage);
   const { run, busy, message, setMessage } = useAction();
   const categoryName = (id?: number) => categories.find((c) => c.id === id)?.name ?? "-";
 
@@ -91,8 +97,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
-        <form role="search" action="/catalog" className="flex flex-wrap items-end gap-2">
-          <input type="hidden" name="section" value="produits" />
+        <form role="search" action="/products" className="flex flex-wrap items-end gap-2">
           <label className="text-xs font-medium">Recherche
             <input name="q" defaultValue={query} placeholder="Nom ou référence…" className={`${field} w-48`} />
           </label>
@@ -126,8 +131,9 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
         {products.length === 0 ? (
           <p className="rounded-lg bg-black/5 p-6 text-center text-sm text-black/60">Aucun produit ne correspond.</p>
         ) : tab === "grid" ? (
+          <>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
-            {products.map((p) => (
+            {products.slice(gridWindow.start, gridWindow.end).map((p) => (
               <li key={p.id} data-testid="product-card" className={`flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white ${productState(p) === "deleted" ? "opacity-70" : ""}`}>
                 <Cover product={p} className="aspect-square w-full" />
                 <div className="flex flex-1 flex-col gap-1 p-3">
@@ -147,6 +153,8 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
               </li>
             ))}
           </ul>
+          <Pager total={products.length} size={gridSize} sizes={GRID_SIZES} window={gridWindow} onSize={setGridSize} onPage={setGridPage} />
+          </>
         ) : (
           <DataTable
             name="produits"

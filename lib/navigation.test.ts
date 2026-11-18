@@ -8,7 +8,7 @@ describe("groupedNavFor", () => {
     const groups = groupedNavFor("admin");
 
     expect(groups.map((g) => g.label)).toEqual(["Pilotage", "Opérations", "Produits", "Clients", "Finances", "Administration"]);
-    expect(groups.flatMap((g) => g.items).length).toBe(16);
+    expect(groups.flatMap((g) => g.items).length).toBe(17);
     expect(groups.find((g) => g.label === "Administration")?.items.map((i) => i.href)).toEqual(["/staff", "/audit"]);
   });
 

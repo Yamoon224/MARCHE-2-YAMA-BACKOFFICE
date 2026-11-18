@@ -43,10 +43,18 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M6 12h.01M18 12h.01" />
     </>
   ),
-  "/catalog": (
+  "/products": (
     <>
       <path d="M20.59 13.41 13.42 20.58a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z" />
       <path d="M7 7h.01" />
+    </>
+  ),
+  "/catalog": (
+    <>
+      <rect x="3" y="3" width="7" height="7" rx="1" />
+      <rect x="14" y="3" width="7" height="7" rx="1" />
+      <rect x="3" y="14" width="7" height="7" rx="1" />
+      <rect x="14" y="14" width="7" height="7" rx="1" />
     </>
   ),
   "/banners": (

@@ -43,6 +43,12 @@ h3:not([data-plain]) {
   background-size: 100% 3px;
 }
 
+/* En-têtes de tableau : dégradé de la couleur active vers le blanc transparent (texte foncé pour rester lisible). */
+thead:not([data-plain]) {
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--active) 60%, white), color-mix(in srgb, var(--active) 6%, transparent)) !important;
+  color: #1a1a1a !important;
+}
+
 /* Champs : pilule bordée de la couleur active (zone de texte : angles généreux pour rester lisible). */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]),
 select,
