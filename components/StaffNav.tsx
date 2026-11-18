@@ -48,8 +48,8 @@ export function StaffNav() {
         </Link>
       ))}
       <span className="ml-auto flex items-center gap-3">
-        <span className="text-white/80">{user.name}</span>
-        <button type="button" onClick={logout} className="rounded-full border border-white/60 px-3 py-1 hover:bg-white/10">
+        <span className="opacity-80">{user.name}</span>
+        <button type="button" onClick={logout} className="rounded-full border border-current/60 px-3 py-1 hover:bg-current/10">
           Déconnexion
         </button>
       </span>

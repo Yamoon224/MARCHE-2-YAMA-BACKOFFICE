@@ -1,0 +1,168 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { HEADER_PRESETS, isHexColor, PRIMARY_COLORS, type Appearance } from "@/lib/appearance";
+import { useAppearance } from "./AppearanceProvider";
+
+/** Tiroir de droite : couleur principale, fond de l'en-tête, plein écran. */
+export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
+  const { appearance, update, reset } = useAppearance();
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setFullscreen(Boolean(document.fullscreenElement));
+    sync();
+    document.addEventListener("fullscreenchange", sync);
+
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKey = (event: KeyboardEvent) => event.key === "Escape" && onClose();
+    window.addEventListener("keydown", onKey);
+
+    return () => window.removeEventListener("keydown", onKey);
+  }, [open, onClose]);
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void document.documentElement.requestFullscreen?.().catch(() => undefined);
+  }
+
+  return (
+    <>
+      {open ? <div className="fixed inset-0 z-40 bg-black/40" onClick={onClose} aria-hidden /> : null}
+
+      <aside
+        role="dialog"
+        aria-label="Réglages"
+        aria-hidden={!open}
+        inert={!open}
+        className={`fixed inset-y-0 right-0 z-50 flex w-full max-w-sm flex-col border-l border-black/10 bg-white text-black shadow-xl transition-transform duration-200 ${
+          open ? "translate-x-0" : "pointer-events-none translate-x-full"
+        }`}
+      >
+        <header className="flex items-start justify-between border-b border-black/10 px-5 py-4">
+          <div>
+            <h2 className="text-lg font-semibold">Réglages</h2>
+            <p className="mt-0.5 text-xs text-black/60">Enregistrés sur cet appareil.</p>
+          </div>
+          <button type="button" onClick={onClose} aria-label="Fermer les réglages" className="rounded p-1 text-black/60 hover:text-black">
+            <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+          </button>
+        </header>
+
+        <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-5">
+          <Section title="Couleur principale">
+            <div className="flex flex-wrap gap-3">
+              {PRIMARY_COLORS.map((color) => (
+                <Swatch key={color} color={color} selected={appearance.primary === color} onClick={() => update({ primary: color })} size="lg" />
+              ))}
+              <CustomColor label="Couleur principale personnalisée" value={appearance.primary} active={!(PRIMARY_COLORS as readonly string[]).includes(appearance.primary)} size="lg" onPick={(primary) => update({ primary })} />
+            </div>
+          </Section>
+
+          <Section title="Fond de l'en-tête">
+            <HeaderPicker appearance={appearance} update={update} />
+          </Section>
+
+          <Section title="Affichage">
+            <div className="flex items-center justify-between gap-3">
+              <p className="text-sm font-medium">Plein écran</p>
+              <button
+                type="button"
+                role="switch"
+                aria-checked={fullscreen}
+                aria-label="Plein écran"
+                onClick={toggleFullscreen}
+                className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${fullscreen ? "bg-brand-red" : "bg-black/20"}`}
+              >
+                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${fullscreen ? "left-[1.375rem]" : "left-0.5"}`} />
+              </button>
+            </div>
+          </Section>
+        </div>
+
+        <footer className="border-t border-black/10 px-5 py-3">
+          <button type="button" onClick={reset} className="text-sm text-black/60 hover:text-black">
+            ↺ Réinitialiser l&apos;apparence
+          </button>
+        </footer>
+      </aside>
+    </>
+  );
+}
+
+function Section({ title, children }: { title: string; children: React.ReactNode }) {
+  return (
+    <section className="flex flex-col gap-3">
+      <h3 className="text-xs font-semibold uppercase tracking-wide text-black/60">{title}</h3>
+      {children}
+    </section>
+  );
+}
+
+function Swatch({ color, selected, onClick, size = "md" }: { color: string; selected: boolean; onClick: () => void; size?: "md" | "lg" }) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-label={color}
+      aria-pressed={selected}
+      style={{ backgroundColor: color }}
+      className={`flex items-center justify-center rounded-full border border-black/15 transition-transform hover:scale-110 ${size === "lg" ? "h-10 w-10" : "h-8 w-8"} ${
+        selected ? "ring-2 ring-black ring-offset-2" : ""
+      }`}
+    >
+      {selected ? (
+        <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="mix-blend-difference" aria-hidden>
+          <path d="m5 12 5 5L20 7" />
+        </svg>
+      ) : null}
+    </button>
+  );
+}
+
+/** N'importe quelle couleur via le sélecteur du navigateur, à côté des pastilles prêtes à l'emploi. */
+function CustomColor({ label, value, active, size = "md", onPick }: { label: string; value: string; active: boolean; size?: "md" | "lg"; onPick: (color: string) => void }) {
+  return (
+    <label
+      title="Personnalisée"
+      style={active ? { backgroundColor: value } : undefined}
+      className={`relative flex cursor-pointer items-center justify-center rounded-full border border-dashed border-black/50 text-black/60 ${size === "lg" ? "h-10 w-10" : "h-8 w-8"} ${
+        active ? "ring-2 ring-black ring-offset-2" : ""
+      }`}
+    >
+      <span aria-hidden>+</span>
+      <input type="color" aria-label={label} value={value} onChange={(event) => isHexColor(event.target.value) && onPick(event.target.value)} className="absolute inset-0 cursor-pointer opacity-0" />
+    </label>
+  );
+}
+
+function HeaderPicker({ appearance, update }: { appearance: Appearance; update: (patch: Partial<Appearance>) => void }) {
+  const current = appearance.header;
+  const custom = current !== null && !(HEADER_PRESETS as readonly string[]).includes(current);
+
+  return (
+    <div className="flex flex-col gap-2">
+      <div className="flex flex-wrap items-center gap-2">
+        <button
+          type="button"
+          onClick={() => update({ header: null })}
+          aria-pressed={current === null}
+          className={`rounded-full px-2.5 py-1 text-xs ${current === null ? "bg-brand-red/10 font-semibold text-brand-red" : "text-black/60 hover:text-black"}`}
+        >
+          Défaut
+        </button>
+        {HEADER_PRESETS.map((color) => (
+          <Swatch key={color} color={color} selected={current === color} onClick={() => update({ header: color })} />
+        ))}
+        <CustomColor label="Fond d'en-tête personnalisé" value={current ?? "#ffffff"} active={custom} onPick={(header) => update({ header })} />
+      </div>
+    </div>
+  );
+}
