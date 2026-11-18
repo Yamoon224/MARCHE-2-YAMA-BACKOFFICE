@@ -26,7 +26,7 @@ function href(status: string, page: number): string {
   if (page > 1) params.set("page", String(page));
   const query = params.toString();
 
-  return query ? `/commandes?${query}` : "/commandes";
+  return query ? `/orders?${query}` : "/orders";
 }
 
 async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
@@ -45,7 +45,7 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
 
   return (
     <>
-      <form action="/commandes" className="mb-4 flex items-center gap-2">
+      <form action="/orders" className="mb-4 flex items-center gap-2">
         <label className="text-sm font-medium" htmlFor="status">Statut</label>
         <select id="status" name="status" defaultValue={status} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
           <option value="">Tous</option>
@@ -73,7 +73,7 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
               {orders.map((order) => (
                 <tr key={order.id} className="hover:bg-black/[0.02]">
                   <td className="px-4 py-3 font-medium">
-                    <Link href={`/commandes/${order.id}`} className="text-brand-green underline">{order.number ?? `#${order.id}`}</Link>
+                    <Link href={`/orders/${order.id}`} className="text-brand-green underline">{order.number ?? `#${order.id}`}</Link>
                   </td>
                   <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
                   <td className="px-4 py-3">{order.fulfillment === "delivery" ? "Livraison" : "Retrait magasin"}</td>

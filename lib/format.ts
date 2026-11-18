@@ -35,7 +35,7 @@ export function extractApiError(error: unknown, fallback = "Une erreur est surve
 }
 
 /** N'accepte qu'un chemin interne : empêche une redirection ouverte via `?next=`. */
-export function safeNext(next: string | null | undefined, fallback = "/commandes"): string {
+export function safeNext(next: string | null | undefined, fallback = "/orders"): string {
   if (!next || !next.startsWith("/") || next.startsWith("//") || next.includes("\\") || /[\r\n]/.test(next)) return fallback;
   return next;
 }

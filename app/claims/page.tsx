@@ -23,7 +23,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
   const raw = await searchParams;
   const status = typeof raw.status === "string" && ["open", "accepted", "rejected"].includes(raw.status) ? raw.status : "";
 
-  const staff = await requireStaff("/reclamations");
+  const staff = await requireStaff("/claims");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }
@@ -63,7 +63,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
         </section>
       )}
 
-      <form action="/reclamations" className="mb-4 flex items-center gap-2">
+      <form action="/claims" className="mb-4 flex items-center gap-2">
         <label htmlFor="status" className="text-sm font-medium">Statut</label>
         <select id="status" name="status" defaultValue={status} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
           <option value="">Tous</option>
@@ -81,8 +81,8 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
             <tbody className="divide-y divide-black/10">
               {claims.map((claim) => (
                 <tr key={claim.id} className="hover:bg-black/[0.02]">
-                  <td className="px-4 py-3 font-medium"><Link href={`/reclamations/${claim.id}`} className="text-brand-green underline">n° {claim.id}</Link></td>
-                  <td className="px-4 py-3"><Link href={`/commandes/${claim.order_id}`} className="underline">#{claim.order_id}</Link></td>
+                  <td className="px-4 py-3 font-medium"><Link href={`/claims/${claim.id}`} className="text-brand-green underline">n° {claim.id}</Link></td>
+                  <td className="px-4 py-3"><Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id}</Link></td>
                   <td className="px-4 py-3">{claim.items.map((i) => `${i.name} (${ISSUE_LABEL[i.issue as Issue] ?? i.issue})`).join(", ")}</td>
                   <td className="px-4 py-3"><span className={`rounded-full px-3 py-1 text-xs font-medium ${claim.status === "open" ? "bg-brand-red/10 text-brand-red" : "bg-black/5"}`}>{CLAIM_STATUS_LABEL[claim.status] ?? claim.status}</span></td>
                   <td className="px-4 py-3 text-right">{formatMoney(claim.claimable_minor)}</td>

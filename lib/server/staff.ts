@@ -20,7 +20,7 @@ export async function requireStaff(next: string): Promise<StaffContext> {
 
   const user = result.data?.data;
   if (result.response.status === 401 || !user || user.role === "customer") {
-    redirect(`/connexion?next=${encodeURIComponent(next)}`);
+    redirect(`/login?next=${encodeURIComponent(next)}`);
   }
 
   return { status: "ok", user: user as Staff, api };

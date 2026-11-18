@@ -34,9 +34,9 @@ describe("extractApiError", () => {
 
 describe("safeNext", () => {
   it("keeps internal paths only", () => {
-    expect(safeNext("/commandes/12")).toBe("/commandes/12");
+    expect(safeNext("/orders/12")).toBe("/orders/12");
     for (const bad of ["https://evil.test", "//evil.test", "/\\evil", "commande", "", null, undefined, "/x\r\nSet-Cookie: a=b"]) {
-      expect(safeNext(bad as string | null | undefined)).toBe("/commandes");
+      expect(safeNext(bad as string | null | undefined)).toBe("/orders");
     }
   });
 });

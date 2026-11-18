@@ -16,7 +16,7 @@ export default function CaissePage() {
 }
 
 async function Desk() {
-  const staff = await requireStaff("/caisse");
+  const staff = await requireStaff("/cash-handover");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }

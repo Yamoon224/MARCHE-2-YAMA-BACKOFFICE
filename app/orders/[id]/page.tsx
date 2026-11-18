@@ -29,7 +29,7 @@ async function OrderDetail({ params }: Props) {
   const { id } = await params;
   if (!/^\d+$/.test(id)) notFound();
 
-  const staff = await requireStaff(`/commandes/${id}`);
+  const staff = await requireStaff(`/orders/${id}`);
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }
@@ -48,7 +48,7 @@ async function OrderDetail({ params }: Props) {
 
   return (
     <>
-      <p className="mb-2 text-sm"><Link href="/commandes" className="text-brand-green underline">← Toutes les commandes</Link></p>
+      <p className="mb-2 text-sm"><Link href="/orders" className="text-brand-green underline">← Toutes les commandes</Link></p>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-bold">{order.number ?? `Commande ${order.id}`}</h1>

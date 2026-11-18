@@ -33,7 +33,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
   const section = SECTIONS.find((s) => s.value === raw.section)?.value ?? "produits";
   const q = typeof raw.q === "string" ? raw.q.trim() : "";
 
-  const staff = await requireStaff("/catalogue");
+  const staff = await requireStaff("/catalog");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }
@@ -48,7 +48,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
         {SECTIONS.map((s) => (
           <Link
             key={s.value}
-            href={`/catalogue?section=${s.value}`}
+            href={`/catalog?section=${s.value}`}
             aria-current={s.value === section ? "page" : undefined}
             className={`rounded-full border px-4 py-2 text-sm font-medium ${s.value === section ? "border-brand-green bg-brand-green text-white" : "border-black/20 bg-white"}`}
           >

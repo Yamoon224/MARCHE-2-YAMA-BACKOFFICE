@@ -16,7 +16,7 @@ export default function RegulationPage() {
 }
 
 async function Board() {
-  const staff = await requireStaff("/regulation");
+  const staff = await requireStaff("/dispatch");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }

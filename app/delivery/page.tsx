@@ -16,7 +16,7 @@ export default function LivraisonPage() {
 }
 
 async function Content() {
-  const staff = await requireStaff("/livraison");
+  const staff = await requireStaff("/delivery");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }

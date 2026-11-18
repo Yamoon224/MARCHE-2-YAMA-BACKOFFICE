@@ -14,7 +14,7 @@ function BannerFields({ b }: { b?: Banner }) {
       <label className="text-sm font-medium sm:col-span-2">Accroche (petit texte au-dessus du titre)<input name="eyebrow" placeholder="Ex. Authentique & savoureux" maxLength={80} defaultValue={b?.eyebrow ?? ""} className={field} /></label>
       <label className="text-sm font-medium sm:col-span-2">Texte<input name="text" placeholder="Ex. Fruits, légumes, viandes et poissons suivis par lot" maxLength={500} defaultValue={b?.text ?? ""} className={field} /></label>
       <label className="text-sm font-medium">Bouton : libellé<input name="label" placeholder="Ex. Voir les rayons" required maxLength={80} defaultValue={b?.cta_label} className={field} /></label>
-      <label className="text-sm font-medium">Bouton : lien<input name="url" required defaultValue={b?.cta_url} placeholder="/rayons ou https://…" className={field} /></label>
+      <label className="text-sm font-medium">Bouton : lien<input name="url" required defaultValue={b?.cta_url} placeholder="/aisles ou https://…" className={field} /></label>
       <label className="text-sm font-medium">Position<input name="position" placeholder="0" inputMode="numeric" defaultValue={b?.position ?? 0} className={field} /></label>
       <ImageField name="image" defaultValue={b?.image_url} />
       <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={b?.is_active ?? true} /> Affichée sur la vitrine</label>

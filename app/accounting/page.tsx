@@ -16,7 +16,7 @@ export default function ComptabilitePage() {
 }
 
 async function TrialBalance() {
-  const staff = await requireStaff("/comptabilite");
+  const staff = await requireStaff("/accounting");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }

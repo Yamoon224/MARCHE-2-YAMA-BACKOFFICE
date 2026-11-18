@@ -17,7 +17,7 @@ export default function TourneePage() {
 }
 
 async function Stops() {
-  const staff = await requireStaff("/tournee");
+  const staff = await requireStaff("/my-route");
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Réseau indisponible. Réessayez dans un instant.</p>;
   }
