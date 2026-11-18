@@ -4,7 +4,7 @@ import { buildUpstreamHeaders, isAllowedPath } from "./proxy";
 describe("isAllowedPath (backoffice)", () => {
   it.each([
     "api/v1/orders", "api/v1/orders/12/transitions", "api/v1/orders/12/invoice", "api/v1/payments/3/validate-cash-on-delivery",
-    "api/v1/delivery/zones", "api/v1/delivery/slots", "api/v1/fulfillment/pick-lists", "api/v1/fulfillment/pick-lists/3/lines/9/pick", "api/v1/claims", "api/v1/claims/4/decision", "api/v1/claims/4/photos/9", "api/v1/inventory/lots", "api/v1/inventory/lots/3/recall", "api/v1/accounting/trial-balance", "api/v1/products", "api/v1/catalog/media", "api/v1/catalog/recipes/3", "api/v1/auth/me",
+    "api/v1/delivery/zones", "api/v1/delivery/slots", "api/v1/fulfillment/pick-lists", "api/v1/fulfillment/pick-lists/3/lines/9/pick", "api/v1/claims", "api/v1/claims/4/decision", "api/v1/claims/4/photos/9", "api/v1/inventory/lots", "api/v1/inventory/lots/3/recall", "api/v1/accounting/trial-balance", "api/v1/products", "api/v1/catalog/media", "api/v1/catalog/products", "api/v1/catalog/products/7", "api/v1/catalog/products/7/restore", "api/v1/catalog/products/7/images", "api/v1/catalog/products/7/images/order", "api/v1/catalog/products/7/images/3/cover", "api/v1/catalog/products/7/images/3", "api/v1/catalog/recipes/3", "api/v1/auth/me", "api/v1/auth/change-password",
     "api/v1/staff", "api/v1/staff/4/reactivate", "api/v1/roles", "api/v1/customers/9", "api/v1/promotions/3/activate", "api/v1/promotions/validate", "api/v1/audit/verify", "api/v1/reports/sales", "api/v1/reports/dashboard",
   ])("allows %s", (path) => {
     expect(isAllowedPath(path.split("/"))).toBe(true);

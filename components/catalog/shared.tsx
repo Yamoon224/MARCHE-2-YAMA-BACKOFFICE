@@ -53,7 +53,7 @@ export function Feedback({ message }: { message: Message }) {
 }
 
 /** Champ image : téléverse le fichier vers l'API et conserve l'adresse renvoyée (ou une adresse collée). */
-export function ImageField({ name, defaultValue }: { name: string; defaultValue?: string | null }) {
+export function ImageField({ name, defaultValue, large = false }: { name: string; defaultValue?: string | null; large?: boolean }) {
   const [url, setUrl] = useState(defaultValue ?? "");
   const [state, setState] = useState<"idle" | "uploading" | "error">("idle");
 
@@ -79,9 +79,9 @@ export function ImageField({ name, defaultValue }: { name: string; defaultValue?
       <div className="mt-1 flex items-center gap-3">
         {url ? (
           // eslint-disable-next-line @next/next/no-img-element -- aperçu d'une image servie par l'API
-          <img src={url} alt="" className="h-12 w-12 rounded-lg object-cover" />
+          <img src={url} alt="Aperçu" className={`${large ? "h-24 w-44" : "h-12 w-12"} rounded-lg object-cover`} />
         ) : (
-          <span className="grid h-12 w-12 place-items-center rounded-lg bg-black/5" aria-hidden="true">🖼</span>
+          <span className={`grid ${large ? "h-24 w-44" : "h-12 w-12"} place-items-center rounded-lg bg-black/5`} aria-hidden="true">🖼</span>
         )}
         <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Téléverser une image" onChange={(e) => void upload(e.target.files?.[0])} className="text-xs" />
         {url && <button type="button" onClick={() => setUrl("")} className="text-xs text-brand-red underline">Retirer</button>}

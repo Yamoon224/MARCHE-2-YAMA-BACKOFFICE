@@ -107,6 +107,12 @@ export function AppShell({ children }: { children: ReactNode }) {
                     <div className="absolute right-0 top-full z-40 mt-2 w-60 rounded-xl border border-black/10 bg-white p-2 text-black shadow-lg">
                       <p className="truncate px-2 pt-1 text-sm font-semibold">{user.name}</p>
                       <p className="truncate px-2 pb-2 text-xs text-black/60">{ROLE_LABEL[user.role] ?? user.role}</p>
+                      <Link href="/profile" className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-black/5">
+                        <Icon name="user" className="h-4 w-4" /> Mon profil
+                      </Link>
+                      <Link href="/settings" className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-black/5">
+                        <Icon name="settings" className="h-4 w-4" /> Paramètres
+                      </Link>
                       <button type="button" onClick={logout} className="flex w-full items-center gap-2 rounded-lg px-2 py-2 text-sm hover:bg-black/5">
                         <Icon name="logout" className="h-4 w-4" /> Déconnexion
                       </button>

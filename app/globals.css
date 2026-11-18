@@ -21,3 +21,123 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* ---------------------------------------------------------------------------------------------
+ * Habillage commun. La « couleur active » est la couleur principale choisie dans les réglages
+ * (--brand-red, pilotée par AppearanceProvider). Ces règles sont hors des couches Tailwind : elles
+ * s'appliquent partout sans toucher chaque page, et l'attribut data-plain les désactive au besoin.
+ * ------------------------------------------------------------------------------------------- */
+:root {
+  --active: var(--brand-red);
+  --active-fade: color-mix(in srgb, var(--active) 22%, transparent);
+}
+
+/* Titres : trait en dégradé de la couleur active vers le transparent. */
+h1:not([data-plain]),
+h2:not([data-plain]),
+h3:not([data-plain]) {
+  padding-bottom: 0.4rem;
+  background-image: linear-gradient(to right, var(--active), transparent);
+  background-repeat: no-repeat;
+  background-position: left bottom;
+  background-size: 100% 3px;
+}
+
+/* Champs : pilule bordée de la couleur active (zone de texte : angles généreux pour rester lisible). */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]),
+select,
+textarea {
+  border: 1px solid var(--active);
+  border-radius: 9999px;
+  padding-inline-start: 1rem;
+  background-color: #fff;
+  color: #171717;
+  transition: box-shadow 0.15s, border-color 0.15s;
+}
+
+textarea {
+  border-radius: 1.5rem;
+  padding-block: 0.6rem;
+}
+
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: none;
+  border-color: var(--active);
+  box-shadow: 0 0 0 3px var(--active-fade), 0 0 0 1px var(--active);
+}
+
+input:disabled,
+select:disabled,
+textarea:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+input[type="checkbox"],
+input[type="radio"],
+input[type="range"] {
+  accent-color: var(--active);
+}
+
+input[type="checkbox"]:focus-visible,
+input[type="radio"]:focus-visible {
+  outline: 2px solid var(--active);
+  outline-offset: 2px;
+}
+
+input[type="file"] {
+  max-width: 100%;
+  border: 1px dashed var(--active);
+  border-radius: 9999px;
+  padding: 0.25rem 0.5rem;
+}
+
+input[type="file"]::file-selector-button {
+  margin-right: 0.75rem;
+  border: 0;
+  border-radius: 9999px;
+  padding: 0.3rem 0.9rem;
+  background: var(--active);
+  color: #fff;
+  cursor: pointer;
+}
+
+/* Barres de défilement fines : pouce en dégradé de la couleur active vers le transparent, piste invisible. */
+@supports selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: auto;
+  }
+
+  *::-webkit-scrollbar {
+    width: 7px;
+    height: 7px;
+  }
+
+  *::-webkit-scrollbar-track,
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+
+  *::-webkit-scrollbar-thumb {
+    border-radius: 9999px;
+    background: linear-gradient(to bottom, var(--active), var(--active-fade));
+  }
+
+  *::-webkit-scrollbar-thumb:horizontal {
+    background: linear-gradient(to right, var(--active), var(--active-fade));
+  }
+
+  *::-webkit-scrollbar-thumb:hover {
+    background: var(--active);
+  }
+}
+
+/* Firefox : pas de dégradé possible, couleur active unie sur piste transparente. */
+@supports not selector(::-webkit-scrollbar) {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--active) transparent;
+  }
+}

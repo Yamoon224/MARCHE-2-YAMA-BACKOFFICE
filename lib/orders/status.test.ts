@@ -86,13 +86,14 @@ describe("role permissions (mirror of the server rules)", () => {
 
 describe("navFor", () => {
   it("shows sections according to the role", () => {
-    expect(navFor("admin").map((i) => i.href)).toEqual(["/dashboard", "/orders", "/preparation", "/stock", "/claims", "/dispatch", "/delivery", "/cash-handover", "/catalog", "/accounting", "/reports", "/customers", "/promotions", "/staff", "/audit"]);
+    expect(navFor("admin").map((i) => i.href)).toEqual(["/dashboard", "/orders", "/preparation", "/stock", "/claims", "/dispatch", "/delivery", "/cash-handover", "/catalog", "/banners", "/accounting", "/reports", "/customers", "/promotions", "/staff", "/audit"]);
     expect(navFor("support").map((i) => i.href)).toEqual(["/orders", "/claims", "/customers"]);
     expect(navFor("stock_keeper").map((i) => i.href)).toEqual(["/stock"]);
     expect(navFor("order_operator").map((i) => i.href)).toEqual(["/dashboard", "/orders", "/preparation", "/dispatch", "/delivery", "/cash-handover", "/reports", "/customers"]);
     expect(navFor("courier").map((i) => i.href)).toEqual(["/my-route"]);
     expect(navFor("accountant").map((i) => i.href)).toEqual(["/dashboard", "/orders", "/accounting", "/reports"])
-    expect(navFor("marketing").map((i) => i.href)).toEqual(["/promotions"]);
+    expect(navFor("marketing").map((i) => i.href)).toEqual(["/banners", "/promotions"]);
+    expect(navFor("catalog_manager").map((i) => i.href)).toEqual(["/catalog", "/banners"]);
     expect(navFor("picker").map((i) => i.href)).toEqual(["/preparation", "/stock"]);
     expect(navFor("customer")).toEqual([]);
   });

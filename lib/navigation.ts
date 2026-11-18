@@ -17,6 +17,7 @@ const GROUP_OF: Record<string, string> = {
   "/my-route": "Opérations",
   "/stock": "Produits",
   "/catalog": "Produits",
+  "/banners": "Produits",
   "/claims": "Clients",
   "/cash-handover": "Finances",
   "/accounting": "Finances",

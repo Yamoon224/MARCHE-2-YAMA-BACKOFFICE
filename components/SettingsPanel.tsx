@@ -6,16 +6,7 @@ import { useAppearance } from "./AppearanceProvider";
 
 /** Tiroir de droite : couleur principale, fonds des barres, menu réduit, plein écran. */
 export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
-  const { appearance, update, reset } = useAppearance();
-  const [fullscreen, setFullscreen] = useState(false);
-
-  useEffect(() => {
-    const sync = () => setFullscreen(Boolean(document.fullscreenElement));
-    sync();
-    document.addEventListener("fullscreenchange", sync);
-
-    return () => document.removeEventListener("fullscreenchange", sync);
-  }, []);
+  const { reset } = useAppearance();
 
   useEffect(() => {
     if (!open) return;
@@ -25,11 +16,6 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
 
     return () => window.removeEventListener("keydown", onKey);
   }, [open, onClose]);
-
-  function toggleFullscreen() {
-    if (document.fullscreenElement) void document.exitFullscreen();
-    else void document.documentElement.requestFullscreen?.().catch(() => undefined);
-  }
 
   return (
     <>
@@ -57,24 +43,7 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
         </header>
 
         <div className="flex flex-1 flex-col gap-6 overflow-y-auto px-5 py-5">
-          <Section title="Couleur principale">
-            <div className="flex flex-wrap gap-3">
-              {PRIMARY_COLORS.map((color) => (
-                <Swatch key={color} color={color} selected={appearance.primary === color} onClick={() => update({ primary: color })} size="lg" />
-              ))}
-              <CustomColor label="Couleur principale personnalisée" value={appearance.primary} active={!(PRIMARY_COLORS as readonly string[]).includes(appearance.primary)} size="lg" onPick={(primary) => update({ primary })} />
-            </div>
-          </Section>
-
-          <Section title="Fonds">
-            <BackgroundPicker label="Menu latéral" field="sidebar" appearance={appearance} update={update} />
-            <BackgroundPicker label="Barre du haut" field="header" appearance={appearance} update={update} />
-          </Section>
-
-          <Section title="Affichage">
-            <Toggle label="Menu réduit aux icônes" hint="Grand écran uniquement." checked={appearance.collapsed} onChange={(collapsed) => update({ collapsed })} />
-            <Toggle label="Plein écran" checked={fullscreen} onChange={toggleFullscreen} />
-          </Section>
+          <AppearanceControls />
         </div>
 
         <footer className="border-t border-black/10 px-5 py-3">
@@ -87,7 +56,50 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+/** Les réglages d'apparence eux-mêmes : partagés par le tiroir rapide et la page Paramètres. */
+export function AppearanceControls() {
+  const { appearance, update } = useAppearance();
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    const sync = () => setFullscreen(Boolean(document.fullscreenElement));
+    sync();
+    document.addEventListener("fullscreenchange", sync);
+
+    return () => document.removeEventListener("fullscreenchange", sync);
+  }, []);
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) void document.exitFullscreen();
+    else void document.documentElement.requestFullscreen?.().catch(() => undefined);
+  }
+
+  return (
+    <>
+      <Section title="Couleur active">
+        <p className="-mt-1 text-xs text-black/60">Titres soulignés, champs de saisie, onglets et barres de défilement.</p>
+        <div className="flex flex-wrap gap-3">
+          {PRIMARY_COLORS.map((color) => (
+            <Swatch key={color} color={color} selected={appearance.primary === color} onClick={() => update({ primary: color })} size="lg" />
+          ))}
+          <CustomColor label="Couleur active personnalisée" value={appearance.primary} active={!(PRIMARY_COLORS as readonly string[]).includes(appearance.primary)} size="lg" onPick={(primary) => update({ primary })} />
+        </div>
+      </Section>
+
+      <Section title="Fonds">
+        <BackgroundPicker label="Menu latéral" field="sidebar" appearance={appearance} update={update} />
+        <BackgroundPicker label="Barre du haut" field="header" appearance={appearance} update={update} />
+      </Section>
+
+      <Section title="Affichage">
+        <Toggle label="Menu réduit aux icônes" hint="Grand écran uniquement." checked={appearance.collapsed} onChange={(collapsed) => update({ collapsed })} />
+        <Toggle label="Plein écran" checked={fullscreen} onChange={toggleFullscreen} />
+      </Section>
+    </>
+  );
+}
+
+export function Section({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <section className="flex flex-col gap-3">
       <h3 className="text-xs font-semibold uppercase tracking-wide text-black/60">{title}</h3>

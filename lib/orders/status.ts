@@ -142,6 +142,7 @@ export function navFor(role: string): NavItem[] {
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/delivery", label: "Zones et créneaux" });
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/cash-handover", label: "Remise de fonds" });
   if (["admin", "catalog_manager"].includes(role)) items.push({ href: "/catalog", label: "Catalogue" });
+  if (["admin", "catalog_manager", "marketing"].includes(role)) items.push({ href: "/banners", label: "Bannières" });
   if (["admin", "accountant"].includes(role)) items.push({ href: "/accounting", label: "Comptabilité" });
   if (["admin", "accountant", "order_operator"].includes(role)) items.push({ href: "/reports", label: "Rapports de ventes" });
   if (["admin", "support", "order_operator"].includes(role)) items.push({ href: "/customers", label: "Clients" });

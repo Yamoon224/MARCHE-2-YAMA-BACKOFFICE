@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { DataTable } from "@/components/DataTable";
+import { OrderDetailsButton } from "@/components/OrderDetailsButton";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
@@ -69,6 +70,7 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
             { header: "Statut" },
             { header: "Réception" },
             { header: "Total TTC", type: "number", align: "right" },
+            { header: "Détails", actions: true },
           ]}
           rows={orders.map((order) => ({
             key: order.id,
@@ -77,6 +79,7 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
               { value: statusLabel(order.status), node: <StatusBadge status={order.status} /> },
               order.fulfillment === "delivery" ? "Livraison" : "Retrait magasin",
               { value: order.total_minor, text: formatMoney(order.total_minor), node: <span className="font-semibold">{formatMoney(order.total_minor)}</span> },
+              { value: null, node: <OrderDetailsButton orderId={order.id} number={order.number ?? `#${order.id}`} /> },
             ],
           }))}
         />

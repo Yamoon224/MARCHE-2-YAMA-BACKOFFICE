@@ -8,7 +8,7 @@ describe("groupedNavFor", () => {
     const groups = groupedNavFor("admin");
 
     expect(groups.map((g) => g.label)).toEqual(["Pilotage", "Opérations", "Produits", "Clients", "Finances", "Administration"]);
-    expect(groups.flatMap((g) => g.items).length).toBe(15);
+    expect(groups.flatMap((g) => g.items).length).toBe(16);
     expect(groups.find((g) => g.label === "Administration")?.items.map((i) => i.href)).toEqual(["/staff", "/audit"]);
   });
 
@@ -26,11 +26,16 @@ describe("groupedNavFor", () => {
   });
 
   it("donne les pages de gestion aux bons rôles", () => {
-    expect(hrefs("marketing")).toEqual(["/promotions"]);
+    expect(hrefs("marketing")).toEqual(["/banners", "/promotions"]);
     expect(hrefs("support")).toContain("/customers");
     expect(hrefs("order_operator")).toEqual(expect.arrayContaining(["/dashboard", "/reports", "/customers"]));
     expect(hrefs("order_operator")).not.toContain("/promotions");
     expect(hrefs("picker")).not.toContain("/dashboard");
+  });
+
+  it("confie les bannières au catalogue et au marketing", () => {
+    for (const role of ["admin", "catalog_manager", "marketing"]) expect(hrefs(role)).toContain("/banners");
+    for (const role of ["support", "accountant", "order_operator", "picker"]) expect(hrefs(role)).not.toContain("/banners");
   });
 });
 

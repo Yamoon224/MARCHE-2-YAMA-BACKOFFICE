@@ -49,6 +49,13 @@ const PATHS: Record<string, ReactNode> = {
       <path d="M7 7h.01" />
     </>
   ),
+  "/banners": (
+    <>
+      <rect x="3" y="3" width="18" height="18" rx="2" />
+      <circle cx="8.5" cy="8.5" r="1.5" />
+      <path d="m21 15-5-5L5 21" />
+    </>
+  ),
   "/accounting": <path d="M12 20V10M18 20V4M6 20v-4" />,
   "/dashboard": (
     <>

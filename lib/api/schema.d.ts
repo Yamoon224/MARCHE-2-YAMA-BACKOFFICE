@@ -154,7 +154,8 @@ export interface paths {
         /** Tous les produits (actifs ou non) */
         get: operations["c8e1cbf07f837777b8f3f44970de2c44"];
         put?: never;
-        post?: never;
+        /** Créer un produit */
+        post: operations["02c4b6197db0f817d1b3ad5b54a7f33e"];
         delete?: never;
         options?: never;
         head?: never;
@@ -168,11 +169,98 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        get?: never;
-        /** Modifier un produit (prix, promotion, image, visibilité) */
+        /** Détails d'un produit (même supprimé) avec sa galerie */
+        get: operations["8cbf5c06795b028ae0c6d799760a44da"];
+        /** Modifier un produit (prix, promotion, visibilité…) */
         put: operations["9acd1a7f306b624ff8e264322874fa57"];
         post?: never;
+        /** Supprimer un produit (suppression douce, restaurable) */
+        delete: operations["1bf1f2e96e6fadb9f5a530930ccdbf87"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{product}/restore": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Restaurer un produit supprimé */
+        post: operations["bce585b91eae1c4d91b743c2ea21fd84"];
         delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{product}/images": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Ajouter des images (10 au plus par produit ; la première devient la couverture) */
+        post: operations["f7201acfb2a06cecaa32831b0d87c6ce"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{product}/images/order": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        /** Réordonner la galerie */
+        put: operations["cff9925896ca6ca70e3b10e379618d8e"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{product}/images/{image}/cover": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Choisir l'image de couverture */
+        post: operations["21f66a9c2418d8c233b4f30dd9685e38"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/{product}/images/{image}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post?: never;
+        /** Supprimer une image (le fichier est effacé) */
+        delete: operations["1b6fdde6e7b61edf03f095d12e9e4fb8"];
         options?: never;
         head?: never;
         patch?: never;
@@ -906,8 +994,26 @@ export interface paths {
         };
         /** Utilisateur courant */
         get: operations["a69e035abcffe1bdd422bcb2883473d6"];
-        put?: never;
+        /** Modifier mon profil (nom, téléphone) */
+        put: operations["23c522a04a89d7a85e268e358b65e71f"];
         post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/auth/change-password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Changer mon mot de passe (les autres sessions sont fermées) */
+        post: operations["fc38b3f8e2f374b4f4403a8ab8fe4067"];
         delete?: never;
         options?: never;
         head?: never;
@@ -1181,7 +1287,7 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Détail d'une commande avec lignes et historique */
+        /** Détail d'une commande : lignes, historique et, pour le personnel, client, paiements, remboursements et livraison */
         get: operations["c74a658d8b9d269ab6b1c98c37253955"];
         put?: never;
         post?: never;
@@ -1598,7 +1704,11 @@ export interface components {
             is_weight_variable?: boolean;
             /** @description Prix en centimes (EUR) */
             price_minor: number;
+            /** @description URL de la couverture (compatibilité : équivaut à cover) */
             image_url?: string | null;
+            /** @description URL de la couverture */
+            cover?: string | null;
+            images?: components["schemas"]["ProductImage"][];
             /** @description Ancien prix (promotion) ou null */
             compare_at_price_minor?: number | null;
             /** @description Produit mis en avant (best seller) */
@@ -1607,6 +1717,14 @@ export interface components {
             vat_rate_bp?: number;
             perishable?: boolean;
             is_active?: boolean;
+            /** @description Date de suppression douce (null : produit en ligne) */
+            deleted_at?: string | null;
+        };
+        ProductImage: {
+            id: number;
+            url: string;
+            position: number;
+            is_cover: boolean;
         };
         ProductPage: {
             data: components["schemas"]["Product"][];
@@ -1890,6 +2008,40 @@ export interface components {
             read: boolean;
             created_at: string;
         };
+        /** @description Commande + détails pour le personnel (client, paiements et remboursements, livraison) */
+        OrderDetail: components["schemas"]["Order"] & {
+            customer?: {
+                id?: number;
+                name?: string;
+                email?: string | null;
+                phone?: string | null;
+            } | null;
+            payments?: {
+                reference?: string;
+                method?: string;
+                status?: string;
+                amount_minor?: number;
+                currency?: string;
+                needs_refund?: boolean;
+                created_at?: string | null;
+                refunds?: {
+                    reference?: string;
+                    amount_minor?: number;
+                    status?: string;
+                    kind?: string;
+                    reason?: string | null;
+                    created_at?: string | null;
+                }[];
+            }[];
+            delivery?: {
+                status?: string;
+                courier_name?: string | null;
+                cash_collected_minor?: number | null;
+                failure_reason?: string | null;
+                assigned_at?: string | null;
+                delivered_at?: string | null;
+            } | null;
+        } & components["schemas"]["OrderPage"];
         OrderLine: {
             /** @description Identifiant de la ligne (nécessaire pour déclarer une réclamation) */
             id: number;
@@ -1929,6 +2081,12 @@ export interface components {
             /** @enum {string} */
             fulfillment?: "pickup" | "delivery";
             delivery_slot_id?: number | null;
+            /** @description online ou pos (vente en caisse) */
+            channel?: string | null;
+            contact_phone?: string | null;
+            /** @description Adresse de livraison (quartier, repère, coordonnées) */
+            delivery_address?: Record<string, never> | null;
+            created_at?: string | null;
             lines?: components["schemas"]["OrderLine"][];
             history?: components["schemas"]["OrderHistoryEntry"][];
         };
@@ -2456,6 +2614,8 @@ export interface operations {
         parameters: {
             query?: {
                 q?: string;
+                /** @description with : y compris supprimés ; only : uniquement les supprimés */
+                trashed?: "with" | "only";
                 page?: number;
                 /** @description 1 à 200 (30 par défaut) */
                 per_page?: number;
@@ -2474,6 +2634,70 @@ export interface operations {
                 content: {
                     "application/json": components["schemas"]["ProductPage"];
                 };
+            };
+        };
+    };
+    "02c4b6197db0f817d1b3ad5b54a7f33e": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductUpdate"];
+            };
+        };
+        responses: {
+            /** @description Produit créé */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "8cbf5c06795b028ae0c6d799760a44da": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Produit */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
             };
         };
     };
@@ -2505,6 +2729,203 @@ export interface operations {
             };
             /** @description Validation */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "1bf1f2e96e6fadb9f5a530930ccdbf87": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Supprimé : il disparaît du catalogue, les commandes passées le conservent */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    bce585b91eae1c4d91b743c2ea21fd84: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Produit restauré */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Introuvable */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    f7201acfb2a06cecaa32831b0d87c6ce: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "multipart/form-data": {
+                    images: string[];
+                };
+            };
+        };
+        responses: {
+            /** @description Produit avec sa galerie */
+            201: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Fichier refusé ou trop d'images */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    cff9925896ca6ca70e3b10e379618d8e: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @description Toutes les images du produit, dans le nouvel ordre */
+                    ids: number[];
+                };
+            };
+        };
+        responses: {
+            /** @description Produit avec sa galerie */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Liste incomplète */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "21f66a9c2418d8c233b4f30dd9685e38": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Produit avec sa galerie */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Image introuvable pour ce produit */
+            404: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "1b6fdde6e7b61edf03f095d12e9e4fb8": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                product: number;
+                image: number;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Produit avec sa galerie */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["Product"];
+                    };
+                };
+            };
+            /** @description Image introuvable pour ce produit */
+            404: {
                 headers: {
                     [name: string]: unknown;
                 };
@@ -4111,6 +4532,91 @@ export interface operations {
             };
         };
     };
+    "23c522a04a89d7a85e268e358b65e71f": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /** @example Awa Koné */
+                    name: string;
+                    /** @example +33612345678 */
+                    phone?: string | null;
+                };
+            };
+        };
+        responses: {
+            /** @description Profil mis à jour */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["User"];
+                    };
+                };
+            };
+            /** @description Non authentifié */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    fc38b3f8e2f374b4f4403a8ab8fe4067: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    current_password: string;
+                    password: string;
+                    password_confirmation: string;
+                };
+            };
+        };
+        responses: {
+            /** @description Mot de passe changé */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Non authentifié */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Mot de passe actuel incorrect ou nouveau mot de passe refusé */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
     "3885c90334138be966c2e718f4ae8a09": {
         parameters: {
             query?: never;
@@ -4797,14 +5303,14 @@ export interface operations {
         };
         requestBody?: never;
         responses: {
-            /** @description Commande */
+            /** @description Commande (schéma OrderDetail pour le personnel) */
             200: {
                 headers: {
                     [name: string]: unknown;
                 };
                 content: {
                     "application/json": {
-                        data?: components["schemas"]["Order"];
+                        data?: components["schemas"]["OrderDetail"];
                     };
                 };
             };
