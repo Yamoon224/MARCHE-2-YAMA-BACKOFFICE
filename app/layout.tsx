@@ -1,9 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import Image from "next/image";
-import Link from "next/link";
-import { Suspense } from "react";
-import { StaffNav } from "@/components/StaffNav";
+import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,16 +34,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-black/[0.03]">
-        <header className="bg-brand-red text-white">
-          <div className="mx-auto flex max-w-7xl items-center gap-6 px-4 py-2">
-            <Link href="/" aria-label="Backoffice Marché de Yama">
-              <Image src="/brand/logo-on-red.jpg" alt="Marché de Yama" width={72} height={64} priority />
-            </Link>
-            <Suspense fallback={null}>
-              <StaffNav />
-            </Suspense>
-          </div>
-        </header>
+        <AppHeader />
         <div className="flex-1">{children}</div>
       </body>
     </html>

@@ -1,17 +1,18 @@
 import { Suspense } from "react";
+import { AuthLayout } from "@/components/AuthLayout";
 import { LoginForm } from "@/components/LoginForm";
 
 export const metadata = { title: "Connexion - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ next?: string | string[] }>;
 
-export default function ConnexionPage({ searchParams }: { searchParams: SearchParams }) {
+export default function LoginPage({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <main className="px-4 py-12">
+    <AuthLayout>
       <Suspense fallback={<p className="text-center text-black/60">Chargement…</p>}>
         <Form searchParams={searchParams} />
       </Suspense>
-    </main>
+    </AuthLayout>
   );
 }
 
