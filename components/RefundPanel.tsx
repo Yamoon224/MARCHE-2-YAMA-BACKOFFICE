@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -73,9 +74,9 @@ export function RefundPanel({ orderId, refundableMinor }: Props) {
       {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}
       {done && <p role="status" className="rounded-lg bg-brand-green/10 p-3 text-sm text-brand-green">{done}</p>}
 
-      <button type="submit" disabled={busy} className="w-fit rounded-full border border-brand-red px-5 py-2 text-sm font-medium text-brand-red disabled:opacity-60">
+      <Btn type="submit" action="refund" disabled={busy} className="w-fit rounded-full border border-brand-red px-5 py-2 text-sm font-medium text-brand-red disabled:opacity-60">
         {busy ? "Remboursement…" : "Rembourser le client"}
-      </button>
+      </Btn>
     </form>
   );
 }

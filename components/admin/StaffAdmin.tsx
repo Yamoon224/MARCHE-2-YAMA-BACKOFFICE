@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import type { FormEvent } from "react";
 import { DataTable } from "@/components/DataTable";
 import { browserApi } from "@/lib/api/client";
@@ -20,19 +22,16 @@ function permissionsText(role: RoleOption | undefined): string {
 function Fields({ member, roles, creating }: { member?: Member; roles: RoleOption[]; creating?: boolean }) {
   return (
     <>
-      <label className="text-sm font-medium">Nom<input name="name" required defaultValue={member?.name} maxLength={120} className={field} /></label>
-      <label className="text-sm font-medium">E-mail<input name="email" type="email" required defaultValue={member?.email ?? ""} maxLength={190} className={field} /></label>
+      <label className="text-sm font-medium">Nom<input name="name" placeholder="Ex. Awa Camara" required defaultValue={member?.name} maxLength={120} className={field} /></label>
+      <label className="text-sm font-medium">E-mail<input name="email" type="email" placeholder="prenom.nom@exemple.fr" required defaultValue={member?.email ?? ""} maxLength={190} className={field} /></label>
       <label className="text-sm font-medium">Téléphone<input name="phone" inputMode="tel" defaultValue={member?.phone ?? ""} placeholder="+33612345678" className={field} /></label>
       <label className="text-sm font-medium">
         Rôle
-        <select name="role" required defaultValue={member?.role ?? ""} className={field}>
-          {creating && <option value="" disabled>Choisir un rôle…</option>}
-          {roles.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
-        </select>
+        <SearchSelect name="role" required defaultValue={member?.role ?? ""} placeholder="Choisir un rôle…" aria-label="Rôle" className="mt-1" options={roles.map((r) => ({ value: r.value, label: r.label }))} />
       </label>
       <label className="text-sm font-medium sm:col-span-2">
         {creating ? "Mot de passe" : "Nouveau mot de passe (laisser vide pour le conserver)"}
-        <input name="password" type="password" required={creating} minLength={8} autoComplete="new-password" className={field} />
+        <input name="password" type="password" placeholder="8 caractères minimum" required={creating} minLength={8} autoComplete="new-password" className={field} />
       </label>
     </>
   );
@@ -107,9 +106,9 @@ export function StaffAdmin({ members, roles, currentUserId }: { members: Member[
             {
               value: "",
               node: m.id === currentUserId ? <span className="text-xs text-black/50">Votre compte</span> : m.is_active ? (
-                <button type="button" disabled={busy} onClick={() => deactivate(m)} className="text-sm text-brand-red underline disabled:opacity-60">Désactiver</button>
+                <Btn type="button" disabled={busy} onClick={() => deactivate(m)} className="text-sm text-brand-red underline disabled:opacity-60">Désactiver</Btn>
               ) : (
-                <button type="button" disabled={busy} onClick={() => reactivate(m)} className="text-sm text-brand-green underline disabled:opacity-60">Réactiver</button>
+                <Btn type="button" disabled={busy} onClick={() => reactivate(m)} className="text-sm text-brand-green underline disabled:opacity-60">Réactiver</Btn>
               ),
             },
           ],
@@ -119,7 +118,7 @@ export function StaffAdmin({ members, roles, currentUserId }: { members: Member[
               <form onSubmit={(e) => update(m, e)} className="mt-3 grid gap-3 sm:grid-cols-2">
                 <Fields member={m} roles={roles} />
                 <p className="text-xs text-black/60 sm:col-span-2">Permissions du rôle : {permissionsText(roleOf(m.role))}</p>
-                <div className="sm:col-span-2"><button type="submit" disabled={busy} className={primary}>Enregistrer</button></div>
+                <div className="sm:col-span-2"><Btn type="submit" disabled={busy} className={primary}>Enregistrer</Btn></div>
               </form>
             </details>
           ),
@@ -129,7 +128,7 @@ export function StaffAdmin({ members, roles, currentUserId }: { members: Member[
       <Section title="Nouveau membre de l'équipe">
         <form onSubmit={create} className="grid gap-3 sm:grid-cols-2">
           <Fields roles={roles} creating />
-          <div className="sm:col-span-2"><button type="submit" disabled={busy} className={primary}>Créer le compte</button></div>
+          <div className="sm:col-span-2"><Btn type="submit" disabled={busy} className={primary}>Créer le compte</Btn></div>
         </form>
       </Section>
       <p className="text-xs text-black/50">Un compte ne peut pas être supprimé, seulement désactivé ; vous ne pouvez ni désactiver votre propre compte ni changer votre rôle.</p>

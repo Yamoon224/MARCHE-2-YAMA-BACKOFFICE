@@ -1,3 +1,4 @@
+import { Btn } from "@/components/Btn";
 import Link from "next/link";
 
 export const DOWN_MESSAGE = "Service momentanément indisponible. Réessayez dans un instant.";
@@ -48,7 +49,7 @@ export function SearchForm({ path, q, children }: { path: string; q: string; chi
         <input type="search" name="q" defaultValue={q} placeholder="Nom, e-mail ou téléphone" className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm" />
       </label>
       {children}
-      <button type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</button>
+      <Btn type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</Btn>
     </form>
   );
 }

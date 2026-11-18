@@ -1,3 +1,5 @@
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DataTable } from "@/components/DataTable";
@@ -49,11 +51,8 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
     <>
       <form action="/orders" className="mb-4 flex items-center gap-2">
         <label className="text-sm font-medium" htmlFor="status">Statut</label>
-        <select id="status" name="status" defaultValue={status} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-          <option value="">Tous</option>
-          {STATUSES.map((s) => <option key={s} value={s}>{statusLabel(s)}</option>)}
-        </select>
-        <button type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</button>
+        <SearchSelect id="status" name="status" defaultValue={status} emptyLabel="Tous les statuts" className="min-w-52" options={STATUSES.map((s) => ({ value: s, label: statusLabel(s) }))} />
+        <Btn type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</Btn>
       </form>
 
       {!result || result.error ? (

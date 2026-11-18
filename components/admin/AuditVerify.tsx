@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useState } from "react";
 import { browserApi } from "@/lib/api/client";
 
@@ -28,9 +29,9 @@ export function AuditVerify() {
 
   return (
     <div className="mb-4 flex flex-wrap items-center gap-3">
-      <button type="button" onClick={() => void verify()} disabled={busy} className="rounded-full border border-brand-green px-4 py-1.5 text-sm font-medium text-brand-green disabled:opacity-60">
+      <Btn type="button" action="verify" onClick={() => void verify()} disabled={busy} className="rounded-full border border-brand-green px-4 py-1.5 text-sm font-medium text-brand-green disabled:opacity-60">
         {busy ? "Vérification…" : "Vérifier l'intégrité"}
-      </button>
+      </Btn>
       {error && <span role="alert" className="text-sm text-brand-red">Vérification impossible. Réessayez.</span>}
       {result && (
         <span role="status" className={`rounded-lg px-3 py-1.5 text-sm ${result.valid ? "bg-brand-green/10 text-brand-green" : "bg-brand-red/10 text-brand-red"}`}>

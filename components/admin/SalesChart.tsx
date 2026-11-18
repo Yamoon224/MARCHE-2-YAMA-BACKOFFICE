@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useState } from "react";
 import { barLayout, compactEuros, fullDay, labelIndexes, niceMax, shortDay, yTicks } from "@/lib/dashboard/chart";
 import { formatMoney } from "@/lib/format";
@@ -25,14 +26,14 @@ export function SalesChart({ points }: { points: Point[] }) {
   const total = values.reduce((sum, v) => sum + v, 0);
 
   const tab = (name: "chart" | "table", label: string) => (
-    <button
+    <Btn
       type="button"
       onClick={() => setView(name)}
       aria-pressed={view === name}
       className={`rounded-full border px-3 py-1 text-sm ${view === name ? "border-brand-green bg-brand-green/10 font-medium" : "border-black/20"}`}
     >
       {label}
-    </button>
+    </Btn>
   );
 
   return (

@@ -1,3 +1,4 @@
+import { SearchSelect } from "@/components/SearchSelect";
 import { Suspense } from "react";
 import { DownNotice, LoadError, Pager, SearchForm, first, pageNumber } from "@/components/admin/notices";
 import { StaffAdmin } from "@/components/admin/StaffAdmin";
@@ -42,18 +43,11 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       <SearchForm path="/staff" q={q}>
         <label className="text-sm font-medium">
           Rôle
-          <select name="role" defaultValue={role} className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-            <option value="">Tous</option>
-            {roleOptions.map((r) => <option key={r.value} value={r.value}>{r.label}</option>)}
-          </select>
+          <SearchSelect name="role" defaultValue={role} emptyLabel="Tous les rôles" aria-label="Rôle" className="mt-1 min-w-52" options={roleOptions.map((r) => ({ value: r.value, label: r.label }))} />
         </label>
         <label className="text-sm font-medium">
           Statut
-          <select name="active" defaultValue={active} className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-            <option value="">Tous</option>
-            <option value="true">Actifs</option>
-            <option value="false">Désactivés</option>
-          </select>
+          <SearchSelect name="active" defaultValue={active} emptyLabel="Tous les statuts" aria-label="Statut" className="mt-1 min-w-44" options={[{ value: "true", label: "Actifs" }, { value: "false", label: "Désactivés" }]} />
         </label>
       </SearchForm>
 

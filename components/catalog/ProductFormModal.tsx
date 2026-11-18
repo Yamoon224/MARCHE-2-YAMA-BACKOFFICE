@@ -1,5 +1,8 @@
 "use client";
 
+import { ActionIcon } from "@/components/ActionIcon";
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { Modal } from "@/components/Modal";
@@ -165,38 +168,32 @@ export function ProductFormModal({ product: initial, categories, onClose }: Prop
       size="xl"
       footer={
         <>
-          <button type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</button>
-          <button type="submit" form={formId} disabled={busy} className={primary}>{busy ? "Enregistrement…" : editing ? "Enregistrer" : "Créer le produit"}</button>
+          <Btn type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</Btn>
+          <Btn type="submit" form={formId} disabled={busy} className={primary}>{busy ? "Enregistrement…" : editing ? "Enregistrer" : "Créer le produit"}</Btn>
         </>
       }
     >
       <div className="grid gap-6 lg:grid-cols-2">
         <form id={formId} onSubmit={submit} className="grid content-start gap-3 sm:grid-cols-2" noValidate>
-          <label className="text-sm font-medium sm:col-span-2">Nom<input name="name" defaultValue={product?.name ?? ""} required maxLength={255} className={field} /></label>
+          <label className="text-sm font-medium sm:col-span-2">Nom<input name="name" placeholder="Ex. Riz parfumé 5 kg" defaultValue={product?.name ?? ""} required maxLength={255} className={field} /></label>
           <label className="text-sm font-medium">Référence (SKU)
-            <input name="sku" defaultValue={product?.sku ?? ""} required readOnly={editing} maxLength={40} className={`${field} ${editing ? "bg-black/5" : ""}`} />
+            <input name="sku" placeholder="Ex. RIZ-5KG" defaultValue={product?.sku ?? ""} required readOnly={editing} maxLength={40} className={`${field} ${editing ? "bg-black/5" : ""}`} />
           </label>
           <label className="text-sm font-medium">Adresse (slug)
             <input name="slug" defaultValue={product?.slug ?? ""} placeholder={editing ? undefined : "Généré depuis le nom"} className={field} />
           </label>
           <label className="text-sm font-medium">Rayon
-            <select name="category" defaultValue={product?.category_id ?? categories[0]?.id} className={field}>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
+            <SearchSelect name="category" required defaultValue={String(product?.category_id ?? categories[0]?.id ?? "")} placeholder="Choisir un rayon…" aria-label="Rayon" className="mt-1" options={categories.map((c) => ({ value: String(c.id), label: c.name }))} />
           </label>
           {!editing && (
             <label className="text-sm font-medium">Vendu
-              <select name="sale_unit" defaultValue="piece" className={field}>
-                <option value="piece">À la pièce</option>
-                <option value="kg">Au kilo</option>
-                <option value="l">Au litre</option>
-              </select>
+              <SearchSelect name="sale_unit" defaultValue="piece" aria-label="Mode de vente" className="mt-1" options={[{ value: "piece", label: "À la pièce" }, { value: "kg", label: "Au kilo" }, { value: "l", label: "Au litre" }]} />
             </label>
           )}
           <label className="text-sm font-medium">Prix (€)<input name="price" inputMode="decimal" defaultValue={product ? centsToInput(product.price_minor) : ""} required placeholder="Ex. 12,50" className={field} /></label>
           <label className="text-sm font-medium">Ancien prix barré (promotion)<input name="compare" inputMode="decimal" defaultValue={product?.compare_at_price_minor ? centsToInput(product.compare_at_price_minor) : ""} placeholder="Vide = pas de promo" className={field} /></label>
           {!editing && (
-            <label className="text-sm font-medium">TVA (%)<input name="vat" inputMode="decimal" defaultValue="5,5" className={field} /></label>
+            <label className="text-sm font-medium">TVA (%)<input name="vat" inputMode="decimal" placeholder="Ex. 5,5" defaultValue="5,5" className={field} /></label>
           )}
           <label className="text-sm font-medium sm:col-span-2">Description<textarea name="description" rows={3} defaultValue={product?.description ?? ""} placeholder="Description visible sur la fiche produit" className={field} /></label>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" defaultChecked={product?.is_featured ?? false} /> Mettre en avant (best seller)</label>
@@ -212,7 +209,8 @@ export function ProductFormModal({ product: initial, categories, onClose }: Prop
         <section aria-label="Galerie d'images">
           <div className="flex items-center justify-between gap-2">
             <h3 className="text-sm font-semibold">Images ({editing ? images.length : pending.length}/10)</h3>
-            <label className={`${primary} cursor-pointer text-xs ${busy ? "pointer-events-none opacity-60" : ""}`}>
+            <label className={`${primary} act act-green act-solid inline-flex cursor-pointer items-center gap-1.5 text-xs ${busy ? "pointer-events-none opacity-60" : ""}`}>
+              <ActionIcon name="upload" className="act-icon h-4 w-4" />
               Ajouter des images
               <input ref={fileInput} type="file" multiple accept="image/jpeg,image/png,image/webp" aria-label="Ajouter des images" onChange={(e) => onFiles(e.target.files)} className="sr-only" />
             </label>
@@ -229,10 +227,10 @@ export function ProductFormModal({ product: initial, categories, onClose }: Prop
                 <img src={image.url} alt={`Image ${index + 1} de ${product.name}`} className="aspect-square w-full rounded-lg object-cover" />
                 <p className="mt-1 text-center text-xs">{image.is_cover ? <b className="text-brand-green">Couverture</b> : <span className="text-black/50">Image {index + 1}</span>}</p>
                 <div className="mt-1 flex flex-wrap justify-center gap-1">
-                  <button type="button" disabled={busy || index === 0} aria-label="Avancer l'image" onClick={() => void gallery(() => browserApi().PUT("/api/v1/catalog/products/{product}/images/order", { params: { path: { product: product.id } }, body: { ids: moveItem(images, index, -1).map((i) => i.id) } }))} className={ghost}>←</button>
-                  <button type="button" disabled={busy || index === images.length - 1} aria-label="Reculer l'image" onClick={() => void gallery(() => browserApi().PUT("/api/v1/catalog/products/{product}/images/order", { params: { path: { product: product.id } }, body: { ids: moveItem(images, index, 1).map((i) => i.id) } }))} className={ghost}>→</button>
-                  {!image.is_cover && <button type="button" disabled={busy} onClick={() => void gallery(() => browserApi().POST("/api/v1/catalog/products/{product}/images/{image}/cover", { params: { path: { product: product.id, image: image.id } } }))} className={ghost}>Couverture</button>}
-                  <button type="button" disabled={busy} aria-label="Supprimer l'image" onClick={() => void gallery(() => browserApi().DELETE("/api/v1/catalog/products/{product}/images/{image}", { params: { path: { product: product.id, image: image.id } } }))} className={`${ghost} text-brand-red`}>Supprimer</button>
+                  <Btn type="button" disabled={busy || index === 0} aria-label="Avancer l'image" onClick={() => void gallery(() => browserApi().PUT("/api/v1/catalog/products/{product}/images/order", { params: { path: { product: product.id } }, body: { ids: moveItem(images, index, -1).map((i) => i.id) } }))} className={ghost}>←</Btn>
+                  <Btn type="button" disabled={busy || index === images.length - 1} aria-label="Reculer l'image" onClick={() => void gallery(() => browserApi().PUT("/api/v1/catalog/products/{product}/images/order", { params: { path: { product: product.id } }, body: { ids: moveItem(images, index, 1).map((i) => i.id) } }))} className={ghost}>→</Btn>
+                  {!image.is_cover && <Btn type="button" disabled={busy} onClick={() => void gallery(() => browserApi().POST("/api/v1/catalog/products/{product}/images/{image}/cover", { params: { path: { product: product.id, image: image.id } } }))} action="confirm" className={ghost}>Couverture</Btn>}
+                  <Btn type="button" disabled={busy} aria-label="Supprimer l'image" onClick={() => void gallery(() => browserApi().DELETE("/api/v1/catalog/products/{product}/images/{image}", { params: { path: { product: product.id, image: image.id } } }))} className={`${ghost} text-brand-red`}>Supprimer</Btn>
                 </div>
               </li>
             ))}
@@ -242,9 +240,9 @@ export function ProductFormModal({ product: initial, categories, onClose }: Prop
                 <img src={item.preview} alt={`Aperçu ${item.file.name}`} className="aspect-square w-full rounded-lg object-cover" />
                 <p className="mt-1 truncate text-center text-xs">{index === 0 ? <b className="text-brand-green">Couverture</b> : item.file.name}</p>
                 <div className="mt-1 flex justify-center gap-1">
-                  <button type="button" disabled={index === 0} aria-label="Avancer l'image" onClick={() => setPending((p) => moveItem(p, index, -1))} className={ghost}>←</button>
-                  <button type="button" disabled={index === pending.length - 1} aria-label="Reculer l'image" onClick={() => setPending((p) => moveItem(p, index, 1))} className={ghost}>→</button>
-                  <button type="button" aria-label="Retirer l'image" onClick={() => setPending((p) => p.filter((_, i) => i !== index))} className={`${ghost} text-brand-red`}>Retirer</button>
+                  <Btn type="button" disabled={index === 0} aria-label="Avancer l'image" onClick={() => setPending((p) => moveItem(p, index, -1))} className={ghost}>←</Btn>
+                  <Btn type="button" disabled={index === pending.length - 1} aria-label="Reculer l'image" onClick={() => setPending((p) => moveItem(p, index, 1))} className={ghost}>→</Btn>
+                  <Btn type="button" aria-label="Retirer l'image" onClick={() => setPending((p) => p.filter((_, i) => i !== index))} className={`${ghost} text-brand-red`}>Retirer</Btn>
                 </div>
               </li>
             ))}

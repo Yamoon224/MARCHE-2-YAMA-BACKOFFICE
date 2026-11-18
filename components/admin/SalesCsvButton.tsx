@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useState } from "react";
 
 /** Télécharge le CSV des ventes produit par le serveur (même filtre que le tableau), via le relais authentifié. */
@@ -30,9 +31,9 @@ export function SalesCsvButton({ from, to, group }: { from: string; to: string; 
 
   return (
     <span className="inline-flex items-center gap-2">
-      <button type="button" onClick={() => void download()} disabled={state === "busy"} className="rounded-full border border-brand-green px-4 py-1.5 text-sm font-medium text-brand-green disabled:opacity-60">
+      <Btn type="button" action="export" onClick={() => void download()} disabled={state === "busy"} className="rounded-full border border-brand-green px-4 py-1.5 text-sm font-medium text-brand-green disabled:opacity-60">
         {state === "busy" ? "Export…" : "Exporter le CSV du serveur"}
-      </button>
+      </Btn>
       {state === "error" && <span role="alert" className="text-xs text-brand-red">Export impossible.</span>}
     </span>
   );

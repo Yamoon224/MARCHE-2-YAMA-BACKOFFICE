@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { FIELD } from "@/components/LoginForm";
@@ -54,9 +55,9 @@ export function ForgotPasswordForm() {
 
           {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}
 
-          <button type="submit" disabled={busy} className="rounded-full bg-brand-red py-2.5 font-medium text-white disabled:opacity-60">
+          <Btn type="submit" action="send" disabled={busy} className="rounded-full bg-brand-red py-2.5 font-medium text-white disabled:opacity-60">
             {busy ? "Patientez…" : "Envoyer le lien"}
-          </button>
+          </Btn>
         </form>
       )}
 

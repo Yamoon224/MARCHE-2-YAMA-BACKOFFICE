@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import type { FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
@@ -70,8 +71,8 @@ export function CategoriesAdmin({ categories }: { categories: Category[] }) {
               <form onSubmit={(e) => update(c, e)} className="grid gap-3 border-t border-black/10 p-3 sm:grid-cols-2">
                 <CategoryFields c={c} />
                 <div className="flex gap-2 sm:col-span-2">
-                  <button type="submit" disabled={busy} className={primary}>Enregistrer</button>
-                  <button type="button" disabled={busy} onClick={() => remove(c)} className={danger}>Supprimer</button>
+                  <Btn type="submit" disabled={busy} className={primary}>Enregistrer</Btn>
+                  <Btn type="button" disabled={busy} onClick={() => remove(c)} className={danger}>Supprimer</Btn>
                 </div>
               </form>
             </details>
@@ -81,7 +82,7 @@ export function CategoriesAdmin({ categories }: { categories: Category[] }) {
       <Section title="Nouveau rayon">
         <form onSubmit={create} className="grid gap-3 sm:grid-cols-2">
           <CategoryFields />
-          <div className="sm:col-span-2"><button type="submit" disabled={busy} className={primary}>Créer le rayon</button></div>
+          <div className="sm:col-span-2"><Btn type="submit" disabled={busy} className={primary}>Créer le rayon</Btn></div>
         </form>
       </Section>
     </div>

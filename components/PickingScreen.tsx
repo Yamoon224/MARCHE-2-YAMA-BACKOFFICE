@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -76,9 +77,9 @@ export function PickingScreen({ listId, status, lines }: Props) {
   return (
     <div>
       {status === "open" && (
-        <button type="button" disabled={busy} onClick={start} className="mb-4 rounded-full bg-brand-green px-5 py-2 font-medium text-white disabled:opacity-60">
+        <Btn type="button" disabled={busy} onClick={start} className="mb-4 rounded-full bg-brand-green px-5 py-2 font-medium text-white disabled:opacity-60">
           Prendre en charge cette préparation
-        </button>
+        </Btn>
       )}
 
       <ul className="flex flex-col gap-3">
@@ -92,9 +93,9 @@ export function PickingScreen({ listId, status, lines }: Props) {
 
       {editable && (
         <div className="mt-6 flex items-center gap-3">
-          <button type="button" onClick={complete} disabled={busy || !canComplete(lines)} className="rounded-full bg-brand-red px-5 py-2.5 font-medium text-white disabled:opacity-50">
+          <Btn type="button" onClick={complete} disabled={busy || !canComplete(lines)} className="rounded-full bg-brand-red px-5 py-2.5 font-medium text-white disabled:opacity-50">
             Terminer la préparation
-          </button>
+          </Btn>
           {!canComplete(lines) && <span className="text-sm text-black/60">{pendingCount(lines)} article(s) restent à traiter.</span>}
         </div>
       )}
@@ -142,12 +143,12 @@ function PickLineCard({ line, editable, busy, onPick, onSubstitute }: CardProps)
             Quantité servie ({unitSuffix(line.sale_unit)}, max {line.max_quantity})
             <input value={input} onChange={(e) => setInput(e.target.value)} inputMode="numeric" placeholder="Quantité" aria-label={`Quantité servie pour ${line.name}`} className={`${field} mt-1 block w-40`} />
           </label>
-          <button type="submit" disabled={busy} className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Enregistrer</button>
-          <button type="button" disabled={busy} onClick={() => onPick(line.id, 0)} className="rounded-full border border-black/20 px-4 py-2 text-sm disabled:opacity-60">Rupture</button>
+          <Btn type="submit" disabled={busy} className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Enregistrer</Btn>
+          <Btn type="button" disabled={busy} onClick={() => onPick(line.id, 0)} className="rounded-full border border-black/20 px-4 py-2 text-sm disabled:opacity-60">Rupture</Btn>
           {line.substitution !== "refuse" && (
-            <button type="button" disabled={busy} onClick={() => setReplacing((v) => !v)} className="rounded-full border border-brand-green px-4 py-2 text-sm text-brand-green disabled:opacity-60">
+            <Btn type="button" disabled={busy} onClick={() => setReplacing((v) => !v)} className="rounded-full border border-brand-green px-4 py-2 text-sm text-brand-green disabled:opacity-60">
               Remplacer…
-            </button>
+            </Btn>
           )}
         </form>
       )}
@@ -192,7 +193,7 @@ function SubstitutePicker({ line, busy, onChoose }: { line: PickLine; busy: bool
       <form onSubmit={search} className="flex flex-wrap items-end gap-2">
         <label className="text-sm font-medium">Rechercher un remplaçant<input value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Nom du produit…" className={`${field} mt-1 block w-56`} /></label>
         <label className="text-sm font-medium">Quantité ({unitSuffix(line.sale_unit)})<input value={quantity} onChange={(e) => setQuantity(e.target.value)} inputMode="numeric" placeholder="Ex. 500" className={`${field} mt-1 block w-28`} /></label>
-        <button type="submit" className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white">Chercher</button>
+        <Btn type="submit" className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white">Chercher</Btn>
       </form>
 
       {error && <p role="alert" className="mt-2 text-sm text-brand-red">{error}</p>}
@@ -202,7 +203,7 @@ function SubstitutePicker({ line, busy, onChoose }: { line: PickLine; busy: bool
           {results.map((p) => (
             <li key={p.id} className="flex items-center justify-between gap-2 py-2">
               <span>{p.name} <span className="text-black/50">({formatMoney(p.price_minor)})</span></span>
-              <button type="button" disabled={busy} onClick={() => choose(p.id)} className="rounded-full border border-brand-green px-3 py-1 text-brand-green disabled:opacity-60">Choisir</button>
+              <Btn type="button" disabled={busy} onClick={() => choose(p.id)} className="rounded-full border border-brand-green px-3 py-1 text-brand-green disabled:opacity-60">Choisir</Btn>
             </li>
           ))}
         </ul>

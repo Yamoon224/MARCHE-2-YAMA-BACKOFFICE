@@ -1,3 +1,5 @@
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { Suspense } from "react";
 import { LotTable } from "@/components/LotTable";
 import { requireStaff } from "@/lib/server/staff";
@@ -46,10 +48,8 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
     <>
       <form action="/stock" className="mb-4 flex items-center gap-2">
         <label htmlFor="filtre" className="text-sm font-medium">Afficher</label>
-        <select id="filtre" name="filtre" defaultValue={filtre} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-          {FILTERS.map((f) => <option key={f.value} value={f.value}>{f.label}</option>)}
-        </select>
-        <button type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</button>
+        <SearchSelect id="filtre" name="filtre" defaultValue={filtre} className="min-w-56" options={FILTERS.map((f) => ({ value: f.value, label: f.label }))} />
+        <Btn type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</Btn>
       </form>
       <LotTable lots={result.data.data} canRecall={canRecall(staff.user.role)} today={todayIso()} />
     </>

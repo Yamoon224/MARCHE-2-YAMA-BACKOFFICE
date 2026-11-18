@@ -1,3 +1,5 @@
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { Suspense } from "react";
 import { DownNotice, LoadError, Pager, first, pageNumber } from "@/components/admin/notices";
 import { PromotionsAdmin } from "@/components/admin/PromotionsAdmin";
@@ -38,16 +40,13 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       <form action="/promotions" className="mb-4 flex flex-wrap items-end gap-2">
         <label className="text-sm font-medium">
           Code
-          <input type="search" name="q" defaultValue={q} className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm" />
+          <input type="search" name="q" defaultValue={q} placeholder="Code ou description…" className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm" />
         </label>
         <label className="text-sm font-medium">
           État
-          <select name="state" defaultValue={state} className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-            <option value="">Tous</option>
-            {Object.entries(PROMOTION_STATE_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-          </select>
+          <SearchSelect name="state" defaultValue={state} emptyLabel="Tous les états" aria-label="État" className="mt-1 min-w-44" options={Object.entries(PROMOTION_STATE_LABEL).map(([value, label]) => ({ value, label }))} />
         </label>
-        <button type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</button>
+        <Btn type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</Btn>
       </form>
 
       <PromotionsAdmin promotions={list.data.data} />

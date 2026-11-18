@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useState, type FormEvent } from "react";
 import { DataTable } from "@/components/DataTable";
 import { Modal } from "@/components/Modal";
@@ -76,9 +77,9 @@ export function BannersManager({ banners }: { banners: Banner[] }) {
 
   const actions = (banner: Banner) => (
     <span className="flex flex-wrap gap-1.5">
-      <button type="button" onClick={() => setDialog({ kind: "details", banner })} className={small}>Détails</button>
-      <button type="button" onClick={() => { setMessage(null); setDialog({ kind: "edit", banner }); }} className={small}>Modifier</button>
-      <button type="button" onClick={() => setDialog({ kind: "delete", banner })} className={`${small} text-brand-red`}>Supprimer</button>
+      <Btn type="button" onClick={() => setDialog({ kind: "details", banner })} className={small}>Détails</Btn>
+      <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "edit", banner }); }} className={small}>Modifier</Btn>
+      <Btn type="button" onClick={() => setDialog({ kind: "delete", banner })} className={`${small} text-brand-red`}>Supprimer</Btn>
     </span>
   );
 
@@ -91,14 +92,14 @@ export function BannersManager({ banners }: { banners: Banner[] }) {
     <div className="space-y-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <p className="text-sm text-black/60">Le carrousel de la page d&apos;accueil de la vitrine suit l&apos;ordre ci-dessous. Sans bannière active, il est masqué.</p>
-        <button type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouvelle bannière</button>
+        <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouvelle bannière</Btn>
       </div>
 
       <Feedback message={message} />
 
       <div role="tablist" aria-label="Mode d'affichage" className="flex border-b border-black/10">
-        <button role="tab" type="button" id="tab-grid" aria-selected={tab === "grid"} aria-controls="panel-banners" onClick={() => setTab("grid")} className={tabClass(tab === "grid")}>Grille</button>
-        <button role="tab" type="button" id="tab-list" aria-selected={tab === "list"} aria-controls="panel-banners" onClick={() => setTab("list")} className={tabClass(tab === "list")}>Liste</button>
+        <Btn role="tab" type="button" id="tab-grid" aria-selected={tab === "grid"} aria-controls="panel-banners" onClick={() => setTab("grid")} className={tabClass(tab === "grid")}>Grille</Btn>
+        <Btn role="tab" type="button" id="tab-list" aria-selected={tab === "list"} aria-controls="panel-banners" onClick={() => setTab("list")} className={tabClass(tab === "list")}>Liste</Btn>
         <span className="ml-auto self-center text-xs text-black/60">{sorted.length} bannière{sorted.length > 1 ? "s" : ""}</span>
       </div>
 
@@ -160,8 +161,8 @@ export function BannersManager({ banners }: { banners: Banner[] }) {
         title={dialog?.kind === "edit" ? "Modifier la bannière" : "Nouvelle bannière"}
         footer={
           <>
-            <button type="button" onClick={() => setDialog(null)} className={small}>Annuler</button>
-            <button type="submit" form={FORM_ID} disabled={busy} className={primary}>{dialog?.kind === "edit" ? "Enregistrer" : "Créer la bannière"}</button>
+            <Btn type="button" onClick={() => setDialog(null)} className={small}>Annuler</Btn>
+            <Btn type="submit" form={FORM_ID} disabled={busy} className={primary}>{dialog?.kind === "edit" ? "Enregistrer" : "Créer la bannière"}</Btn>
           </>
         }
       >
@@ -180,8 +181,8 @@ export function BannersManager({ banners }: { banners: Banner[] }) {
         footer={
           dialog?.kind === "details" ? (
             <>
-              <button type="button" onClick={() => setDialog(null)} className={small}>Fermer</button>
-              <button type="button" onClick={() => setDialog({ kind: "edit", banner: dialog.banner })} className={primary}>Modifier</button>
+              <Btn type="button" onClick={() => setDialog(null)} className={small}>Fermer</Btn>
+              <Btn type="button" onClick={() => setDialog({ kind: "edit", banner: dialog.banner })} className={primary}>Modifier</Btn>
             </>
           ) : null
         }
@@ -210,8 +211,8 @@ export function BannersManager({ banners }: { banners: Banner[] }) {
         footer={
           dialog?.kind === "delete" ? (
             <>
-              <button type="button" onClick={() => setDialog(null)} className={small}>Annuler</button>
-              <button type="button" disabled={busy} onClick={() => remove(dialog.banner)} className={danger}>Supprimer définitivement</button>
+              <Btn type="button" onClick={() => setDialog(null)} className={small}>Annuler</Btn>
+              <Btn type="button" disabled={busy} onClick={() => remove(dialog.banner)} className={danger}>Supprimer définitivement</Btn>
             </>
           ) : null
         }

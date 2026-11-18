@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import Link from "next/link";
 import { useState } from "react";
 import { Modal } from "@/components/Modal";
@@ -30,7 +31,7 @@ export function OrderDetailsButton({ orderId, number }: { orderId: number; numbe
 
   return (
     <>
-      <button type="button" onClick={() => void show()} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-xs font-medium hover:bg-black/5">Détails</button>
+      <Btn type="button" onClick={() => void show()} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-xs font-medium hover:bg-black/5">Détails</Btn>
       <Modal
         open={open}
         onClose={() => setOpen(false)}
@@ -38,7 +39,7 @@ export function OrderDetailsButton({ orderId, number }: { orderId: number; numbe
         size="xl"
         footer={
           <>
-            <button type="button" onClick={() => setOpen(false)} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Fermer</button>
+            <Btn type="button" onClick={() => setOpen(false)} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Fermer</Btn>
             <Link href={`/orders/${orderId}`} className="rounded-full bg-brand-green px-4 py-2 text-sm font-medium text-white">Ouvrir la commande (actions)</Link>
           </>
         }

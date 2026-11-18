@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { DataTable } from "@/components/DataTable";
@@ -98,14 +99,14 @@ function RecallCell({ lot, canRecall }: { lot: Lot; canRecall: boolean }) {
   return (
     <div className="flex min-w-48 flex-col items-end gap-2">
       {canRecall && !lot.recalled && !report && (
-        <button type="button" onClick={() => setOpen((v) => !v)} className="rounded-full border border-brand-red px-3 py-1 text-xs text-brand-red">Rappeler</button>
+        <Btn type="button" onClick={() => setOpen((v) => !v)} className="rounded-full border border-brand-red px-3 py-1 text-xs text-brand-red">Rappeler</Btn>
       )}
       {open && (
         <form onSubmit={recall} className="flex flex-col items-end gap-2" noValidate>
           <label className="text-left text-sm font-medium">Motif du rappel
             <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={255} placeholder="Ex. rappel fournisseur du 16/11" className="mt-1 block w-72 rounded-lg border border-black/20 bg-white px-3 py-2 text-sm" />
           </label>
-          <button type="submit" disabled={busy} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">{busy ? "Rappel…" : "Bloquer et rappeler le lot"}</button>
+          <Btn type="submit" disabled={busy} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">{busy ? "Rappel…" : "Bloquer et rappeler le lot"}</Btn>
         </form>
       )}
       {error && <p role="alert" className="text-left text-sm text-brand-red">{error}</p>}

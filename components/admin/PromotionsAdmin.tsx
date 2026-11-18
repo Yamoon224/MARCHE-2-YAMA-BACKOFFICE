@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { useState, type FormEvent } from "react";
 import { DataTable } from "@/components/DataTable";
 import { Feedback, field, int, optional, primary, Section, str, useAction, amount } from "@/components/catalog/shared";
@@ -25,22 +27,19 @@ function Fields({ p }: { p?: Promotion }) {
   return (
     <>
       <label className="text-sm font-medium">Code<input name="code" required defaultValue={p?.code} maxLength={40} pattern="[A-Za-z0-9_\-]+" placeholder="Ex. BIENVENUE10" className={`${field} uppercase`} /></label>
-      <label className="text-sm font-medium">Description<input name="description" defaultValue={p?.description ?? ""} maxLength={255} className={field} /></label>
+      <label className="text-sm font-medium">Description<input name="description" placeholder="Ex. Offre de bienvenue" defaultValue={p?.description ?? ""} maxLength={255} className={field} /></label>
       <label className="text-sm font-medium">
         Type de remise
-        <select name="type" value={type} onChange={(e) => setType(e.target.value)} className={field}>
-          <option value="percent">Pourcentage</option>
-          <option value="fixed">Montant fixe (€)</option>
-        </select>
+        <SearchSelect name="type" value={type} onChange={setType} aria-label="Type de remise" className="mt-1" options={[{ value: "percent", label: "Pourcentage" }, { value: "fixed", label: "Montant fixe (€)" }]} />
       </label>
       <label className="text-sm font-medium">
         {type === "percent" ? "Pourcentage (1 à 100)" : "Montant (€)"}
-        <input name="value" required inputMode="decimal" defaultValue={p ? (p.type === "percent" ? p.value : centsToInput(p.value)) : ""} className={field} />
+        <input name="value" required inputMode="decimal" placeholder={type === "percent" ? "Ex. 10" : "Ex. 5,00"} defaultValue={p ? (p.type === "percent" ? p.value : centsToInput(p.value)) : ""} className={field} />
       </label>
       <label className="text-sm font-medium">Minimum de commande (€)<input name="min_order" inputMode="decimal" defaultValue={p?.min_order_minor ? centsToInput(p.min_order_minor) : ""} placeholder="Aucun" className={field} /></label>
       <label className="text-sm font-medium">Utilisations maximum<input name="max_uses" inputMode="numeric" defaultValue={p?.max_uses ?? ""} placeholder="Illimité" className={field} /></label>
-      <label className="text-sm font-medium">Début<input name="starts_at" type="datetime-local" defaultValue={toLocalInput(p?.starts_at)} className={field} /></label>
-      <label className="text-sm font-medium">Fin<input name="ends_at" type="datetime-local" defaultValue={toLocalInput(p?.ends_at)} className={field} /></label>
+      <label className="text-sm font-medium">Début<input name="starts_at" type="datetime-local" placeholder="jj/mm/aaaa hh:mm" defaultValue={toLocalInput(p?.starts_at)} className={field} /></label>
+      <label className="text-sm font-medium">Fin<input name="ends_at" type="datetime-local" placeholder="jj/mm/aaaa hh:mm" defaultValue={toLocalInput(p?.ends_at)} className={field} /></label>
       <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="active" defaultChecked={p?.is_active ?? true} /> Code activé</label>
     </>
   );
@@ -148,8 +147,8 @@ export function PromotionsAdmin({ promotions }: { promotions: Promotion[] }) {
               value: "",
               node: (
                 <span className="flex gap-3 whitespace-nowrap text-sm">
-                  <button type="button" disabled={busy} onClick={() => toggle(p)} className="text-brand-green underline disabled:opacity-60">{p.is_active ? "Désactiver" : "Activer"}</button>
-                  <button type="button" disabled={busy} onClick={() => remove(p)} className="text-brand-red underline disabled:opacity-60">Supprimer</button>
+                  <Btn type="button" disabled={busy} onClick={() => toggle(p)} className="text-brand-green underline disabled:opacity-60">{p.is_active ? "Désactiver" : "Activer"}</Btn>
+                  <Btn type="button" disabled={busy} onClick={() => remove(p)} className="text-brand-red underline disabled:opacity-60">Supprimer</Btn>
                 </span>
               ),
             },
@@ -162,7 +161,7 @@ export function PromotionsAdmin({ promotions }: { promotions: Promotion[] }) {
                 className="mt-3 grid gap-3 sm:grid-cols-2"
               >
                 <Fields p={p} />
-                <div className="sm:col-span-2"><button type="submit" disabled={busy} className={primary}>Enregistrer</button></div>
+                <div className="sm:col-span-2"><Btn type="submit" disabled={busy} className={primary}>Enregistrer</Btn></div>
               </form>
             </details>
           ),
@@ -178,7 +177,7 @@ export function PromotionsAdmin({ promotions }: { promotions: Promotion[] }) {
           className="grid gap-3 sm:grid-cols-2"
         >
           <Fields />
-          <div className="sm:col-span-2"><button type="submit" disabled={busy} className={primary}>Créer le code</button></div>
+          <div className="sm:col-span-2"><Btn type="submit" disabled={busy} className={primary}>Créer le code</Btn></div>
         </form>
       </Section>
       <p className="text-xs text-black/50">La remise se calcule déjà via le contrôle d&apos;un code ; son application automatique au passage de commande n&apos;est pas encore branchée côté serveur.</p>

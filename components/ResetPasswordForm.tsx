@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import Link from "next/link";
 import { useState, type FormEvent } from "react";
 import { FIELD } from "@/components/LoginForm";
@@ -73,13 +74,13 @@ export function ResetPasswordForm({ token, email }: { token: string; email: stri
 
           <label className="text-sm font-medium">
             Nouveau mot de passe
-            <PasswordInput name="password" required minLength={8} autoComplete="new-password" className={FIELD} />
+            <PasswordInput name="password" placeholder="Au moins 8 caractères" required minLength={8} autoComplete="new-password" className={FIELD} />
             <span className="mt-1 block text-xs font-normal text-black/60">8 caractères minimum, avec au moins une lettre et un chiffre.</span>
           </label>
 
           <label className="text-sm font-medium">
             Confirmer le mot de passe
-            <PasswordInput name="confirmation" required minLength={8} autoComplete="new-password" className={FIELD} />
+            <PasswordInput name="confirmation" placeholder="Retapez le nouveau mot de passe" required minLength={8} autoComplete="new-password" className={FIELD} />
           </label>
 
           {error && (
@@ -88,9 +89,9 @@ export function ResetPasswordForm({ token, email }: { token: string; email: stri
             </p>
           )}
 
-          <button type="submit" disabled={busy} className="rounded-full bg-brand-red py-2.5 font-medium text-white disabled:opacity-60">
+          <Btn type="submit" action="save" disabled={busy} className="rounded-full bg-brand-red py-2.5 font-medium text-white disabled:opacity-60">
             {busy ? "Patientez…" : "Changer le mot de passe"}
-          </button>
+          </Btn>
         </form>
       )}
     </div>

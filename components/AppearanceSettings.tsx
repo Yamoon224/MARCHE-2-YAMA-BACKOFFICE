@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useAppearance } from "@/components/AppearanceProvider";
 import { AppearanceControls, Section } from "@/components/SettingsPanel";
 import { BRAND_RED } from "@/lib/appearance";
@@ -25,9 +26,9 @@ export function AppearanceSettings() {
         </div>
       </Section>
 
-      <button type="button" onClick={reset} disabled={isDefault} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium hover:bg-black/5 disabled:opacity-40">
-        ↺ Réinitialiser l&apos;apparence
-      </button>
+      <Btn type="button" action="reset" onClick={reset} disabled={isDefault} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium hover:bg-black/5 disabled:opacity-40">
+        Réinitialiser l&apos;apparence
+      </Btn>
     </div>
   );
 }

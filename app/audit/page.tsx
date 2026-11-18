@@ -1,3 +1,5 @@
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { Suspense } from "react";
 import { AuditVerify } from "@/components/admin/AuditVerify";
 import { DownNotice, LoadError, Pager, first, pageNumber } from "@/components/admin/notices";
@@ -58,23 +60,17 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       <form action="/audit" className="mb-4 flex flex-wrap items-end gap-2">
         <label className="text-sm font-medium">
           Utilisateur
-          <select name="user_id" defaultValue={userId} className={input}>
-            <option value="">Tous</option>
-            {[...names.entries()].map(([id, name]) => <option key={id} value={id}>{name}</option>)}
-          </select>
+          <SearchSelect name="user_id" defaultValue={userId} emptyLabel="Tous les utilisateurs" aria-label="Utilisateur" className="mt-1 min-w-52" options={[...names.entries()].map(([id, name]) => ({ value: String(id), label: name }))} />
         </label>
         <label className="text-sm font-medium">
           Méthode
-          <select name="method" defaultValue={method} className={input}>
-            <option value="">Toutes</option>
-            {METHODS.map((m) => <option key={m} value={m}>{m}</option>)}
-          </select>
+          <SearchSelect name="method" defaultValue={method} emptyLabel="Toutes les méthodes" aria-label="Méthode" className="mt-1 min-w-44" options={METHODS.map((m) => ({ value: m, label: m }))} />
         </label>
         <label className="text-sm font-medium">Chemin<input name="path" defaultValue={path} placeholder="Ex. /orders" className={input} /></label>
-        <label className="text-sm font-medium">Du<input type="date" name="from" defaultValue={from} className={input} /></label>
-        <label className="text-sm font-medium">Au<input type="date" name="to" defaultValue={to} className={input} /></label>
+        <label className="text-sm font-medium">Du<input type="date" name="from" defaultValue={from} placeholder="jj/mm/aaaa" className={input} /></label>
+        <label className="text-sm font-medium">Au<input type="date" name="to" defaultValue={to} placeholder="jj/mm/aaaa" className={input} /></label>
         <label className="flex items-center gap-2 pb-2 text-sm"><input type="checkbox" name="failed" value="true" defaultChecked={failed} /> Échecs seulement</label>
-        <button type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</button>
+        <Btn type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</Btn>
       </form>
 
       {entries.length === 0 ? <p className="text-black/70">Aucune entrée ne correspond.</p> : (

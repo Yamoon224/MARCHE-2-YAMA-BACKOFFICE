@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useState, type ReactNode } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -84,7 +85,7 @@ export function ImageField({ name, defaultValue, large = false }: { name: string
           <span className={`grid ${large ? "h-24 w-44" : "h-12 w-12"} place-items-center rounded-lg bg-black/5`} aria-hidden="true">🖼</span>
         )}
         <input type="file" accept="image/jpeg,image/png,image/webp" aria-label="Téléverser une image" onChange={(e) => void upload(e.target.files?.[0])} className="text-xs" />
-        {url && <button type="button" onClick={() => setUrl("")} className="text-xs text-brand-red underline">Retirer</button>}
+        {url && <Btn type="button" onClick={() => setUrl("")} className="text-xs text-brand-red underline">Retirer</Btn>}
       </div>
       <input type="hidden" name={name} value={url} />
       {state === "uploading" && <span className="text-xs text-black/60">Envoi…</span>}

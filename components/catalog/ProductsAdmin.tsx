@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { useState } from "react";
 import { DataTable } from "@/components/DataTable";
 import { Modal } from "@/components/Modal";
@@ -78,13 +80,13 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
 
     return (
       <span className="flex flex-wrap gap-1.5">
-        <button type="button" onClick={() => setDialog({ kind: "details", product })} className={small}>Détails</button>
+        <Btn type="button" onClick={() => setDialog({ kind: "details", product })} className={small}>Détails</Btn>
         {deleted ? (
-          <button type="button" disabled={busy} onClick={() => restore(product)} className={small}>Restaurer</button>
+          <Btn type="button" disabled={busy} onClick={() => restore(product)} className={small}>Restaurer</Btn>
         ) : (
           <>
-            <button type="button" onClick={() => setDialog({ kind: "edit", product })} className={small}>Modifier</button>
-            <button type="button" onClick={() => setDialog({ kind: "delete", product })} className={`${small} text-brand-red`}>Supprimer</button>
+            <Btn type="button" onClick={() => setDialog({ kind: "edit", product })} className={small}>Modifier</Btn>
+            <Btn type="button" onClick={() => setDialog({ kind: "delete", product })} className={`${small} text-brand-red`}>Supprimer</Btn>
           </>
         )}
       </span>
@@ -102,28 +104,21 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
             <input name="q" defaultValue={query} placeholder="Nom ou référence…" className={`${field} w-48`} />
           </label>
           <label className="text-xs font-medium">Rayon
-            <select name="category" defaultValue={category} className={`${field} w-44`}>
-              <option value="">Tous les rayons</option>
-              {categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
+            <SearchSelect name="category" defaultValue={category} emptyLabel="Tous les rayons" aria-label="Rayon" className="mt-1 w-48" options={categories.map((c) => ({ value: String(c.id), label: c.name }))} />
           </label>
           <label className="text-xs font-medium">Affichage
-            <select name="trashed" defaultValue={trashed} className={`${field} w-52`}>
-              <option value="">Produits actifs</option>
-              <option value="with">Actifs et supprimés</option>
-              <option value="only">Supprimés seulement</option>
-            </select>
+            <SearchSelect name="trashed" defaultValue={trashed} aria-label="Affichage" className="mt-1 w-56" options={[{ value: "", label: "Produits actifs" }, { value: "with", label: "Actifs et supprimés" }, { value: "only", label: "Supprimés seulement" }]} />
           </label>
-          <button type="submit" className={primary}>Filtrer</button>
+          <Btn type="submit" className={primary}>Filtrer</Btn>
         </form>
-        <button type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouveau produit</button>
+        <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouveau produit</Btn>
       </div>
 
       <Feedback message={message} />
 
       <div role="tablist" aria-label="Mode d'affichage" className="flex border-b border-black/10">
-        <button role="tab" type="button" id="tab-grid" aria-selected={tab === "grid"} aria-controls="panel-products" onClick={() => setTab("grid")} className={tabClass(tab === "grid")}>Grille</button>
-        <button role="tab" type="button" id="tab-list" aria-selected={tab === "list"} aria-controls="panel-products" onClick={() => setTab("list")} className={tabClass(tab === "list")}>Liste</button>
+        <Btn role="tab" type="button" id="tab-grid" aria-selected={tab === "grid"} aria-controls="panel-products" onClick={() => setTab("grid")} className={tabClass(tab === "grid")}>Grille</Btn>
+        <Btn role="tab" type="button" id="tab-list" aria-selected={tab === "list"} aria-controls="panel-products" onClick={() => setTab("list")} className={tabClass(tab === "list")}>Liste</Btn>
         <span className="ml-auto self-center text-xs text-black/60">{products.length} produit{products.length > 1 ? "s" : ""}</span>
       </div>
 
@@ -209,8 +204,8 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
         size="md"
         footer={
           <>
-            <button type="button" onClick={() => setDialog(null)} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</button>
-            <button type="button" disabled={busy} onClick={() => dialog?.kind === "delete" && remove(dialog.product)} className={danger}>{busy ? "Suppression…" : "Oui, supprimer"}</button>
+            <Btn type="button" onClick={() => setDialog(null)} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</Btn>
+            <Btn type="button" disabled={busy} onClick={() => dialog?.kind === "delete" && remove(dialog.product)} className={danger}>{busy ? "Suppression…" : "Oui, supprimer"}</Btn>
           </>
         }
       >
@@ -264,13 +259,13 @@ function ProductDetails({ product, categoryName, onClose, onEdit, onDelete, onRe
       size="xl"
       footer={
         <>
-          <button type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Fermer</button>
+          <Btn type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Fermer</Btn>
           {deleted ? (
-            <button type="button" disabled={busy} onClick={onRestore} className={primary}>Restaurer</button>
+            <Btn type="button" disabled={busy} onClick={onRestore} className={primary}>Restaurer</Btn>
           ) : (
             <>
-              <button type="button" onClick={onDelete} className={danger}>Supprimer</button>
-              <button type="button" onClick={onEdit} className={primary}>Modifier</button>
+              <Btn type="button" onClick={onDelete} className={danger}>Supprimer</Btn>
+              <Btn type="button" onClick={onEdit} className={primary}>Modifier</Btn>
             </>
           )}
         </>
@@ -288,10 +283,10 @@ function ProductDetails({ product, categoryName, onClose, onEdit, onDelete, onRe
             <ul className="mt-3 flex gap-2 overflow-x-auto">
               {images.map((image, index) => (
                 <li key={image.id}>
-                  <button type="button" onClick={() => setSelected(index)} aria-label={`Voir l'image ${index + 1}`} aria-current={index === selected} className={`block rounded-lg border-2 ${index === selected ? "border-brand-green" : "border-transparent"}`}>
+                  <Btn type="button" onClick={() => setSelected(index)} aria-label={`Voir l'image ${index + 1}`} aria-current={index === selected} className={`block rounded-lg border-2 ${index === selected ? "border-brand-green" : "border-transparent"}`}>
                     {/* eslint-disable-next-line @next/next/no-img-element -- vignette */}
                     <img src={image.url} alt="" className="h-16 w-16 rounded-md object-cover" />
-                  </button>
+                  </Btn>
                 </li>
               ))}
             </ul>

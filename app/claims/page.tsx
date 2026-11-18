@@ -1,3 +1,5 @@
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DataTable } from "@/components/DataTable";
@@ -66,11 +68,8 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
 
       <form action="/claims" className="mb-4 flex items-center gap-2">
         <label htmlFor="status" className="text-sm font-medium">Statut</label>
-        <select id="status" name="status" defaultValue={status} className="rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-          <option value="">Tous</option>
-          {Object.entries(CLAIM_STATUS_LABEL).map(([value, label]) => <option key={value} value={value}>{label}</option>)}
-        </select>
-        <button type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</button>
+        <SearchSelect id="status" name="status" defaultValue={status} emptyLabel="Tous les statuts" className="min-w-48" options={Object.entries(CLAIM_STATUS_LABEL).map(([value, label]) => ({ value, label }))} />
+        <Btn type="submit" className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white">Filtrer</Btn>
       </form>
 
       {claims.length === 0 ? <p className="text-black/70">Aucune réclamation{status ? " dans ce statut" : ""}.</p> : (

@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -80,41 +82,40 @@ function DeliveryCard({ delivery, couriers }: { delivery: BoardDelivery; courier
       {canAssign && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <label className="sr-only" htmlFor={`courier-${delivery.id}`}>Livreur</label>
-          <select id={`courier-${delivery.id}`} value={courierId} onChange={(e) => setCourierId(e.target.value)} className={field}>
-            <option value="">Choisir un livreur…</option>
-            {couriers.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
-          </select>
-          <button
+          <SearchSelect id={`courier-${delivery.id}`} value={courierId} onChange={setCourierId} placeholder="Choisir un livreur…" className="min-w-52" options={couriers.map((c) => ({ value: String(c.id), label: c.name }))} />
+          <Btn
             type="button"
+            action="assign"
             disabled={busy || courierId === ""}
             onClick={() => run(() => browserApi().POST("/api/v1/delivery/deliveries/{delivery}/assign", { params: { path }, body: { courier_id: Number(courierId) } }))}
             className="rounded-full bg-brand-green px-4 py-1.5 text-sm font-medium text-white disabled:opacity-50"
           >
             {delivery.status === "pending" ? "Affecter" : "Réaffecter"}
-          </button>
+          </Btn>
         </div>
       )}
 
       {delivery.code_locked && (
         <div className="mt-3 flex items-center gap-3">
           <p className="text-sm font-medium text-brand-red">Code verrouillé après trop d&apos;essais erronés.</p>
-          <button type="button" disabled={busy} onClick={() => run(() => browserApi().POST("/api/v1/delivery/deliveries/{delivery}/unlock", { params: { path } }))} className="rounded-full border border-brand-red px-4 py-1.5 text-sm text-brand-red disabled:opacity-50">
+          <Btn type="button" disabled={busy} onClick={() => run(() => browserApi().POST("/api/v1/delivery/deliveries/{delivery}/unlock", { params: { path } }))} className="rounded-full border border-brand-red px-4 py-1.5 text-sm text-brand-red disabled:opacity-50">
             Débloquer
-          </button>
+          </Btn>
         </div>
       )}
 
       {delivery.status === "failed" && (
         <div className="mt-3 flex flex-wrap items-center gap-2">
           <input value={reason} onChange={(e) => setReason(e.target.value)} placeholder="Motif du retour" aria-label="Motif du retour au magasin" maxLength={255} className={`${field} w-64`} />
-          <button
+          <Btn
             type="button"
+            action="reset"
             disabled={busy || reason.trim().length < 3}
             onClick={() => run(() => browserApi().POST("/api/v1/delivery/deliveries/{delivery}/return", { params: { path }, body: { reason: reason.trim() } }))}
             className="rounded-full border border-brand-red px-4 py-1.5 text-sm text-brand-red disabled:opacity-50"
           >
             Retourner au magasin
-          </button>
+          </Btn>
           <span className="text-xs text-black/60">Le livreur peut aussi retenter la livraison.</span>
         </div>
       )}

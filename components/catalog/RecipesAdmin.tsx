@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
@@ -23,17 +25,14 @@ function IngredientRows({ rows, setRows, products }: { rows: Row[]; setRows: (r:
       <ul className="mt-1 space-y-2">
         {rows.map((r) => (
           <li key={r.key} className="flex flex-wrap items-center gap-2">
-            <select aria-label="Produit" value={r.productId} onChange={(e) => patch(r.key, { productId: e.target.value })} className={`${field} mt-0 w-auto min-w-48 flex-1`}>
-              <option value="">Choisir un produit…</option>
-              {products.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
-            </select>
+            <SearchSelect aria-label="Produit" value={r.productId} onChange={(productId) => patch(r.key, { productId })} placeholder="Choisir un produit…" className="min-w-48 flex-1" options={products.map((p) => ({ value: String(p.id), label: p.name }))} />
             <input aria-label="Quantité" placeholder="Quantité" inputMode="numeric" value={r.quantity} onChange={(e) => patch(r.key, { quantity: e.target.value })} className={`${field} mt-0 w-24`} />
             <span className="text-xs text-black/60">{unitOf(r.productId)}</span>
-            <button type="button" onClick={() => setRows(rows.filter((x) => x.key !== r.key))} className="text-xs text-brand-red underline">Retirer</button>
+            <Btn type="button" onClick={() => setRows(rows.filter((x) => x.key !== r.key))} className="text-xs text-brand-red underline">Retirer</Btn>
           </li>
         ))}
       </ul>
-      <button type="button" onClick={() => setRows([...rows, { key: nextKey++, productId: "", quantity: "1" }])} className="mt-2 text-sm text-brand-green underline">+ Ajouter un ingrédient</button>
+      <Btn type="button" onClick={() => setRows([...rows, { key: nextKey++, productId: "", quantity: "1" }])} className="mt-2 text-sm text-brand-green underline">+ Ajouter un ingrédient</Btn>
     </fieldset>
   );
 }
@@ -81,8 +80,8 @@ function RecipeForm({ recipe, products, busy, submitLabel, onSubmit, onDelete }:
       <IngredientRows rows={rows} setRows={setRows} products={products} />
       {error && <p role="alert" className="text-sm text-brand-red sm:col-span-2">{error}</p>}
       <div className="flex gap-2 sm:col-span-2">
-        <button type="submit" disabled={busy} className={primary}>{submitLabel}</button>
-        {onDelete && <button type="button" disabled={busy} onClick={onDelete} className={danger}>Supprimer</button>}
+        <Btn type="submit" action="save" disabled={busy} className={primary}>{submitLabel}</Btn>
+        {onDelete && <Btn type="button" disabled={busy} onClick={onDelete} className={danger}>Supprimer</Btn>}
       </div>
     </form>
   );

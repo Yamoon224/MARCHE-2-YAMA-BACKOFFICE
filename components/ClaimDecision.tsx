@@ -1,5 +1,7 @@
 "use client";
 
+import { SearchSelect } from "@/components/SearchSelect";
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -67,9 +69,7 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
       {accepting && (
         <>
           <label className="text-sm font-medium">Résolution
-            <select value={draft.resolution} onChange={(e) => set({ resolution: e.target.value as Resolution })} className={field}>
-              {(Object.keys(RESOLUTION_LABEL) as Resolution[]).map((r) => <option key={r} value={r}>{RESOLUTION_LABEL[r]}</option>)}
-            </select>
+            <SearchSelect value={draft.resolution} onChange={(resolution) => set({ resolution: resolution as Resolution })} aria-label="Résolution" className="mt-1" options={(Object.keys(RESOLUTION_LABEL) as Resolution[]).map((r) => ({ value: r, label: RESOLUTION_LABEL[r] }))} />
           </label>
 
           {draft.resolution === "refund" && (
@@ -79,10 +79,7 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
           )}
 
           <label className="text-sm font-medium">Coût imputé à
-            <select value={draft.costBearer} onChange={(e) => set({ costBearer: e.target.value as CostBearer | "" })} className={field}>
-              <option value="">Choisir…</option>
-              {(Object.keys(COST_BEARER_LABEL) as CostBearer[]).map((c) => <option key={c} value={c}>{COST_BEARER_LABEL[c]}</option>)}
-            </select>
+            <SearchSelect value={draft.costBearer} onChange={(costBearer) => set({ costBearer: costBearer as CostBearer | "" })} placeholder="Choisir…" aria-label="Coût imputé à" className="mt-1" options={(Object.keys(COST_BEARER_LABEL) as CostBearer[]).map((c) => ({ value: c, label: COST_BEARER_LABEL[c] }))} />
           </label>
         </>
       )}
@@ -93,9 +90,9 @@ export function ClaimDecision({ claimId, ceilingMinor }: { claimId: number; ceil
 
       {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">{error}</p>}
 
-      <button type="submit" disabled={busy} className={`w-fit rounded-full px-6 py-2.5 text-sm font-medium text-white disabled:opacity-60 ${accepting ? "bg-brand-green" : "bg-brand-red"}`}>
+      <Btn type="submit" disabled={busy} className={`w-fit rounded-full px-6 py-2.5 text-sm font-medium text-white disabled:opacity-60 ${accepting ? "bg-brand-green" : "bg-brand-red"}`}>
         {busy ? "Enregistrement…" : accepting ? "Accepter la réclamation" : "Refuser la réclamation"}
-      </button>
+      </Btn>
     </form>
   );
 }

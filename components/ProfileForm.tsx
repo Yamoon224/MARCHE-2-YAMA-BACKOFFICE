@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { PasswordInput } from "@/components/PasswordInput";
@@ -102,25 +103,25 @@ export function ProfileForm({ user }: { user: User }) {
 
       <Section title="Modifier mes informations">
         <form onSubmit={saveProfile} className="grid gap-3 sm:grid-cols-2" noValidate>
-          <label className="text-sm font-medium">Nom<input name="name" required maxLength={120} autoComplete="name" defaultValue={user.name} className={FIELD} /></label>
+          <label className="text-sm font-medium">Nom<input name="name" placeholder="Votre nom complet" required maxLength={120} autoComplete="name" defaultValue={user.name} className={FIELD} /></label>
           <label className="text-sm font-medium">Téléphone<input name="phone" type="tel" inputMode="tel" autoComplete="tel" maxLength={20} placeholder="+33612345678" defaultValue={user.phone ?? ""} className={FIELD} /></label>
           <p className="text-xs text-black/60 sm:col-span-2">L&apos;adresse e-mail et le rôle sont gérés par un administrateur.</p>
           <div className="space-y-3 sm:col-span-2">
             <Notice message={profileMessage} />
-            <button type="submit" disabled={profileBusy} style={{ backgroundColor: "var(--active)" }} className={BUTTON}>{profileBusy ? "Enregistrement…" : "Enregistrer"}</button>
+            <Btn type="submit" disabled={profileBusy} style={{ backgroundColor: "var(--active)" }} className={BUTTON}>{profileBusy ? "Enregistrement…" : "Enregistrer"}</Btn>
           </div>
         </form>
       </Section>
 
       <Section title="Changer mon mot de passe">
         <form onSubmit={changePassword} className="grid gap-3 sm:grid-cols-2" noValidate>
-          <label className="text-sm font-medium sm:col-span-2">Mot de passe actuel<PasswordInput name="current" autoComplete="current-password" className={FIELD} /></label>
-          <label className="text-sm font-medium">Nouveau mot de passe<PasswordInput name="password" autoComplete="new-password" className={FIELD} /></label>
-          <label className="text-sm font-medium">Confirmation<PasswordInput name="confirmation" autoComplete="new-password" className={FIELD} /></label>
+          <label className="text-sm font-medium sm:col-span-2">Mot de passe actuel<PasswordInput name="current" placeholder="Votre mot de passe actuel" autoComplete="current-password" className={FIELD} /></label>
+          <label className="text-sm font-medium">Nouveau mot de passe<PasswordInput name="password" placeholder="Au moins 8 caractères" autoComplete="new-password" className={FIELD} /></label>
+          <label className="text-sm font-medium">Confirmation<PasswordInput name="confirmation" placeholder="Retapez le nouveau mot de passe" autoComplete="new-password" className={FIELD} /></label>
           <p className="text-xs text-black/60 sm:col-span-2">8 caractères minimum, avec au moins une lettre et un chiffre.</p>
           <div className="space-y-3 sm:col-span-2">
             <Notice message={passwordMessage} />
-            <button type="submit" disabled={passwordBusy} style={{ backgroundColor: "var(--active)" }} className={BUTTON}>{passwordBusy ? "Changement…" : "Changer le mot de passe"}</button>
+            <Btn type="submit" disabled={passwordBusy} style={{ backgroundColor: "var(--active)" }} className={BUTTON}>{passwordBusy ? "Changement…" : "Changer le mot de passe"}</Btn>
           </div>
         </form>
       </Section>

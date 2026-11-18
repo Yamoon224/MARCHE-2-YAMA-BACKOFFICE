@@ -1,3 +1,4 @@
+import { SearchSelect } from "@/components/SearchSelect";
 import Link from "next/link";
 import { Suspense } from "react";
 import { DownNotice, LoadError, Pager, SearchForm, first, pageNumber } from "@/components/admin/notices";
@@ -41,11 +42,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       <SearchForm path="/customers" q={q}>
         <label className="text-sm font-medium">
           Type
-          <select name="guest" defaultValue={guest} className="mt-1 block rounded-lg border border-black/20 bg-white px-3 py-1.5 text-sm">
-            <option value="">Tous</option>
-            <option value="false">Avec compte</option>
-            <option value="true">Invités (sans compte)</option>
-          </select>
+          <SearchSelect name="guest" defaultValue={guest} emptyLabel="Tous les clients" aria-label="Type de client" className="mt-1 min-w-52" options={[{ value: "false", label: "Avec compte" }, { value: "true", label: "Invités (sans compte)" }]} />
         </label>
       </SearchForm>
 

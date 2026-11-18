@@ -49,6 +49,44 @@ thead:not([data-plain]) {
   color: #1a1a1a !important;
 }
 
+/* Boutons d'action (composant Btn) : la couleur suit l'action. Fond en dégradé de la couleur vers le blanc transparent,
+ * bordure de la couleur, texte foncé et icône colorée pour rester lisibles. Les plus (!important) battent aussi les
+ * fonds posés en ligne. Les boutons à texte seul (liens, onglets) ne gardent que l'icône colorée. */
+.act-green { --tone: var(--brand-green); }
+.act-blue { --tone: #2563eb; }
+.act-red { --tone: #dc2626; }
+.act-slate { --tone: #475569; }
+.act-active { --tone: var(--active); }
+.act-amber { --tone: #d97706; }
+.act-gray { --tone: #6b7280; }
+
+.act .act-icon { color: var(--tone); }
+
+.act.act-outline,
+.act.act-solid {
+  background-color: transparent !important;
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 30%, white), color-mix(in srgb, var(--tone) 6%, transparent)) !important;
+  border: 1px solid var(--tone);
+  color: #1f2937;
+}
+
+.act.act-solid {
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 42%, white), color-mix(in srgb, var(--tone) 8%, transparent)) !important;
+  font-weight: 600;
+}
+
+.act.act-outline:hover:not(:disabled),
+.act.act-solid:hover:not(:disabled) {
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 48%, white), color-mix(in srgb, var(--tone) 14%, transparent)) !important;
+}
+
+.act.act-outline:disabled,
+.act.act-solid:disabled {
+  opacity: 0.5;
+  filter: saturate(0.6);
+  cursor: not-allowed;
+}
+
 /* Champs : pilule bordée de la couleur active (zone de texte : angles généreux pour rester lisible). */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="color"]):not([type="file"]):not([type="hidden"]):not([type="button"]):not([type="submit"]):not([type="reset"]):not([type="image"]),
 select,

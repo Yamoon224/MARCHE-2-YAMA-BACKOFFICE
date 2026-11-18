@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { pageWindow, rangeLabel, type PageWindow } from "@/lib/table/table";
 
 export type PagerSize = number | "all";
@@ -37,9 +38,9 @@ export function Pager({ total, size, sizes, window, onSize, onPage }: Props) {
       </label>
 
       <nav aria-label="Pagination" className="flex items-center gap-2">
-        <button type="button" className={button} disabled={window.page <= 1} onClick={() => onPage(window.page - 1)}>Précédent</button>
+        <Btn type="button" className={button} disabled={window.page <= 1} onClick={() => onPage(window.page - 1)}>Précédent</Btn>
         <span className="text-black/70">Page {window.page} / {window.pages}</span>
-        <button type="button" className={button} disabled={window.page >= window.pages} onClick={() => onPage(window.page + 1)}>Suivant</button>
+        <Btn type="button" className={button} disabled={window.page >= window.pages} onClick={() => onPage(window.page + 1)}>Suivant</Btn>
       </nav>
 
       <p className="text-black/70" aria-live="polite">{rangeLabel(window, total)}</p>

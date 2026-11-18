@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -58,15 +59,16 @@ export function TransitionPanel({ orderId, status, role, fulfillment = "pickup" 
     <div>
       <div className="flex flex-wrap gap-2">
         {actions.map((to) => (
-          <button
+          <Btn
             key={to}
             type="button"
+            action={requiresReason(to) ? "refuse" : "confirm"}
             disabled={busy}
             onClick={() => choose(to)}
             className={`rounded-full px-4 py-2 text-sm font-medium disabled:opacity-60 ${requiresReason(to) ? "border border-brand-red text-brand-red" : "bg-brand-green text-white"}`}
           >
             {ACTION_LABEL[to] ?? to}
-          </button>
+          </Btn>
         ))}
       </div>
 
@@ -75,8 +77,8 @@ export function TransitionPanel({ orderId, status, role, fulfillment = "pickup" 
           <label className="text-sm font-medium" htmlFor="reason">Motif obligatoire - {ACTION_LABEL[pending]}</label>
           <textarea id="reason" value={reason} onChange={(e) => setReason(e.target.value)} rows={3} maxLength={500} required placeholder="Motif obligatoire…" className="rounded-lg border border-black/20 px-3 py-2 text-sm" />
           <div className="flex gap-2">
-            <button type="submit" disabled={busy || reason.trim() === ""} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Confirmer</button>
-            <button type="button" onClick={() => setPending(null)} className="rounded-full px-4 py-2 text-sm text-black/70">Annuler</button>
+            <Btn type="submit" action="refuse" disabled={busy || reason.trim() === ""} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">Confirmer</Btn>
+            <Btn type="button" onClick={() => setPending(null)} className="rounded-full px-4 py-2 text-sm text-black/70">Annuler</Btn>
           </div>
         </form>
       )}

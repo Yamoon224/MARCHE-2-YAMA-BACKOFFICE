@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { Fragment, useMemo, useState, type ReactNode } from "react";
 import { exportTable } from "@/lib/table/download";
 import type { ExportFormat } from "@/lib/table/export";
@@ -148,9 +149,9 @@ export function DataTable({
         <div className="ml-auto flex flex-wrap items-center gap-1.5" role="group" aria-label="Exporter les lignes affichées">
           <span className="text-xs text-black/60">Exporter :</span>
           {EXPORTS.map(({ format, label }) => (
-            <button key={format} type="button" className={button} disabled={exporting !== null || ordered.length === 0} onClick={() => void runExport(format)}>
+            <Btn key={format} type="button" action="export" className={button} disabled={exporting !== null || ordered.length === 0} onClick={() => void runExport(format)}>
               {exporting === format ? "…" : label}
-            </button>
+            </Btn>
           ))}
         </div>
       </div>
@@ -167,14 +168,14 @@ export function DataTable({
                 return (
                   <th key={index} scope="col" aria-sort={active === "asc" ? "ascending" : active === "desc" ? "descending" : undefined} className={`px-4 py-3 ${align}`}>
                     {column.actions ? <span className="sr-only">{column.header || "Actions"}</span> : (
-                      <button
+                      <Btn
                         type="button"
                         onClick={() => { setSort(nextSort(sort, index)); setPage(1); }}
                         className={`inline-flex items-center gap-1 font-semibold uppercase ${active ? "text-black" : ""}`}
                       >
                         {column.header}
                         <span aria-hidden className={active ? "text-brand-green" : "text-black/30"}>{active === "asc" ? "▲" : active === "desc" ? "▼" : "↕"}</span>
-                      </button>
+                      </Btn>
                     )}
                   </th>
                 );
@@ -219,9 +220,9 @@ export function DataTable({
         </label>
 
         <nav aria-label="Pagination du tableau" className="flex items-center gap-2">
-          <button type="button" className={button} disabled={window.page <= 1} onClick={() => setPage(window.page - 1)}>Précédent</button>
+          <Btn type="button" className={button} disabled={window.page <= 1} onClick={() => setPage(window.page - 1)}>Précédent</Btn>
           <span className="text-black/70">Page {window.page} / {window.pages}</span>
-          <button type="button" className={button} disabled={window.page >= window.pages} onClick={() => setPage(window.page + 1)}>Suivant</button>
+          <Btn type="button" className={button} disabled={window.page >= window.pages} onClick={() => setPage(window.page + 1)}>Suivant</Btn>
         </nav>
 
         <p className="text-black/70" aria-live="polite">{rangeLabel(window, ordered.length)}{ordered.length !== rows.length && ` (sur ${rows.length})`}</p>

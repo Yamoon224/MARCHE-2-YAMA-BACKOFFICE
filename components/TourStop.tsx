@@ -1,5 +1,6 @@
 "use client";
 
+import { Btn } from "@/components/Btn";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
@@ -109,17 +110,17 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
 
       <div className="mt-3 flex flex-wrap gap-2">
         {actions.start && (
-          <button type="button" disabled={busy} onClick={() => run(() => browserApi().POST("/api/v1/delivery/deliveries/{delivery}/start", { params: { path } }))} className="rounded-full bg-brand-green px-5 py-2 text-sm font-medium text-white disabled:opacity-50">
+          <Btn type="button" action="start" disabled={busy} onClick={() => run(() => browserApi().POST("/api/v1/delivery/deliveries/{delivery}/start", { params: { path } }))} className="rounded-full bg-brand-green px-5 py-2 text-sm font-medium text-white disabled:opacity-50">
             {delivery.status === "failed" ? "Repartir livrer" : "Partir en livraison"}
-          </button>
+          </Btn>
         )}
         {actions.location && (
-          <button type="button" onClick={() => setSharing((v) => !v)} aria-pressed={sharing} className="rounded-full border border-brand-green px-4 py-2 text-sm text-brand-green">
+          <Btn type="button" action="location" onClick={() => setSharing((v) => !v)} aria-pressed={sharing} className="rounded-full border border-brand-green px-4 py-2 text-sm text-brand-green">
             {sharing ? "Arrêter le partage de position" : "Partager ma position"}
-          </button>
+          </Btn>
         )}
-        {actions.handover && <button type="button" onClick={() => setMode("handover")} className="rounded-full bg-brand-red px-5 py-2 text-sm font-medium text-white">Remettre la commande</button>}
-        {actions.fail && <button type="button" onClick={() => setMode("fail")} className="rounded-full border border-black/30 px-4 py-2 text-sm">Déclarer un échec</button>}
+        {actions.handover && <Btn type="button" onClick={() => setMode("handover")} className="rounded-full bg-brand-red px-5 py-2 text-sm font-medium text-white">Remettre la commande</Btn>}
+        {actions.fail && <Btn type="button" onClick={() => setMode("fail")} className="rounded-full border border-black/30 px-4 py-2 text-sm">Déclarer un échec</Btn>}
       </div>
 
       {mode === "handover" && (
@@ -130,7 +131,7 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
           <label className="text-sm font-medium">Espèces encaissées (€)
             <input value={cash} onChange={(e) => setCash(e.target.value)} inputMode="decimal" placeholder="Ex. 25,50" className={`${field} mt-1 block w-full`} />
           </label>
-          <button type="submit" disabled={busy} className="rounded-full bg-brand-red py-2 text-sm font-medium text-white disabled:opacity-50">Confirmer la remise</button>
+          <Btn type="submit" disabled={busy} className="rounded-full bg-brand-red py-2 text-sm font-medium text-white disabled:opacity-50">Confirmer la remise</Btn>
         </form>
       )}
 
@@ -139,7 +140,7 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
           <label className="text-sm font-medium">Motif
             <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={255} placeholder="Client absent, adresse introuvable…" className={`${field} mt-1 block w-full`} />
           </label>
-          <button type="submit" disabled={busy} className="rounded-full border border-brand-red py-2 text-sm font-medium text-brand-red disabled:opacity-50">Enregistrer l&apos;échec</button>
+          <Btn type="submit" disabled={busy} className="rounded-full border border-brand-red py-2 text-sm font-medium text-brand-red disabled:opacity-50">Enregistrer l&apos;échec</Btn>
         </form>
       )}
 
