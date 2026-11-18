@@ -3,12 +3,34 @@
  * menu replié), conservés sur cet appareil. Fonctions pures : le fournisseur les applique au document.
  */
 
+/** Thème : « auto » suit le réglage du système (prefers-color-scheme). */
+export type ThemeMode = "light" | "dark" | "auto";
+
+export const THEME_MODES: readonly { value: ThemeMode; label: string }[] = [
+  { value: "light", label: "Clair" },
+  { value: "dark", label: "Sombre" },
+  { value: "auto", label: "Automatique" },
+];
+
+export function isThemeMode(value: unknown): value is ThemeMode {
+  return value === "light" || value === "dark" || value === "auto";
+}
+
+/** Thème effectivement appliqué : le choix explicite, ou celui du système en mode automatique. */
+export function resolveTheme(mode: ThemeMode, prefersDark: boolean): "light" | "dark" {
+  if (mode === "auto") return prefersDark ? "dark" : "light";
+
+  return mode;
+}
+
 export type Appearance = {
+  /** Clair, sombre ou automatique. */
+  theme: ThemeMode;
   /** Couleur des boutons et accents (remplace le rouge de la marque). */
   primary: string;
-  /** Fond de la barre du haut ; null = blanc. */
+  /** Fond de la barre du haut ; null = celui du thème (blanc en clair). */
   header: string | null;
-  /** Fond du menu latéral ; null = blanc. */
+  /** Fond du menu latéral ; null = celui du thème (blanc en clair). */
   sidebar: string | null;
   /** Menu latéral réduit aux icônes (grand écran). */
   collapsed: boolean;
@@ -22,7 +44,7 @@ export const PRIMARY_COLORS = [BRAND_RED, "#3f7d2c", "#2563eb", "#4f46e5", "#933
 
 export const BACKGROUND_PRESETS = ["#ffffff", "#f1f5f9", "#1f2937", "#0b0f19", "#14532d", "#7f1d1d", "#1d4ed8"] as const;
 
-export const DEFAULT_APPEARANCE: Appearance = { primary: BRAND_RED, header: null, sidebar: null, collapsed: false };
+export const DEFAULT_APPEARANCE: Appearance = { theme: "auto", primary: BRAND_RED, header: null, sidebar: null, collapsed: false };
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
@@ -56,6 +78,7 @@ export function parseAppearance(raw: string | null): Appearance {
   if (typeof data !== "object" || data === null) return DEFAULT_APPEARANCE;
 
   return {
+    theme: isThemeMode(data.theme) ? data.theme : DEFAULT_APPEARANCE.theme,
     primary: isHexColor(data.primary) ? data.primary : DEFAULT_APPEARANCE.primary,
     header: isHexColor(data.header) ? data.header : null,
     sidebar: isHexColor(data.sidebar) ? data.sidebar : null,
@@ -79,18 +102,29 @@ export function saveAppearance(appearance: Appearance): void {
   }
 }
 
-/** Variables CSS pour les choix courants. */
+/**
+ * Variables CSS pour les choix courants. Sans fond choisi, les barres gardent celui du thème (définis dans
+ * globals.css, clair ou sombre) : on ne pose alors aucune variable.
+ */
 export function cssVariables(appearance: Appearance): Record<string, string> {
-  const header = appearance.header ?? "#ffffff";
-  const sidebar = appearance.sidebar ?? "#ffffff";
+  const variables: Record<string, string> = { "--brand-red": appearance.primary };
 
-  return {
-    "--brand-red": appearance.primary,
-    "--header-bg": header,
-    "--header-fg": readableOn(header),
-    "--sidebar-bg": sidebar,
-    "--sidebar-fg": readableOn(sidebar),
-  };
+  if (appearance.header) {
+    variables["--header-bg"] = appearance.header;
+    variables["--header-fg"] = readableOn(appearance.header);
+  }
+  if (appearance.sidebar) {
+    variables["--sidebar-bg"] = appearance.sidebar;
+    variables["--sidebar-fg"] = readableOn(appearance.sidebar);
+  }
+
+  return variables;
 }
+
+/**
+ * Script exécuté avant l'affichage (dans <head>) : pose data-theme sur <html> d'après le choix enregistré, pour
+ * éviter tout flash. Garde la même logique que resolveTheme ; le fournisseur reprend ensuite la main.
+ */
+export const THEME_INIT_SCRIPT = `(function(){try{var r=window.localStorage.getItem(${JSON.stringify(STORAGE_KEY)});var t=r?JSON.parse(r).theme:null;var d=t==="dark"||(t!=="light"&&window.matchMedia("(prefers-color-scheme: dark)").matches);document.documentElement.setAttribute("data-theme",d?"dark":"light")}catch(e){}})()`;
 
 export const MANAGED_VARIABLES = ["--brand-red", "--header-bg", "--header-fg", "--sidebar-bg", "--sidebar-fg"] as const;

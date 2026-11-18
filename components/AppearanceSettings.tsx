@@ -8,7 +8,7 @@ import { BRAND_RED } from "@/lib/appearance";
 /** Page Paramètres : les mêmes réglages que le tiroir rapide, avec un aperçu et la remise à zéro. */
 export function AppearanceSettings() {
   const { appearance, reset } = useAppearance();
-  const isDefault = appearance.primary === BRAND_RED && !appearance.header && !appearance.sidebar && !appearance.collapsed;
+  const isDefault = appearance.theme === "auto" && appearance.primary === BRAND_RED && !appearance.header && !appearance.sidebar && !appearance.collapsed;
 
   return (
     <div className="space-y-6">

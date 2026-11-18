@@ -11,9 +11,9 @@ const POINTS = ["Commandes, préparation et livraison au même endroit", "Stock,
 export function AuthLayout({ children }: { children: ReactNode }) {
   return (
     <main className="grid min-h-screen lg:grid-cols-12">
-      <aside className="relative hidden overflow-hidden bg-black lg:col-span-7 lg:block">
+      <aside className="relative hidden overflow-hidden bg-[#000] lg:col-span-7 lg:block">
         <Image src="/brand/login-hero.webp" alt="" fill priority sizes="(min-width: 1024px) 58vw, 0px" className="object-cover object-center" />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/20 to-black/25" aria-hidden />
+        <div className="absolute inset-0 bg-gradient-to-t from-[rgb(0_0_0/0.85)] via-[rgb(0_0_0/0.2)] to-[rgb(0_0_0/0.25)]" aria-hidden />
 
         <div className="absolute inset-x-0 bottom-0 flex max-w-xl flex-col gap-4 p-10 text-white xl:p-14">
           <p className="text-sm font-semibold uppercase tracking-widest text-white/80">Backoffice · Marché de Yama</p>

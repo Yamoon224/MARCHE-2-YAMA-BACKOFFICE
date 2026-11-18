@@ -85,6 +85,17 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
 
             <div className="ml-auto flex items-center gap-1">
+              <button
+                type="button"
+                onClick={() => update({ theme: document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark" })}
+                aria-label="Basculer entre le thème clair et le thème sombre"
+                title="Thème clair / sombre"
+                className="rounded-lg p-2 hover:bg-current/10"
+              >
+                {/* Les deux icônes sont rendues et le CSS en masque une : le rendu serveur ne dépend pas du thème. */}
+                <Icon name="moon" className="h-5 w-5 dark:hidden" />
+                <Icon name="sun" className="hidden h-5 w-5 dark:block" />
+              </button>
               <button type="button" onClick={() => setSettingsOpen(true)} aria-label="Ouvrir les réglages" className="rounded-lg p-2 hover:bg-current/10">
                 <Icon name="settings" />
               </button>
@@ -138,7 +149,7 @@ function Sidebar({ groups, collapsed, mobileOpen, onCloseMobile, pathname }: { g
 
   return (
     <>
-      {mobileOpen ? <div className="fixed inset-0 z-30 bg-black/40 lg:hidden" onClick={onCloseMobile} aria-hidden /> : null}
+      {mobileOpen ? <div className="fixed inset-0 z-30 bg-[rgb(0_0_0/0.4)] lg:hidden" onClick={onCloseMobile} aria-hidden /> : null}
 
       <aside
         style={{ backgroundColor: "var(--sidebar-bg)", color: "var(--sidebar-fg)" }}
@@ -148,7 +159,7 @@ function Sidebar({ groups, collapsed, mobileOpen, onCloseMobile, pathname }: { g
       >
         <div className={`flex h-16 shrink-0 items-center border-b border-current/15 px-4 ${collapsed ? "lg:justify-center lg:px-2" : ""}`}>
           <Link href="/" aria-label="Marché de Yama" className="flex items-center gap-3 overflow-hidden">
-            <span className="block shrink-0 rounded-lg bg-white p-0.5">
+            <span className="block shrink-0 rounded-lg bg-[#fff] p-0.5">
               <Image src="/brand/logo-trimmed.png" alt="" width={761} height={689} priority className="h-10 w-auto" />
             </span>
             <span className={`flex flex-col leading-tight ${hideWhenCollapsed}`}>

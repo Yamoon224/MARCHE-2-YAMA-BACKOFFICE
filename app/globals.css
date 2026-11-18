@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+/* Variante « dark: » pilotée par data-theme (posé sur <html> par le script d'initialisation puis par le fournisseur). */
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -16,6 +19,11 @@
   --font-mono: var(--font-geist-mono);
 }
 
+html {
+  background: var(--background);
+  color-scheme: light;
+}
+
 body {
   background: var(--background);
   color: var(--foreground);
@@ -30,7 +38,53 @@ body {
 :root {
   --active: var(--brand-red);
   --active-fade: color-mix(in srgb, var(--active) 22%, transparent);
+
+  /* Couleurs qui changent avec le thème (les barres peuvent être surchargées par les réglages d'apparence). */
+  --header-bg: #ffffff;
+  --header-fg: #111111;
+  --sidebar-bg: #ffffff;
+  --sidebar-fg: #111111;
+  --field-bg: #ffffff;
+  --field-fg: #171717;
+  --mix-base: #ffffff;
+  --ink: #1f2937;
 }
+
+/* ---------------------------------------------------------------------------------------------
+ * Thème sombre. Tailwind construit bg-white, text-black, border-black/10… à partir de --color-white et
+ * --color-black : on les inverse ici (surface sombre, texte clair) pour que toutes les pages suivent sans être
+ * modifiées une à une. Les rares endroits qui doivent rester réellement blancs ou noirs (texte sur une couleur
+ * pleine, voiles, image de fond) sont corrigés plus bas.
+ * ------------------------------------------------------------------------------------------- */
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0d1117;
+  --foreground: #e6e9ef;
+  --color-white: #161b25;
+  --color-black: #e6e9ef;
+  --header-bg: #161b25;
+  --header-fg: #e6e9ef;
+  --sidebar-bg: #161b25;
+  --sidebar-fg: #e6e9ef;
+  --field-bg: #0f141c;
+  --field-fg: #e6e9ef;
+  --mix-base: #0d1117;
+  --ink: #f3f4f6;
+}
+
+/* Texte posé sur une couleur pleine (boutons verts, rouges, bandeaux) : reste blanc. */
+html[data-theme="dark"] .text-white { color: #fff; }
+html[data-theme="dark"] .text-white\/80 { color: rgb(255 255 255 / 0.8); }
+html[data-theme="dark"] .text-white\/85 { color: rgb(255 255 255 / 0.85); }
+html[data-theme="dark"] .text-white\/90 { color: rgb(255 255 255 / 0.9); }
+
+/* Rouge et vert de la marque, éclaircis pour rester lisibles en texte sur fond sombre. */
+html[data-theme="dark"] .text-brand-red { color: color-mix(in srgb, var(--brand-red) 62%, white); }
+html[data-theme="dark"] .text-brand-green { color: color-mix(in srgb, var(--brand-green) 55%, white); }
+html[data-theme="dark"] .text-white.bg-brand-green,
+html[data-theme="dark"] .text-white.bg-brand-red { color: #fff; }
+
+html[data-theme="dark"] ::placeholder { color: rgb(230 233 239 / 0.45); }
 
 /* Titres : trait en dégradé de la couleur active vers le transparent. */
 h1:not([data-plain]),
@@ -45,8 +99,8 @@ h3:not([data-plain]) {
 
 /* En-têtes de tableau : dégradé de la couleur active vers le blanc transparent (texte foncé pour rester lisible). */
 thead:not([data-plain]) {
-  background-image: linear-gradient(to right, color-mix(in srgb, var(--active) 60%, white), color-mix(in srgb, var(--active) 6%, transparent)) !important;
-  color: #1a1a1a !important;
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--active) 60%, var(--mix-base)), color-mix(in srgb, var(--active) 6%, transparent)) !important;
+  color: var(--ink) !important;
 }
 
 /* Boutons d'action (composant Btn) : la couleur suit l'action. Fond en dégradé de la couleur vers le blanc transparent,
@@ -65,19 +119,19 @@ thead:not([data-plain]) {
 .act.act-outline,
 .act.act-solid {
   background-color: transparent !important;
-  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 30%, white), color-mix(in srgb, var(--tone) 6%, transparent)) !important;
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 30%, var(--mix-base)), color-mix(in srgb, var(--tone) 6%, transparent)) !important;
   border: 1px solid var(--tone);
-  color: #1f2937;
+  color: var(--ink);
 }
 
 .act.act-solid {
-  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 42%, white), color-mix(in srgb, var(--tone) 8%, transparent)) !important;
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 42%, var(--mix-base)), color-mix(in srgb, var(--tone) 8%, transparent)) !important;
   font-weight: 600;
 }
 
 .act.act-outline:hover:not(:disabled),
 .act.act-solid:hover:not(:disabled) {
-  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 48%, white), color-mix(in srgb, var(--tone) 14%, transparent)) !important;
+  background-image: linear-gradient(to right, color-mix(in srgb, var(--tone) 48%, var(--mix-base)), color-mix(in srgb, var(--tone) 14%, transparent)) !important;
 }
 
 .act.act-outline:disabled,
@@ -94,8 +148,8 @@ textarea {
   border: 1px solid var(--active);
   border-radius: 9999px;
   padding-inline-start: 1rem;
-  background-color: #fff;
-  color: #171717;
+  background-color: var(--field-bg);
+  color: var(--field-fg);
   transition: box-shadow 0.15s, border-color 0.15s;
 }
 

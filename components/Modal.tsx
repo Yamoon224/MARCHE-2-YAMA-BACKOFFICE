@@ -37,7 +37,7 @@ export function Modal({ open, onClose, title, children, footer, size = "lg" }: P
       onClose={onClose}
       // Un clic sur le fond (hors du panneau) ferme la fenêtre.
       onClick={(event) => event.target === ref.current && onClose()}
-      className="m-0 h-dvh max-h-dvh w-screen max-w-none bg-transparent p-0 backdrop:bg-black/50 sm:m-auto sm:h-auto sm:max-h-[90dvh] sm:w-[calc(100%-2rem)] sm:max-w-none"
+      className="m-0 h-dvh max-h-dvh w-screen max-w-none bg-transparent p-0 backdrop:bg-[rgb(0_0_0/0.5)] sm:m-auto sm:h-auto sm:max-h-[90dvh] sm:w-[calc(100%-2rem)] sm:max-w-none"
     >
       {open && (
         <div className={`mx-auto flex h-full w-full flex-col bg-white sm:max-h-[90dvh] sm:rounded-2xl sm:shadow-xl ${WIDTH[size]}`}>

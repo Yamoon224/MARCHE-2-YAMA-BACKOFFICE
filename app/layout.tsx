@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { AppearanceProvider } from "@/components/AppearanceProvider";
 import { AppShell } from "@/components/AppShell";
+import { THEME_INIT_SCRIPT } from "@/lib/appearance";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -33,8 +34,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="fr"
+      // data-theme est posé par le script ci-dessous avant l'hydratation : c'est le seul écart voulu avec le rendu serveur.
+      suppressHydrationWarning
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body className="min-h-full flex flex-col bg-black/[0.03]">
         <AppearanceProvider>
           {/* Le cadre lit usePathname(), dynamique sur les routes à paramètre : il doit être sous un Suspense. */}
