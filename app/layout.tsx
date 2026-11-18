@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { Suspense } from "react";
 import { AppearanceProvider } from "@/components/AppearanceProvider";
 import { AppHeader } from "@/components/AppHeader";
 import "./globals.css";
@@ -36,7 +37,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-black/[0.03]">
         <AppearanceProvider>
-          <AppHeader />
+          {/* usePathname() est dynamique sur les routes à paramètre : il doit être sous un Suspense. */}
+          <Suspense fallback={null}>
+            <AppHeader />
+          </Suspense>
           <div className="flex-1">{children}</div>
         </AppearanceProvider>
       </body>
