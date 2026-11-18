@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Suspense } from "react";
 import { AppearanceProvider } from "@/components/AppearanceProvider";
-import { AppHeader } from "@/components/AppHeader";
+import { AppShell } from "@/components/AppShell";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -37,11 +37,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col bg-black/[0.03]">
         <AppearanceProvider>
-          {/* usePathname() est dynamique sur les routes à paramètre : il doit être sous un Suspense. */}
+          {/* Le cadre lit usePathname(), dynamique sur les routes à paramètre : il doit être sous un Suspense. */}
           <Suspense fallback={null}>
-            <AppHeader />
+            <AppShell>{children}</AppShell>
           </Suspense>
-          <div className="flex-1">{children}</div>
         </AppearanceProvider>
       </body>
     </html>

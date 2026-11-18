@@ -8,9 +8,14 @@ describe("parseAppearance", () => {
     expect(parseAppearance("42")).toEqual(DEFAULT_APPEARANCE);
   });
 
-  it("ne garde que des couleurs hexadécimales valides", () => {
-    expect(parseAppearance(JSON.stringify({ primary: "#2563eb", header: "#1f2937" }))).toEqual({ primary: "#2563eb", header: "#1f2937" });
-    expect(parseAppearance(JSON.stringify({ primary: "red; background:url(x)", header: "javascript:1" }))).toEqual(DEFAULT_APPEARANCE);
+  it("ne garde que des valeurs valides", () => {
+    expect(parseAppearance(JSON.stringify({ primary: "#2563eb", header: "#1f2937", sidebar: "#0b0f19", collapsed: true }))).toEqual({
+      primary: "#2563eb",
+      header: "#1f2937",
+      sidebar: "#0b0f19",
+      collapsed: true,
+    });
+    expect(parseAppearance(JSON.stringify({ primary: "red; background:url(x)", header: "javascript:1", sidebar: 3, collapsed: "oui" }))).toEqual(DEFAULT_APPEARANCE);
   });
 });
 
@@ -23,7 +28,16 @@ describe("readableOn", () => {
 });
 
 describe("cssVariables", () => {
-  it("garde l'en-tête rouge de la marque tant qu'aucun fond n'est choisi", () => {
-    expect(cssVariables({ primary: "#2563eb", header: null })).toMatchObject({ "--brand-red": "#2563eb", "--header-bg": BRAND_RED });
+  it("garde les barres blanches tant qu'aucun fond n'est choisi", () => {
+    expect(cssVariables({ ...DEFAULT_APPEARANCE, primary: "#2563eb" })).toMatchObject({
+      "--brand-red": "#2563eb",
+      "--header-bg": "#ffffff",
+      "--sidebar-bg": "#ffffff",
+      "--sidebar-fg": "#111111",
+    });
+  });
+
+  it("rend le texte du menu lisible sur un fond sombre", () => {
+    expect(cssVariables({ ...DEFAULT_APPEARANCE, sidebar: "#0b0f19" })).toMatchObject({ "--sidebar-bg": "#0b0f19", "--sidebar-fg": "#ffffff" });
   });
 });

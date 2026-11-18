@@ -1,13 +1,17 @@
 /**
- * Réglages d'apparence du backoffice (couleur principale, fond de l'en-tête), conservés sur cet appareil.
- * Fonctions pures : le fournisseur les applique au document.
+ * Réglages d'apparence du backoffice (couleur principale, fonds de la barre du haut et du menu latéral,
+ * menu replié), conservés sur cet appareil. Fonctions pures : le fournisseur les applique au document.
  */
 
 export type Appearance = {
   /** Couleur des boutons et accents (remplace le rouge de la marque). */
   primary: string;
-  /** Fond de l'en-tête ; null = rouge de la marque (celui du logo). */
+  /** Fond de la barre du haut ; null = blanc. */
   header: string | null;
+  /** Fond du menu latéral ; null = blanc. */
+  sidebar: string | null;
+  /** Menu latéral réduit aux icônes (grand écran). */
+  collapsed: boolean;
 };
 
 export const STORAGE_KEY = "yama_backoffice_appearance";
@@ -16,9 +20,9 @@ export const BRAND_RED = "#c1121f";
 
 export const PRIMARY_COLORS = [BRAND_RED, "#3f7d2c", "#2563eb", "#4f46e5", "#9333ea", "#e11d48", "#c2410c", "#b45309", "#0f766e", "#475569"] as const;
 
-export const HEADER_PRESETS = ["#ffffff", "#f1f5f9", "#1f2937", "#0b0f19", "#14532d", "#7f1d1d", "#1d4ed8"] as const;
+export const BACKGROUND_PRESETS = ["#ffffff", "#f1f5f9", "#1f2937", "#0b0f19", "#14532d", "#7f1d1d", "#1d4ed8"] as const;
 
-export const DEFAULT_APPEARANCE: Appearance = { primary: BRAND_RED, header: null };
+export const DEFAULT_APPEARANCE: Appearance = { primary: BRAND_RED, header: null, sidebar: null, collapsed: false };
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
@@ -54,6 +58,8 @@ export function parseAppearance(raw: string | null): Appearance {
   return {
     primary: isHexColor(data.primary) ? data.primary : DEFAULT_APPEARANCE.primary,
     header: isHexColor(data.header) ? data.header : null,
+    sidebar: isHexColor(data.sidebar) ? data.sidebar : null,
+    collapsed: data.collapsed === true,
   };
 }
 
@@ -75,11 +81,16 @@ export function saveAppearance(appearance: Appearance): void {
 
 /** Variables CSS pour les choix courants. */
 export function cssVariables(appearance: Appearance): Record<string, string> {
+  const header = appearance.header ?? "#ffffff";
+  const sidebar = appearance.sidebar ?? "#ffffff";
+
   return {
     "--brand-red": appearance.primary,
-    "--header-bg": appearance.header ?? BRAND_RED,
-    "--header-fg": readableOn(appearance.header ?? BRAND_RED),
+    "--header-bg": header,
+    "--header-fg": readableOn(header),
+    "--sidebar-bg": sidebar,
+    "--sidebar-fg": readableOn(sidebar),
   };
 }
 
-export const MANAGED_VARIABLES = ["--brand-red", "--header-bg", "--header-fg"] as const;
+export const MANAGED_VARIABLES = ["--brand-red", "--header-bg", "--header-fg", "--sidebar-bg", "--sidebar-fg"] as const;

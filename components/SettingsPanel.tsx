@@ -1,10 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { HEADER_PRESETS, isHexColor, PRIMARY_COLORS, type Appearance } from "@/lib/appearance";
+import { BACKGROUND_PRESETS, isHexColor, PRIMARY_COLORS, type Appearance } from "@/lib/appearance";
 import { useAppearance } from "./AppearanceProvider";
 
-/** Tiroir de droite : couleur principale, fond de l'en-tête, plein écran. */
+/** Tiroir de droite : couleur principale, fonds des barres, menu réduit, plein écran. */
 export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () => void }) {
   const { appearance, update, reset } = useAppearance();
   const [fullscreen, setFullscreen] = useState(false);
@@ -66,24 +66,14 @@ export function SettingsPanel({ open, onClose }: { open: boolean; onClose: () =>
             </div>
           </Section>
 
-          <Section title="Fond de l'en-tête">
-            <HeaderPicker appearance={appearance} update={update} />
+          <Section title="Fonds">
+            <BackgroundPicker label="Menu latéral" field="sidebar" appearance={appearance} update={update} />
+            <BackgroundPicker label="Barre du haut" field="header" appearance={appearance} update={update} />
           </Section>
 
           <Section title="Affichage">
-            <div className="flex items-center justify-between gap-3">
-              <p className="text-sm font-medium">Plein écran</p>
-              <button
-                type="button"
-                role="switch"
-                aria-checked={fullscreen}
-                aria-label="Plein écran"
-                onClick={toggleFullscreen}
-                className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${fullscreen ? "bg-brand-red" : "bg-black/20"}`}
-              >
-                <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${fullscreen ? "left-[1.375rem]" : "left-0.5"}`} />
-              </button>
-            </div>
+            <Toggle label="Menu réduit aux icônes" hint="Grand écran uniquement." checked={appearance.collapsed} onChange={(collapsed) => update({ collapsed })} />
+            <Toggle label="Plein écran" checked={fullscreen} onChange={toggleFullscreen} />
           </Section>
         </div>
 
@@ -143,25 +133,49 @@ function CustomColor({ label, value, active, size = "md", onPick }: { label: str
   );
 }
 
-function HeaderPicker({ appearance, update }: { appearance: Appearance; update: (patch: Partial<Appearance>) => void }) {
-  const current = appearance.header;
-  const custom = current !== null && !(HEADER_PRESETS as readonly string[]).includes(current);
+function Toggle({ label, hint, checked, onChange }: { label: string; hint?: string; checked: boolean; onChange: (checked: boolean) => void }) {
+  return (
+    <div className="flex items-center justify-between gap-3">
+      <div>
+        <p className="text-sm font-medium">{label}</p>
+        {hint ? <p className="text-xs text-black/60">{hint}</p> : null}
+      </div>
+      <button
+        type="button"
+        role="switch"
+        aria-checked={checked}
+        aria-label={label}
+        onClick={() => onChange(!checked)}
+        className={`relative h-6 w-11 shrink-0 rounded-full transition-colors ${checked ? "bg-brand-red" : "bg-black/20"}`}
+      >
+        <span className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-all ${checked ? "left-[1.375rem]" : "left-0.5"}`} />
+      </button>
+    </div>
+  );
+}
+
+function BackgroundPicker({ label, field, appearance, update }: { label: string; field: "header" | "sidebar"; appearance: Appearance; update: (patch: Partial<Appearance>) => void }) {
+  const current = appearance[field];
+  const custom = current !== null && !(BACKGROUND_PRESETS as readonly string[]).includes(current);
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center justify-between">
+        <p className="text-sm font-medium">{label}</p>
         <button
           type="button"
-          onClick={() => update({ header: null })}
+          onClick={() => update({ [field]: null })}
           aria-pressed={current === null}
-          className={`rounded-full px-2.5 py-1 text-xs ${current === null ? "bg-brand-red/10 font-semibold text-brand-red" : "text-black/60 hover:text-black"}`}
+          className={`rounded-full px-2.5 py-0.5 text-xs ${current === null ? "bg-brand-red/10 font-semibold text-brand-red" : "text-black/60 hover:text-black"}`}
         >
           Défaut
         </button>
-        {HEADER_PRESETS.map((color) => (
-          <Swatch key={color} color={color} selected={current === color} onClick={() => update({ header: color })} />
+      </div>
+      <div className="flex flex-wrap items-center gap-2">
+        {BACKGROUND_PRESETS.map((color) => (
+          <Swatch key={color} color={color} selected={current === color} onClick={() => update({ [field]: color })} />
         ))}
-        <CustomColor label="Fond d'en-tête personnalisé" value={current ?? "#ffffff"} active={custom} onPick={(header) => update({ header })} />
+        <CustomColor label={`${label} : couleur personnalisée`} value={current ?? "#ffffff"} active={custom} onPick={(color) => update({ [field]: color })} />
       </div>
     </div>
   );
