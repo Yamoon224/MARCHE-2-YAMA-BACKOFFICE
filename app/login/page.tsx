@@ -1,23 +1,19 @@
+import { redirect } from "next/navigation";
 import { Suspense } from "react";
-import { AuthLayout } from "@/components/AuthLayout";
-import { LoginForm } from "@/components/LoginForm";
-
-export const metadata = { title: "Connexion - Backoffice Marché de Yama" };
 
 type SearchParams = Promise<{ next?: string | string[] }>;
 
-export default function LoginPage({ searchParams }: { searchParams: SearchParams }) {
+/** Ancienne adresse de la connexion : elle vit maintenant à la racine. On y renvoie, sans perdre `?next=`. */
+export default function LoginRedirect({ searchParams }: { searchParams: SearchParams }) {
   return (
-    <AuthLayout>
-      <Suspense fallback={<p className="text-center text-black/60">Chargement…</p>}>
-        <Form searchParams={searchParams} />
-      </Suspense>
-    </AuthLayout>
+    <Suspense fallback={null}>
+      <Redirect searchParams={searchParams} />
+    </Suspense>
   );
 }
 
-async function Form({ searchParams }: { searchParams: SearchParams }) {
+async function Redirect({ searchParams }: { searchParams: SearchParams }): Promise<null> {
   const { next } = await searchParams;
 
-  return <LoginForm next={typeof next === "string" ? next : undefined} />;
+  redirect(typeof next === "string" ? `/?next=${encodeURIComponent(next)}` : "/");
 }

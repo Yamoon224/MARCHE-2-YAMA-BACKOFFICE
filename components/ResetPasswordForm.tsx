@@ -60,7 +60,7 @@ export function ResetPasswordForm({ token, email }: { token: string; email: stri
       {done ? (
         <div role="status" className="flex flex-col gap-4 text-sm">
           <p className="rounded-lg bg-brand-green/10 p-4">Votre mot de passe a été changé. Vous pouvez maintenant vous connecter.</p>
-          <Link href="/login" className="rounded-full bg-brand-red py-2.5 text-center font-medium text-white">Se connecter</Link>
+          <Link href="/" className="rounded-full bg-brand-red py-2.5 text-center font-medium text-white">Se connecter</Link>
         </div>
       ) : token === "" || email === "" ? (
         <div className="flex flex-col gap-3 text-sm text-black/70">

@@ -20,8 +20,17 @@ export async function requireStaff(next: string): Promise<StaffContext> {
 
   const user = result.data?.data;
   if (result.response.status === 401 || !user || user.role === "customer") {
-    redirect(`/login?next=${encodeURIComponent(next)}`);
+    redirect(`/?next=${encodeURIComponent(next)}`);
   }
 
   return { status: "ok", user: user as Staff, api };
+}
+
+/** Page de connexion : une session de personnel déjà ouverte renvoie directement vers la page voulue. */
+export async function redirectIfSignedIn(destination: string): Promise<void> {
+  const api = await serverApi();
+  const result = await api.GET("/api/v1/auth/me").catch(() => null);
+  const user = result?.data?.data;
+
+  if (result?.response.ok && user && user.role !== "customer") redirect(destination);
 }

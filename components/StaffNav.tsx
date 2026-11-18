@@ -29,7 +29,7 @@ export function StaffNav() {
   async function logout() {
     await fetch("/api/session", { method: "DELETE" });
     setUser(null);
-    router.push("/login");
+    router.push("/");
     router.refresh();
   }
 

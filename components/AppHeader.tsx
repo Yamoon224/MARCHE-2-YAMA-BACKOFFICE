@@ -8,8 +8,8 @@ import { useAppearance } from "@/components/AppearanceProvider";
 import { SettingsPanel } from "@/components/SettingsPanel";
 import { StaffNav } from "@/components/StaffNav";
 
-/** Pages d'accès : plein écran, sans l'en-tête du backoffice. */
-const AUTH_PATHS = ["/login", "/forgot-password", "/reset-password"];
+/** Pages d'accès (la connexion est la racine) : plein écran, sans l'en-tête du backoffice. */
+const AUTH_PATHS = ["/", "/forgot-password", "/reset-password"];
 
 export function AppHeader() {
   const pathname = usePathname();

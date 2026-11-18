@@ -60,7 +60,7 @@ export function ForgotPasswordForm() {
         </form>
       )}
 
-      <Link href="/login" className="text-center text-sm text-brand-green underline">Retour à la connexion</Link>
+      <Link href="/" className="text-center text-sm text-brand-green underline">Retour à la connexion</Link>
     </div>
   );
 }
