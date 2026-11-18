@@ -5,13 +5,14 @@ describe("isAllowedPath (backoffice)", () => {
   it.each([
     "api/v1/orders", "api/v1/orders/12/transitions", "api/v1/orders/12/invoice", "api/v1/payments/3/validate-cash-on-delivery",
     "api/v1/delivery/zones", "api/v1/delivery/slots", "api/v1/fulfillment/pick-lists", "api/v1/fulfillment/pick-lists/3/lines/9/pick", "api/v1/claims", "api/v1/claims/4/decision", "api/v1/claims/4/photos/9", "api/v1/inventory/lots", "api/v1/inventory/lots/3/recall", "api/v1/accounting/trial-balance", "api/v1/products", "api/v1/catalog/media", "api/v1/catalog/recipes/3", "api/v1/auth/me",
+    "api/v1/staff", "api/v1/staff/4/reactivate", "api/v1/roles", "api/v1/customers/9", "api/v1/promotions/3/activate", "api/v1/promotions/validate", "api/v1/audit/verify", "api/v1/reports/sales", "api/v1/reports/dashboard",
   ])("allows %s", (path) => {
     expect(isAllowedPath(path.split("/"))).toBe(true);
   });
 
   it.each([
     "api/v1/auth/login", "api/v1/auth/register", "api/v1/auth/logout", "api/v1/webhooks/payments/fake",
-    "api/v1/orderss", "api/v1/catalogue", "api/v1/accounting-secret", "api/v1/fulfillments", "up", "",
+    "api/v1/orderss", "api/v1/catalogue", "api/v1/accounting-secret", "api/v1/fulfillments", "api/v1/staffing", "api/v1/reportsx", "api/v1/audits", "up", "",
   ])("blocks %s", (path) => {
     expect(isAllowedPath(path.split("/"))).toBe(false);
   });

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { DataTable } from "@/components/DataTable";
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
 
@@ -39,38 +40,35 @@ async function TrialBalance() {
         {balance.balanced ? "Grand livre équilibré : total des débits = total des crédits." : "ALERTE : le grand livre est déséquilibré."}
       </p>
 
-      <div className="overflow-x-auto rounded-xl border border-black/10 bg-white">
-        <table className="w-full text-left text-sm">
-          <thead className="border-b border-black/10 bg-black/[0.03] text-xs uppercase text-black/60">
-            <tr>
-              <th scope="col" className="px-4 py-3">Compte</th>
-              <th scope="col" className="px-4 py-3">Libellé</th>
-              <th scope="col" className="px-4 py-3 text-right">Débit</th>
-              <th scope="col" className="px-4 py-3 text-right">Crédit</th>
-              <th scope="col" className="px-4 py-3 text-right">Solde</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-black/10">
-            {balance.accounts.map((account) => (
-              <tr key={account.code}>
-                <td className="px-4 py-2 font-mono">{account.code}</td>
-                <td className="px-4 py-2">{account.name}</td>
-                <td className="px-4 py-2 text-right">{formatMoney(account.debit_minor)}</td>
-                <td className="px-4 py-2 text-right">{formatMoney(account.credit_minor)}</td>
-                <td className="px-4 py-2 text-right font-semibold">{formatMoney(account.balance_minor)}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot className="border-t-2 border-black/20 font-bold">
-            <tr>
-              <td className="px-4 py-3" colSpan={2}>Totaux</td>
-              <td className="px-4 py-3 text-right">{formatMoney(balance.total_debit_minor)}</td>
-              <td className="px-4 py-3 text-right">{formatMoney(balance.total_credit_minor)}</td>
-              <td />
-            </tr>
-          </tfoot>
-        </table>
-      </div>
+      <DataTable
+        name="balance-generale"
+        title="Balance générale"
+        columns={[
+          { header: "Compte" },
+          { header: "Libellé" },
+          { header: "Débit", type: "number", align: "right" },
+          { header: "Crédit", type: "number", align: "right" },
+          { header: "Solde", type: "number", align: "right" },
+        ]}
+        rows={balance.accounts.map((account) => ({
+          key: account.code,
+          cells: [
+            { value: account.code, node: <span className="font-mono">{account.code}</span> },
+            account.name,
+            { value: account.debit_minor, text: formatMoney(account.debit_minor), node: formatMoney(account.debit_minor) },
+            { value: account.credit_minor, text: formatMoney(account.credit_minor), node: formatMoney(account.credit_minor) },
+            { value: account.balance_minor, text: formatMoney(account.balance_minor), node: <span className="font-semibold">{formatMoney(account.balance_minor)}</span> },
+          ],
+        }))}
+        footer={
+          <tr>
+            <td className="px-4 py-3" colSpan={2}>Totaux</td>
+            <td className="px-4 py-3 text-right">{formatMoney(balance.total_debit_minor)}</td>
+            <td className="px-4 py-3 text-right">{formatMoney(balance.total_credit_minor)}</td>
+            <td />
+          </tr>
+        }
+      />
     </>
   );
 }

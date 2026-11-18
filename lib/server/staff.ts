@@ -1,5 +1,7 @@
 import "server-only";
 import { redirect } from "next/navigation";
+import { safeNext } from "@/lib/format";
+import { landingFor } from "@/lib/navigation";
 import { serverApi } from "./backend";
 
 export type Staff = { id: number; name: string; role: string };
@@ -27,10 +29,10 @@ export async function requireStaff(next: string): Promise<StaffContext> {
 }
 
 /** Page de connexion : une session de personnel déjà ouverte renvoie directement vers la page voulue. */
-export async function redirectIfSignedIn(destination: string): Promise<void> {
+export async function redirectIfSignedIn(requested?: string): Promise<void> {
   const api = await serverApi();
   const result = await api.GET("/api/v1/auth/me").catch(() => null);
   const user = result?.data?.data;
 
-  if (result?.response.ok && user && user.role !== "customer") redirect(destination);
+  if (result?.response.ok && user && user.role !== "customer") redirect(requested ? safeNext(requested) : landingFor(user.role));
 }

@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { DataTable } from "@/components/DataTable";
 import { StatusBadge } from "@/components/StatusBadge";
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
@@ -59,30 +60,26 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
       ) : orders.length === 0 ? (
         <p className="text-black/70">Aucune commande{status ? ` au statut « ${statusLabel(status)} »` : ""}.</p>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-black/10 bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-black/10 bg-black/[0.03] text-xs uppercase text-black/60">
-              <tr>
-                <th scope="col" className="px-4 py-3">Commande</th>
-                <th scope="col" className="px-4 py-3">Statut</th>
-                <th scope="col" className="px-4 py-3">Réception</th>
-                <th scope="col" className="px-4 py-3 text-right">Total TTC</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-black/10">
-              {orders.map((order) => (
-                <tr key={order.id} className="hover:bg-black/[0.02]">
-                  <td className="px-4 py-3 font-medium">
-                    <Link href={`/orders/${order.id}`} className="text-brand-green underline">{order.number ?? `#${order.id}`}</Link>
-                  </td>
-                  <td className="px-4 py-3"><StatusBadge status={order.status} /></td>
-                  <td className="px-4 py-3">{order.fulfillment === "delivery" ? "Livraison" : "Retrait magasin"}</td>
-                  <td className="px-4 py-3 text-right font-semibold">{formatMoney(order.total_minor)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          name="commandes"
+          title="Commandes"
+          emptyMessage="Aucune commande."
+          columns={[
+            { header: "Commande" },
+            { header: "Statut" },
+            { header: "Réception" },
+            { header: "Total TTC", type: "number", align: "right" },
+          ]}
+          rows={orders.map((order) => ({
+            key: order.id,
+            cells: [
+              { value: order.number ?? `#${order.id}`, node: <Link href={`/orders/${order.id}`} className="font-medium text-brand-green underline">{order.number ?? `#${order.id}`}</Link> },
+              { value: statusLabel(order.status), node: <StatusBadge status={order.status} /> },
+              order.fulfillment === "delivery" ? "Livraison" : "Retrait magasin",
+              { value: order.total_minor, text: formatMoney(order.total_minor), node: <span className="font-semibold">{formatMoney(order.total_minor)}</span> },
+            ],
+          }))}
+        />
       )}
 
       {meta && meta.last_page > 1 && (

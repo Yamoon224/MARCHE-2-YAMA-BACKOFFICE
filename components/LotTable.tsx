@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
+import { DataTable } from "@/components/DataTable";
 import { browserApi } from "@/lib/api/client";
 import { extractApiError } from "@/lib/format";
 import { daysUntil, expiryLabel, expiryTone, todayIso, validateRecallReason, type ExpiryTone } from "@/lib/stock/stock";
@@ -21,36 +22,54 @@ const TONE: Record<ExpiryTone, string> = {
 };
 
 export function LotTable({ lots, canRecall, today }: { lots: Lot[]; canRecall: boolean; today: string }) {
-  if (lots.length === 0) return <p className="text-black/70">Aucun lot ne correspond à ce filtre.</p>;
+  const now = today || todayIso();
 
   return (
-    <div className="overflow-x-auto rounded-xl border border-black/10 bg-white">
-      <table className="w-full text-left text-sm">
-        <thead className="border-b border-black/10 bg-black/[0.03] text-xs uppercase text-black/60">
-          <tr>
-            <th scope="col" className="px-4 py-3">Lot</th><th scope="col" className="px-4 py-3">Produit</th>
-            <th scope="col" className="px-4 py-3">Péremption</th><th scope="col" className="px-4 py-3 text-right">Disponible</th>
-            <th scope="col" className="px-4 py-3">État</th><th scope="col" className="px-4 py-3" />
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-black/10">
-          {lots.map((lot) => <LotRow key={lot.id} lot={lot} canRecall={canRecall} today={today} />)}
-        </tbody>
-      </table>
-    </div>
+    <DataTable
+      name="lots"
+      title="Stock par lot"
+      emptyMessage="Aucun lot ne correspond à ce filtre."
+      columns={[
+        { header: "Lot" },
+        { header: "Produit", type: "number" },
+        { header: "Péremption", type: "date" },
+        { header: "Disponible", type: "number", align: "right" },
+        { header: "État" },
+        { header: "Rappel", actions: true },
+      ]}
+      rows={lots.map((lot) => {
+        const days = daysUntil(lot.expires_on, now);
+        const tone = expiryTone(days);
+        const state = lot.recalled ? "Rappelé" : lot.is_blocked ? "Bloqué" : "Disponible";
+
+        return {
+          key: lot.id,
+          className: lot.is_blocked ? "bg-brand-red/[0.04]" : "",
+          cells: [
+            { value: lot.lot_code, node: <span className="font-mono">{lot.lot_code}</span> },
+            { value: lot.product_id, text: `#${lot.product_id}`, node: `#${lot.product_id}` },
+            { value: lot.expires_on ?? null, text: expiryLabel(days), node: <span className={`rounded-full px-3 py-1 text-xs font-medium ${TONE[tone]}`}>{expiryLabel(days)}</span> },
+            {
+              value: lot.available, text: `${lot.available} / ${lot.quantity_on_hand}`,
+              node: <>{lot.available} <span className="text-black/50">/ {lot.quantity_on_hand}</span></>,
+            },
+            { value: state, node: lot.recalled || lot.is_blocked ? <span className="font-medium text-brand-red">{state}</span> : state },
+            { value: null, node: <RecallCell lot={lot} canRecall={canRecall} /> },
+          ],
+        };
+      })}
+    />
   );
 }
 
-function LotRow({ lot, canRecall, today }: { lot: Lot; canRecall: boolean; today: string }) {
+/** Bouton de rappel d'un lot ; le formulaire et le rapport s'affichent dans la cellule. */
+function RecallCell({ lot, canRecall }: { lot: Lot; canRecall: boolean }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [reason, setReason] = useState("");
   const [report, setReport] = useState<Report | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
-
-  const days = daysUntil(lot.expires_on, today || todayIso());
-  const tone = expiryTone(days);
 
   async function recall(event: FormEvent) {
     event.preventDefault();
@@ -77,39 +96,21 @@ function LotRow({ lot, canRecall, today }: { lot: Lot; canRecall: boolean; today
   }
 
   return (
-    <>
-      <tr className={lot.is_blocked ? "bg-brand-red/[0.04]" : ""}>
-        <td className="px-4 py-3 font-mono">{lot.lot_code}</td>
-        <td className="px-4 py-3">#{lot.product_id}</td>
-        <td className="px-4 py-3"><span className={`rounded-full px-3 py-1 text-xs font-medium ${TONE[tone]}`}>{expiryLabel(days)}</span></td>
-        <td className="px-4 py-3 text-right">{lot.available} <span className="text-black/50">/ {lot.quantity_on_hand}</span></td>
-        <td className="px-4 py-3">
-          {lot.recalled ? <span className="font-medium text-brand-red">Rappelé</span> : lot.is_blocked ? <span className="font-medium text-brand-red">Bloqué</span> : "Disponible"}
-        </td>
-        <td className="px-4 py-3 text-right">
-          {canRecall && !lot.recalled && !report && (
-            <button type="button" onClick={() => setOpen((v) => !v)} className="rounded-full border border-brand-red px-3 py-1 text-xs text-brand-red">Rappeler</button>
-          )}
-        </td>
-      </tr>
-
-      {(open || report || error) && (
-        <tr>
-          <td colSpan={6} className="bg-black/[0.02] px-4 py-3">
-            {open && (
-              <form onSubmit={recall} className="flex flex-wrap items-end gap-2" noValidate>
-                <label className="text-sm font-medium">Motif du rappel
-                  <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={255} placeholder="Ex. rappel fournisseur du 16/11" className="mt-1 block w-80 rounded-lg border border-black/20 bg-white px-3 py-2 text-sm" />
-                </label>
-                <button type="submit" disabled={busy} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">{busy ? "Rappel…" : "Bloquer et rappeler le lot"}</button>
-              </form>
-            )}
-            {error && <p role="alert" className="mt-2 text-sm text-brand-red">{error}</p>}
-            {report && <RecallReport report={report} />}
-          </td>
-        </tr>
+    <div className="flex min-w-48 flex-col items-end gap-2">
+      {canRecall && !lot.recalled && !report && (
+        <button type="button" onClick={() => setOpen((v) => !v)} className="rounded-full border border-brand-red px-3 py-1 text-xs text-brand-red">Rappeler</button>
       )}
-    </>
+      {open && (
+        <form onSubmit={recall} className="flex flex-col items-end gap-2" noValidate>
+          <label className="text-left text-sm font-medium">Motif du rappel
+            <input value={reason} onChange={(e) => setReason(e.target.value)} maxLength={255} placeholder="Ex. rappel fournisseur du 16/11" className="mt-1 block w-72 rounded-lg border border-black/20 bg-white px-3 py-2 text-sm" />
+          </label>
+          <button type="submit" disabled={busy} className="rounded-full bg-brand-red px-4 py-2 text-sm font-medium text-white disabled:opacity-60">{busy ? "Rappel…" : "Bloquer et rappeler le lot"}</button>
+        </form>
+      )}
+      {error && <p role="alert" className="text-left text-sm text-brand-red">{error}</p>}
+      {report && <div className="text-left"><RecallReport report={report} /></div>}
+    </div>
   );
 }
 

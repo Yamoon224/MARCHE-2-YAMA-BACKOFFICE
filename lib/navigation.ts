@@ -4,6 +4,12 @@ export type NavGroup = { label: string; items: NavItem[] };
 
 /** Groupe de chaque page du menu ; une page absente d'ici tombe dans « Autres ». */
 const GROUP_OF: Record<string, string> = {
+  "/dashboard": "Pilotage",
+  "/reports": "Pilotage",
+  "/customers": "Clients",
+  "/promotions": "Clients",
+  "/staff": "Administration",
+  "/audit": "Administration",
   "/orders": "Opérations",
   "/preparation": "Opérations",
   "/dispatch": "Opérations",
@@ -16,7 +22,12 @@ const GROUP_OF: Record<string, string> = {
   "/accounting": "Finances",
 };
 
-const GROUP_ORDER = ["Opérations", "Produits", "Clients", "Finances", "Autres"];
+const GROUP_ORDER = ["Pilotage", "Opérations", "Produits", "Clients", "Finances", "Administration", "Autres"];
+
+/** Page d'arrivée après la connexion : le tableau de bord pour qui y a accès, sinon les commandes comme avant. */
+export function landingFor(role: string): string {
+  return navFor(role).some((item) => item.href === "/dashboard") ? "/dashboard" : "/orders";
+}
 
 /** Le menu d'un rôle, rangé par groupes (l'ordre des pages vient de navFor). */
 export function groupedNavFor(role: string): NavGroup[] {

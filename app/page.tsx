@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { AuthLayout } from "@/components/AuthLayout";
 import { LoginForm } from "@/components/LoginForm";
-import { safeNext } from "@/lib/format";
 import { redirectIfSignedIn } from "@/lib/server/staff";
 
 export const metadata = { title: "Connexion - Backoffice Marché de Yama" };
@@ -23,7 +22,7 @@ async function Form({ searchParams }: { searchParams: SearchParams }) {
   const { next } = await searchParams;
   const requested = typeof next === "string" ? next : undefined;
 
-  await redirectIfSignedIn(safeNext(requested));
+  await redirectIfSignedIn(requested);
 
   return <LoginForm next={requested} />;
 }

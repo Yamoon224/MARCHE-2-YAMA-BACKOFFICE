@@ -14,6 +14,12 @@ const ALLOWED_PREFIXES = [
   "api/v1/inventory",
   "api/v1/accounting",
   "api/v1/auth/me",
+  "api/v1/staff",
+  "api/v1/roles",
+  "api/v1/customers",
+  "api/v1/promotions",
+  "api/v1/audit",
+  "api/v1/reports",
 ];
 
 const FORWARDED_REQUEST_HEADERS = ["content-type", "accept", "idempotency-key"];

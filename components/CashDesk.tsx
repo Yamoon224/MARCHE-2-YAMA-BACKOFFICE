@@ -2,6 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useRef, useState, type FormEvent } from "react";
+import { DataTable } from "@/components/DataTable";
 import { browserApi } from "@/lib/api/client";
 import { parseCounted, validateHandover, variance, varianceLabel } from "@/lib/cash/cash";
 import { extractApiError, formatMoney } from "@/lib/format";
@@ -11,6 +12,12 @@ export type Handover = {
   id: number; courier_id: number; expected_minor: number; counted_minor: number; variance_minor: number;
   deliveries_count: number; note?: string | null; created_at?: string | null;
 };
+
+/** « 2026-11-18T09:30:00Z » -> « 18/11/2026 » (sans fuseau : identique côté serveur et navigateur). */
+function frDate(iso?: string | null): string {
+  const match = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso ?? "");
+  return match ? `${match[3]}/${match[2]}/${match[1]}` : "";
+}
 
 export function CashDesk({ holders, handovers }: { holders: CourierCash[]; handovers: Handover[] }) {
   return (
@@ -31,31 +38,39 @@ export function CashDesk({ holders, handovers }: { holders: CourierCash[]; hando
         {handovers.length === 0 ? (
           <p className="text-black/70">Aucune remise enregistrée.</p>
         ) : (
-          <div className="overflow-x-auto rounded-xl border border-black/10 bg-white">
-            <table className="w-full text-left text-sm">
-              <thead className="border-b border-black/10 bg-black/[0.03] text-xs uppercase text-black/60">
-                <tr>
-                  <th scope="col" className="px-4 py-3">Remise</th><th scope="col" className="px-4 py-3">Livreur</th>
-                  <th scope="col" className="px-4 py-3 text-right">Attendu</th><th scope="col" className="px-4 py-3 text-right">Compté</th>
-                  <th scope="col" className="px-4 py-3">Écart</th><th scope="col" className="px-4 py-3">Note</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-black/10">
-                {handovers.map((h) => (
-                  <tr key={h.id}>
-                    <td className="px-4 py-3">#{h.id} <span className="text-black/50">({h.deliveries_count} liv.)</span></td>
-                    <td className="px-4 py-3">n° {h.courier_id}</td>
-                    <td className="px-4 py-3 text-right">{formatMoney(h.expected_minor)}</td>
-                    <td className="px-4 py-3 text-right">{formatMoney(h.counted_minor)}</td>
-                    <td className={`px-4 py-3 ${h.variance_minor === 0 ? "" : "font-medium text-brand-red"}`}>
+          <DataTable
+            name="remises-especes"
+            title="Remises d'espèces"
+            columns={[
+              { header: "Remise", type: "number" },
+              { header: "Livreur", type: "number" },
+              { header: "Attendu", type: "number", align: "right" },
+              { header: "Compté", type: "number", align: "right" },
+              { header: "Écart", type: "number" },
+              { header: "Note" },
+              { header: "Date", type: "date" },
+            ]}
+            rows={handovers.map((h) => ({
+              key: h.id,
+              cells: [
+                { value: h.id, text: `#${h.id} (${h.deliveries_count} liv.)`, node: <>#{h.id} <span className="text-black/50">({h.deliveries_count} liv.)</span></> },
+                { value: h.courier_id, text: `n° ${h.courier_id}`, node: `n° ${h.courier_id}` },
+                { value: h.expected_minor, text: formatMoney(h.expected_minor), node: formatMoney(h.expected_minor) },
+                { value: h.counted_minor, text: formatMoney(h.counted_minor), node: formatMoney(h.counted_minor) },
+                {
+                  value: h.variance_minor,
+                  text: `${varianceLabel(h.variance_minor)}${h.variance_minor !== 0 ? ` (${formatMoney(Math.abs(h.variance_minor))})` : ""}`,
+                  node: (
+                    <span className={h.variance_minor === 0 ? "" : "font-medium text-brand-red"}>
                       {varianceLabel(h.variance_minor)}{h.variance_minor !== 0 && ` (${formatMoney(Math.abs(h.variance_minor))})`}
-                    </td>
-                    <td className="px-4 py-3">{h.note ?? "-"}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                    </span>
+                  ),
+                },
+                h.note,
+                { value: h.created_at, text: frDate(h.created_at), node: frDate(h.created_at) },
+              ],
+            }))}
+          />
         )}
       </section>
     </div>

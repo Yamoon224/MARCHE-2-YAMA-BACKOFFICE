@@ -130,6 +130,7 @@ export type NavItem = { href: string; label: string };
 export function navFor(role: string): NavItem[] {
   const items: NavItem[] = [];
 
+  if (["admin", "accountant", "order_operator"].includes(role)) items.push({ href: "/dashboard", label: "Tableau de bord" });
   if (["admin", "order_operator", "support", "accountant"].includes(role)) {
     items.push({ href: "/orders", label: "Commandes" });
   }
@@ -142,6 +143,11 @@ export function navFor(role: string): NavItem[] {
   if (["admin", "order_operator"].includes(role)) items.push({ href: "/cash-handover", label: "Remise de fonds" });
   if (["admin", "catalog_manager"].includes(role)) items.push({ href: "/catalog", label: "Catalogue" });
   if (["admin", "accountant"].includes(role)) items.push({ href: "/accounting", label: "Comptabilité" });
+  if (["admin", "accountant", "order_operator"].includes(role)) items.push({ href: "/reports", label: "Rapports de ventes" });
+  if (["admin", "support", "order_operator"].includes(role)) items.push({ href: "/customers", label: "Clients" });
+  if (["admin", "marketing"].includes(role)) items.push({ href: "/promotions", label: "Promotions" });
+  if (role === "admin") items.push({ href: "/staff", label: "Équipe" });
+  if (role === "admin") items.push({ href: "/audit", label: "Journal d'audit" });
 
   return items;
 }

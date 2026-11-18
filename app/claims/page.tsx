@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Suspense } from "react";
+import { DataTable } from "@/components/DataTable";
 import { CLAIM_STATUS_LABEL, COST_BEARER_LABEL, ISSUE_LABEL, type CostBearer, type Issue } from "@/lib/claims/claims";
 import { formatMoney } from "@/lib/format";
 import { requireStaff } from "@/lib/server/staff";
@@ -73,24 +74,30 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
       </form>
 
       {claims.length === 0 ? <p className="text-black/70">Aucune réclamation{status ? " dans ce statut" : ""}.</p> : (
-        <div className="overflow-x-auto rounded-xl border border-black/10 bg-white">
-          <table className="w-full text-left text-sm">
-            <thead className="border-b border-black/10 bg-black/[0.03] text-xs uppercase text-black/60">
-              <tr><th scope="col" className="px-4 py-3">Réclamation</th><th scope="col" className="px-4 py-3">Commande</th><th scope="col" className="px-4 py-3">Articles</th><th scope="col" className="px-4 py-3">Statut</th><th scope="col" className="px-4 py-3 text-right">Plafond</th></tr>
-            </thead>
-            <tbody className="divide-y divide-black/10">
-              {claims.map((claim) => (
-                <tr key={claim.id} className="hover:bg-black/[0.02]">
-                  <td className="px-4 py-3 font-medium"><Link href={`/claims/${claim.id}`} className="text-brand-green underline">n° {claim.id}</Link></td>
-                  <td className="px-4 py-3"><Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id}</Link></td>
-                  <td className="px-4 py-3">{claim.items.map((i) => `${i.name} (${ISSUE_LABEL[i.issue as Issue] ?? i.issue})`).join(", ")}</td>
-                  <td className="px-4 py-3"><span className={`rounded-full px-3 py-1 text-xs font-medium ${claim.status === "open" ? "bg-brand-red/10 text-brand-red" : "bg-black/5"}`}>{CLAIM_STATUS_LABEL[claim.status] ?? claim.status}</span></td>
-                  <td className="px-4 py-3 text-right">{formatMoney(claim.claimable_minor)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <DataTable
+          name="reclamations"
+          title="Réclamations"
+          columns={[
+            { header: "Réclamation" },
+            { header: "Commande" },
+            { header: "Articles" },
+            { header: "Statut" },
+            { header: "Plafond", type: "number", align: "right" },
+          ]}
+          rows={claims.map((claim) => ({
+            key: claim.id,
+            cells: [
+              { value: `n° ${claim.id}`, node: <Link href={`/claims/${claim.id}`} className="font-medium text-brand-green underline">n° {claim.id}</Link> },
+              { value: `#${claim.order_id}`, node: <Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id}</Link> },
+              claim.items.map((i) => `${i.name} (${ISSUE_LABEL[i.issue as Issue] ?? i.issue})`).join(", "),
+              {
+                value: CLAIM_STATUS_LABEL[claim.status] ?? claim.status,
+                node: <span className={`rounded-full px-3 py-1 text-xs font-medium ${claim.status === "open" ? "bg-brand-red/10 text-brand-red" : "bg-black/5"}`}>{CLAIM_STATUS_LABEL[claim.status] ?? claim.status}</span>,
+              },
+              { value: claim.claimable_minor, text: formatMoney(claim.claimable_minor), node: formatMoney(claim.claimable_minor) },
+            ],
+          }))}
+        />
       )}
     </>
   );

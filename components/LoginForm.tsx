@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { useState, type FormEvent } from "react";
 import { PasswordInput } from "@/components/PasswordInput";
 import { extractApiError, safeNext } from "@/lib/format";
+import { landingFor } from "@/lib/navigation";
 
 export const FIELD = "mt-1 w-full rounded-lg border border-black/20 bg-white px-3 py-2 outline-none focus:border-brand-green";
 
@@ -32,7 +33,9 @@ export function LoginForm({ next }: { next?: string }) {
         return;
       }
 
-      router.push(safeNext(next));
+      const body = (await response.json().catch(() => null)) as { user?: { role?: string } } | null;
+      // Page demandée si elle existe, sinon la page d'arrivée du rôle.
+      router.push(next ? safeNext(next) : landingFor(body?.user?.role ?? ""));
       router.refresh();
     } catch {
       setError("Service momentanément indisponible. Réessayez.");
