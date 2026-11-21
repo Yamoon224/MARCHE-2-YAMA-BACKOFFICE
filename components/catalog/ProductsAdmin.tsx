@@ -30,7 +30,7 @@ const STATE_CLASS: Record<ProductState, string> = {
   deleted: "bg-brand-red/10 text-brand-red",
 };
 
-const GRID_SIZES = [12, 24, 48, 96, "all"] as const;
+const GRID_SIZES = [15, 30, 60, 120, "all"] as const;
 
 const small = "rounded-lg border border-black/20 bg-white px-3 py-1.5 text-xs font-medium hover:bg-black/5 disabled:opacity-40";
 
