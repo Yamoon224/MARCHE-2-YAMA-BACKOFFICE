@@ -53,7 +53,7 @@ function Cover({ product, className }: { product: Product; className: string }) 
 export function ProductsAdmin({ products, categories, query, trashed, category }: Props) {
   const [tab, setTab] = useState<"grid" | "list">("grid");
   const [dialog, setDialog] = useState<Dialog>(null);
-  const [gridSize, setGridSize] = useState<PagerSize>(12);
+  const [gridSize, setGridSize] = useState<PagerSize>(15);
   const [gridPage, setGridPage] = useState(1);
   const gridWindow = usePageWindow(products.length, gridSize, gridPage);
   const { run, busy, message, setMessage } = useAction();
