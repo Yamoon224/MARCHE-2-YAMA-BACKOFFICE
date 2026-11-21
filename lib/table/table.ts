@@ -7,7 +7,7 @@ export type SortState = { column: number; direction: SortDirection } | null;
 
 export const PAGE_SIZES = [10, 20, 30, 50, 100, "all"] as const;
 export type PageSize = (typeof PAGE_SIZES)[number];
-export const DEFAULT_PAGE_SIZE: PageSize = 20;
+export const DEFAULT_PAGE_SIZE: PageSize = 10;
 
 export function pageSizeLabel(size: PageSize): string {
   return size === "all" ? "Tous" : String(size);
