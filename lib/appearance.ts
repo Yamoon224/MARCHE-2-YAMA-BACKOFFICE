@@ -44,7 +44,13 @@ export const PRIMARY_COLORS = [BRAND_RED, "#3f7d2c", "#2563eb", "#4f46e5", "#933
 
 export const BACKGROUND_PRESETS = ["#ffffff", "#f1f5f9", "#1f2937", "#0b0f19", "#14532d", "#7f1d1d", "#1d4ed8"] as const;
 
-export const DEFAULT_APPEARANCE: Appearance = { theme: "auto", primary: BRAND_RED, header: null, sidebar: null, collapsed: false };
+export const DEFAULT_APPEARANCE: Appearance = {
+  theme: "light",
+  primary: BRAND_RED,
+  header: null,
+  sidebar: null,
+  collapsed: false
+};
 
 const HEX = /^#[0-9a-f]{6}$/i;
 
