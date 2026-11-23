@@ -8,17 +8,19 @@ export type ThemeMode = "light" | "dark" | "auto";
 
 export const THEME_MODES: readonly { value: ThemeMode; label: string }[] = [
   { value: "light", label: "Clair" },
-  { value: "dark", label: "Sombre" },
+  // { value: "dark", label: "Sombre" },
   { value: "auto", label: "Automatique" },
 ];
 
 export function isThemeMode(value: unknown): value is ThemeMode {
-  return value === "light" || value === "dark" || value === "auto";
+  return value === "light";
+  // return value === "light" || value === "dark" || value === "auto";
 }
 
 /** Thème effectivement appliqué : le choix explicite, ou celui du système en mode automatique. */
 export function resolveTheme(mode: ThemeMode, prefersDark: boolean): "light" | "dark" {
-  if (mode === "auto") return prefersDark ? "dark" : "light";
+  if (mode === "auto") return prefersDark ? "light" : "light";
+  // if (mode === "auto") return prefersDark ? "dark" : "light";
 
   return mode;
 }
