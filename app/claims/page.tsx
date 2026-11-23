@@ -87,7 +87,7 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
             key: claim.id,
             cells: [
               { value: `n° ${claim.id}`, node: <Link href={`/claims/${claim.id}`} className="font-medium text-brand-green underline">n° {claim.id}</Link> },
-              { value: `#${claim.order_id}`, node: <Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id}</Link> },
+              { value: `#${claim.order_id.slice(0, 8)}`, node: <Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id.slice(0, 8)}</Link> },
               claim.items.map((i) => `${i.name} (${ISSUE_LABEL[i.issue as Issue] ?? i.issue})`).join(", "),
               {
                 value: CLAIM_STATUS_LABEL[claim.status] ?? claim.status,

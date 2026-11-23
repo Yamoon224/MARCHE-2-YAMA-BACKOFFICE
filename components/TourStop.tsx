@@ -91,7 +91,7 @@ export function TourStop({ delivery }: { delivery: BoardDelivery }) {
   return (
     <li className="rounded-xl border border-black/10 bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="font-medium">Commande n° {delivery.order_id}</p>
+        <p className="font-medium">Commande n° {delivery.order_id.slice(0, 8)}</p>
         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium">{DELIVERY_STATUS_LABEL[delivery.status]}</span>
       </div>
 

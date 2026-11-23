@@ -1,7 +1,7 @@
 "use client";
 
 import { Btn } from "@/components/Btn";
-import type { FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { danger, Feedback, field, ImageField, int, optional, primary, Section, str, useAction } from "./shared";
@@ -38,15 +38,19 @@ const body = (data: FormData) => ({
 
 export function CategoriesAdmin({ categories }: { categories: Category[] }) {
   const { run, busy, message } = useAction();
+  // Rayon dont on vient d'envoyer le formulaire : le résultat s'affiche sous son bouton, pas tout en haut de la page.
+  const [lastId, setLastId] = useState<number | "new" | null>(null);
 
   function create(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLastId("new");
     const form = event.currentTarget;
     void run(() => browserApi().POST("/api/v1/catalog/categories", { body: body(new FormData(form)) }), "Rayon créé.", () => form.reset());
   }
 
   function update(c: Category, event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
+    setLastId(c.id);
     void run(
       () => browserApi().PUT("/api/v1/catalog/categories/{category}", { params: { path: { category: c.id } }, body: body(new FormData(event.currentTarget)) }),
       `Rayon « ${c.name} » enregistré.`,
@@ -55,12 +59,12 @@ export function CategoriesAdmin({ categories }: { categories: Category[] }) {
 
   function remove(c: Category) {
     if (!window.confirm(`Supprimer le rayon « ${c.name} » ?`)) return;
+    setLastId(c.id);
     void run(() => browserApi().DELETE("/api/v1/catalog/categories/{category}", { params: { path: { category: c.id } } }), "Rayon supprimé.");
   }
 
   return (
     <div className="space-y-4">
-      <Feedback message={message} />
       <ul className="space-y-2">
         {categories.map((c) => (
           <li key={c.id} className="rounded-xl border border-black/10 bg-white">
@@ -74,6 +78,7 @@ export function CategoriesAdmin({ categories }: { categories: Category[] }) {
                   <Btn type="submit" disabled={busy} className={primary}>Enregistrer</Btn>
                   <Btn type="button" disabled={busy} onClick={() => remove(c)} className={danger}>Supprimer</Btn>
                 </div>
+                {lastId === c.id && <div className="sm:col-span-2"><Feedback message={message} /></div>}
               </form>
             </details>
           </li>
@@ -83,6 +88,7 @@ export function CategoriesAdmin({ categories }: { categories: Category[] }) {
         <form onSubmit={create} className="grid gap-3 sm:grid-cols-2">
           <CategoryFields />
           <div className="sm:col-span-2"><Btn type="submit" disabled={busy} className={primary}>Créer le rayon</Btn></div>
+          {lastId === "new" && <div className="sm:col-span-2"><Feedback message={message} /></div>}
         </form>
       </Section>
     </div>

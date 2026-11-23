@@ -247,6 +247,7 @@ function ProductDetails({ product, categoryName, onClose, onEdit, onDelete, onRe
     ["Ancien prix", product.compare_at_price_minor ? formatMoney(product.compare_at_price_minor) : "-"],
     ["TVA", product.vat_rate_bp != null ? `${(product.vat_rate_bp / 100).toLocaleString("fr-FR")} %` : "-"],
     ["Périssable", product.perishable ? "Oui" : "Non"],
+    ["Stock géré", product.track_stock ? "Oui" : "Non"],
     ["Poids variable", product.is_weight_variable ? "Oui" : "Non"],
     ["Best seller", product.is_featured ? "Oui" : "Non"],
   ];

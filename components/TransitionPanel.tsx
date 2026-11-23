@@ -7,7 +7,7 @@ import { browserApi } from "@/lib/api/client";
 import { extractApiError } from "@/lib/format";
 import { ACTION_LABEL, availableActions, requiresReason, statusLabel } from "@/lib/orders/status";
 
-type Props = { orderId: number; status: string; role: string; fulfillment?: string };
+type Props = { orderId: string; status: string; role: string; fulfillment?: string };
 
 export function TransitionPanel({ orderId, status, role, fulfillment = "pickup" }: Props) {
   const router = useRouter();

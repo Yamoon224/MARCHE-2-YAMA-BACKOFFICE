@@ -85,17 +85,6 @@ export function AppShell({ children }: { children: ReactNode }) {
             </button>
 
             <div className="ml-auto flex items-center gap-1">
-              <button
-                type="button"
-                onClick={() => update({ theme: "light" })}
-                aria-label="Basculer entre le thème clair et le thème sombre"
-                title="Thème clair / sombre"
-                className="rounded-lg p-2 hover:bg-current/10"
-              >
-                {/* Les deux icônes sont rendues et le CSS en masque une : le rendu serveur ne dépend pas du thème. */}
-                <Icon name="moon" className="h-5 w-5 dark:hidden" />
-                <Icon name="sun" className="hidden h-5 w-5 dark:block" />
-              </button>
               <button type="button" onClick={() => setSettingsOpen(true)} aria-label="Ouvrir les réglages" className="rounded-lg p-2 hover:bg-current/10">
                 <Icon name="settings" />
               </button>

@@ -40,7 +40,7 @@ async function Queue() {
         return (
           <li key={list.id}>
             <Link href={`/preparation/${list.id}`} className="flex flex-wrap items-center justify-between gap-3 p-4 hover:bg-black/[0.02]">
-              <span className="font-medium">Commande n° {list.order_id}</span>
+              <span className="font-medium">Commande n° {list.order_id.slice(0, 8)}</span>
               <span className="text-sm text-black/60">{list.lines.length} article{list.lines.length > 1 ? "s" : ""}</span>
               <span className={`rounded-full px-3 py-1 text-xs font-medium ${list.status === "open" ? "bg-brand-green/10 text-brand-green" : "bg-black/5"}`}>
                 {list.status === "open" ? "À prendre" : mine ? "Ma préparation" : "En cours (autre préparateur)"}

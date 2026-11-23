@@ -107,6 +107,7 @@ export function ProductFormModal({ product: initial, categories, onClose }: Prop
       price_minor: price,
       compare_at_price_minor: compare,
       is_featured: data.get("featured") === "on",
+      track_stock: data.get("track_stock") === "on",
       is_active: data.get("active") === "on",
     };
 
@@ -198,6 +199,7 @@ export function ProductFormModal({ product: initial, categories, onClose }: Prop
           <label className="text-sm font-medium sm:col-span-2">Description<textarea name="description" rows={3} defaultValue={product?.description ?? ""} placeholder="Description visible sur la fiche produit" className={field} /></label>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="featured" defaultChecked={product?.is_featured ?? false} /> Mettre en avant (best seller)</label>
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="active" defaultChecked={product?.is_active ?? true} /> Visible sur la vitrine</label>
+          <label className="flex items-center gap-2 text-sm sm:col-span-2"><input type="checkbox" name="track_stock" defaultChecked={product?.track_stock ?? false} /> Gérer le stock de ce produit (décoché : commande possible sans stock)</label>
           {!editing && (
             <>
               <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="weight" /> Poids variable (pesée en préparation)</label>

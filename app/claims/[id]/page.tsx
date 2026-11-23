@@ -45,7 +45,7 @@ async function Detail({ params }: Props) {
         <h1 className="text-2xl font-bold">Réclamation n° {claim.id}</h1>
         <span className={`rounded-full px-3 py-1 text-xs font-medium ${claim.status === "open" ? "bg-brand-red/10 text-brand-red" : "bg-black/5"}`}>{CLAIM_STATUS_LABEL[claim.status] ?? claim.status}</span>
       </div>
-      <p className="mt-1 text-sm text-black/60">Commande <Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id}</Link> · plafond remboursable {formatMoney(claim.claimable_minor)}</p>
+      <p className="mt-1 text-sm text-black/60">Commande <Link href={`/orders/${claim.order_id}`} className="underline">#{claim.order_id.slice(0, 8)}</Link> · plafond remboursable {formatMoney(claim.claimable_minor)}</p>
 
       {claim.description && <p className="mt-4 rounded-lg bg-black/5 p-3 text-sm">{claim.description}</p>}
 

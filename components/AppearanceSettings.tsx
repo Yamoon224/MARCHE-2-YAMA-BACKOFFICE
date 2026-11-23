@@ -13,7 +13,6 @@ export function AppearanceSettings() {
   const { appearance, reset } = useAppearance();
 
   const isDefault =
-    appearance.theme === "light" &&
     appearance.primary === BRAND_RED &&
     !appearance.header &&
     !appearance.sidebar &&

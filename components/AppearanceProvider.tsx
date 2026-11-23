@@ -34,7 +34,7 @@ const listeners = new Set<() => void>();
 
 function getSnapshot(): Appearance {
   snapshot ??= loadAppearance();
-  return { ...snapshot, theme: "light" };
+  return snapshot;
 }
 
 function getServerSnapshot(): Appearance {
@@ -42,7 +42,7 @@ function getServerSnapshot(): Appearance {
 }
 
 function setSnapshot(next: Appearance): void {
-  snapshot = { ...next, theme: "light" };
+  snapshot = next;
 
   for (const listener of listeners) {
     listener();
@@ -80,17 +80,13 @@ export function AppearanceProvider({
   useEffect(() => {
     const root = document.documentElement;
 
-    // Toujours imposer le thème clair.
-    root.setAttribute("data-theme", "light");
-    root.style.colorScheme = "only light";
-
     // Appliquer les variables CSS personnalisées.
     for (const name of MANAGED_VARIABLES) {
       root.style.removeProperty(name);
     }
 
     for (const [name, value] of Object.entries(
-      cssVariables({ ...appearance, theme: "light" })
+      cssVariables(appearance)
     )) {
       root.style.setProperty(name, value);
     }
@@ -100,7 +96,6 @@ export function AppearanceProvider({
     const next: Appearance = {
       ...getSnapshot(),
       ...patch,
-      theme: "light",
     };
 
     saveAppearance(next);

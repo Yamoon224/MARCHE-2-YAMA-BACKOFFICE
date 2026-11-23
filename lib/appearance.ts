@@ -1,30 +1,7 @@
 
-/**
- * Réglages d'apparence du backoffice.
- * Le thème Light est imposé définitivement.
- * Les couleurs et les autres préférences restent personnalisables.
- */
-
-export type ThemeMode = "light";
-
-export const THEME_MODES = [
-  { value: "light", label: "Clair" },
-] as const;
-
-export function isThemeMode(value: unknown): value is ThemeMode {
-  return value === "light";
-}
-
-/** Le thème est toujours clair, indépendamment du système. */
-export function resolveTheme(
-  _mode: ThemeMode,
-  _prefersDark: boolean
-): "light" {
-  return "light";
-}
+/** Réglages d'apparence du backoffice (thème clair uniquement ; couleurs et préférences personnalisables). */
 
 export type Appearance = {
-  theme: ThemeMode;
   primary: string;
   header: string | null;
   sidebar: string | null;
@@ -59,7 +36,6 @@ export const BACKGROUND_PRESETS = [
 ] as const;
 
 export const DEFAULT_APPEARANCE: Appearance = {
-  theme: "light",
   primary: BRAND_RED,
   header: null,
   sidebar: null,
@@ -91,7 +67,7 @@ export function readableOn(hex: string): "#ffffff" | "#111111" {
   return luminance > 0.4 ? "#111111" : "#ffffff";
 }
 
-/** Charge les préférences en imposant systématiquement Light. */
+/** Charge les préférences enregistrées (valeurs invalides ignorées). */
 export function parseAppearance(raw: string | null): Appearance {
   if (!raw) return DEFAULT_APPEARANCE;
 
@@ -108,7 +84,6 @@ export function parseAppearance(raw: string | null): Appearance {
   }
 
   return {
-    theme: "light",
     primary: isHexColor(data.primary)
       ? data.primary
       : DEFAULT_APPEARANCE.primary,
@@ -128,16 +103,10 @@ export function loadAppearance(): Appearance {
   }
 }
 
-/** Enregistre les préférences en forçant toujours Light. */
+/** Enregistre les préférences. */
 export function saveAppearance(appearance: Appearance): void {
   try {
-    window.localStorage.setItem(
-      STORAGE_KEY,
-      JSON.stringify({
-        ...appearance,
-        theme: "light",
-      })
-    );
+    window.localStorage.setItem(STORAGE_KEY, JSON.stringify(appearance));
   } catch {
     // Stockage indisponible : préférences conservées pour la session.
   }
@@ -163,32 +132,6 @@ export function cssVariables(
 
   return variables;
 }
-
-/** Force Light avant l'hydratation. */
-export const THEME_INIT_SCRIPT = `
-(function() {
-  var root = document.documentElement;
-
-  root.setAttribute("data-theme", "light");
-  root.style.colorScheme = "only light";
-
-  try {
-    var raw = localStorage.getItem("${STORAGE_KEY}");
-    var appearance = raw ? JSON.parse(raw) : {};
-
-    if (typeof appearance !== "object" || appearance === null) {
-      appearance = {};
-    }
-
-    appearance.theme = "light";
-
-    localStorage.setItem(
-      "${STORAGE_KEY}",
-      JSON.stringify(appearance)
-    );
-  } catch(e) {}
-})();
-`;
 
 export const MANAGED_VARIABLES = [
   "--brand-red",

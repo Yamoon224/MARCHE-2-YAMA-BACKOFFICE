@@ -1,4 +1,5 @@
 import "server-only";
+import { connection } from "next/server";
 import { redirect } from "next/navigation";
 import { safeNext } from "@/lib/format";
 import { landingFor } from "@/lib/navigation";
@@ -15,6 +16,8 @@ export type StaffContext =
  * Les droits fins restent imposés par l'API (403) ; ici on évite seulement d'afficher une coquille vide.
  */
 export async function requireStaff(next: string): Promise<StaffContext> {
+  // Page toujours rendue à la requête : l'appel d'API qui suit utilise des valeurs aléatoires interdites au prérendu.
+  await connection();
   const api = await serverApi();
   const result = await api.GET("/api/v1/auth/me").catch(() => null);
 
@@ -30,6 +33,7 @@ export async function requireStaff(next: string): Promise<StaffContext> {
 
 /** Page de connexion : une session de personnel déjà ouverte renvoie directement vers la page voulue. */
 export async function redirectIfSignedIn(requested?: string): Promise<void> {
+  await connection();
   const api = await serverApi();
   const result = await api.GET("/api/v1/auth/me").catch(() => null);
   const user = result?.data?.data;

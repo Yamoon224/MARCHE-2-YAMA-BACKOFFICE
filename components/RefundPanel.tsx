@@ -7,7 +7,7 @@ import { browserApi } from "@/lib/api/client";
 import { extractApiError, formatMoney } from "@/lib/format";
 import { parseAmount, validateRefund } from "@/lib/refunds/refunds";
 
-type Props = { orderId: number; refundableMinor: number };
+type Props = { orderId: string; refundableMinor: number };
 
 export function RefundPanel({ orderId, refundableMinor }: Props) {
   const router = useRouter();

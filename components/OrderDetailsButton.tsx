@@ -10,7 +10,7 @@ import { browserApi } from "@/lib/api/client";
 import { extractApiError } from "@/lib/format";
 
 /** Bouton « Détails » d'une ligne de commande : charge la commande à l'ouverture et l'affiche dans une fenêtre. */
-export function OrderDetailsButton({ orderId, number }: { orderId: number; number: string }) {
+export function OrderDetailsButton({ orderId, number }: { orderId: string; number: string }) {
   const [open, setOpen] = useState(false);
   const [order, setOrder] = useState<OrderDetail | null>(null);
   const [error, setError] = useState<string | null>(null);

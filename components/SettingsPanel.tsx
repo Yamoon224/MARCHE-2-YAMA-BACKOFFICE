@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { BACKGROUND_PRESETS, isHexColor, PRIMARY_COLORS, THEME_MODES, type Appearance } from "@/lib/appearance";
+import { BACKGROUND_PRESETS, isHexColor, PRIMARY_COLORS, type Appearance } from "@/lib/appearance";
 import { useAppearance } from "./AppearanceProvider";
 import { Icon } from "./NavIcons";
 
@@ -77,29 +77,6 @@ export function AppearanceControls() {
 
   return (
     <>
-      <Section title="Thème">
-        <div role="radiogroup" aria-label="Thème" className="grid grid-cols-3 gap-2">
-          {THEME_MODES.map((mode) => {
-            const selected = appearance.theme === mode.value;
-
-            return (
-              <button
-                key={mode.value}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                onClick={() => update({ theme: mode.value })}
-                className={`flex items-center justify-center gap-1.5 rounded-full border px-3 py-2 text-sm font-medium transition-colors ${selected ? "border-[var(--active)] bg-[var(--active-fade)]" : "border-black/20 hover:bg-black/5"}`}
-              >
-                <Icon name={mode.value === "light" ? "sun" : mode.value === "dark" ? "moon" : "settings"} className="h-4 w-4" />
-                {mode.label}
-              </button>
-            );
-          })}
-        </div>
-        <p className="-mt-1 text-xs text-black/60">« Automatique » suit le réglage clair ou sombre de votre appareil.</p>
-      </Section>
-
       <Section title="Couleur active">
         <p className="-mt-1 text-xs text-black/60">Titres soulignés, champs de saisie, onglets et barres de défilement.</p>
         <div className="flex flex-wrap gap-3">

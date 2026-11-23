@@ -37,7 +37,7 @@ async function Detail({ params }: Props) {
   return (
     <>
       <p className="mb-2 text-sm"><Link href="/preparation" className="text-brand-green underline">← File de préparation</Link></p>
-      <h1 className="mb-1 text-2xl font-bold">Commande n° {list.order_id}</h1>
+      <h1 className="mb-1 text-2xl font-bold">Commande n° {list.order_id.slice(0, 8)}</h1>
       <p className="mb-6 text-sm text-black/60">
         {list.status === "open" ? "Non prise en charge" : list.status === "in_progress" ? "En cours de préparation" : "Préparation terminée"}
       </p>

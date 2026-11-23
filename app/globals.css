@@ -1,8 +1,5 @@
 @import "tailwindcss";
 
-/* Variante « dark: » pilotée par data-theme (posé sur <html> par le script d'initialisation puis par le fournisseur). */
-@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
-
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -39,7 +36,7 @@ body {
   --active: var(--brand-red);
   --active-fade: color-mix(in srgb, var(--active) 22%, transparent);
 
-  /* Couleurs qui changent avec le thème (les barres peuvent être surchargées par les réglages d'apparence). */
+  /* Couleurs des barres et champs (les barres peuvent être surchargées par les réglages d'apparence). */
   --header-bg: #ffffff;
   --header-fg: #111111;
   --sidebar-bg: #ffffff;
@@ -49,42 +46,6 @@ body {
   --mix-base: #ffffff;
   --ink: #1f2937;
 }
-
-/* ---------------------------------------------------------------------------------------------
- * Thème sombre. Tailwind construit bg-white, text-black, border-black/10… à partir de --color-white et
- * --color-black : on les inverse ici (surface sombre, texte clair) pour que toutes les pages suivent sans être
- * modifiées une à une. Les rares endroits qui doivent rester réellement blancs ou noirs (texte sur une couleur
- * pleine, voiles, image de fond) sont corrigés plus bas.
- * ------------------------------------------------------------------------------------------- */
-html[data-theme="dark"] {
-  color-scheme: dark;
-  --background: #0d1117;
-  --foreground: #e6e9ef;
-  --color-white: #161b25;
-  --color-black: #e6e9ef;
-  --header-bg: #161b25;
-  --header-fg: #e6e9ef;
-  --sidebar-bg: #161b25;
-  --sidebar-fg: #e6e9ef;
-  --field-bg: #0f141c;
-  --field-fg: #e6e9ef;
-  --mix-base: #0d1117;
-  --ink: #f3f4f6;
-}
-
-/* Texte posé sur une couleur pleine (boutons verts, rouges, bandeaux) : reste blanc. */
-html[data-theme="dark"] .text-white { color: #fff; }
-html[data-theme="dark"] .text-white\/80 { color: rgb(255 255 255 / 0.8); }
-html[data-theme="dark"] .text-white\/85 { color: rgb(255 255 255 / 0.85); }
-html[data-theme="dark"] .text-white\/90 { color: rgb(255 255 255 / 0.9); }
-
-/* Rouge et vert de la marque, éclaircis pour rester lisibles en texte sur fond sombre. */
-html[data-theme="dark"] .text-brand-red { color: color-mix(in srgb, var(--brand-red) 62%, white); }
-html[data-theme="dark"] .text-brand-green { color: color-mix(in srgb, var(--brand-green) 55%, white); }
-html[data-theme="dark"] .text-white.bg-brand-green,
-html[data-theme="dark"] .text-white.bg-brand-red { color: #fff; }
-
-html[data-theme="dark"] ::placeholder { color: rgb(230 233 239 / 0.45); }
 
 /* Titres : trait en dégradé de la couleur active vers le transparent. */
 h1:not([data-plain]),

@@ -10,7 +10,7 @@ import { extractApiError, formatMoney } from "@/lib/format";
 
 export type BoardDelivery = {
   id: number;
-  order_id: number;
+  order_id: string;
   status: DeliveryStatus;
   courier_id?: number | null;
   courier_name?: string | null;
@@ -66,7 +66,7 @@ function DeliveryCard({ delivery, couriers }: { delivery: BoardDelivery; courier
     <li className="rounded-xl border border-black/10 bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-2">
         <p className="font-medium">
-          Commande n° {delivery.order_id}
+          Commande n° {delivery.order_id.slice(0, 8)}
           <span className="font-normal text-black/60"> - {formatAddress(delivery.address)}</span>
         </p>
         <span className="rounded-full bg-black/5 px-3 py-1 text-xs font-medium">{DELIVERY_STATUS_LABEL[delivery.status]}</span>

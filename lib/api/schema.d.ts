@@ -1663,6 +1663,7 @@ export interface components {
             price_minor?: number;
             compare_at_price_minor?: number | null;
             is_featured?: boolean;
+            track_stock?: boolean;
             is_active?: boolean;
         };
         MediaUpload: {
@@ -1716,6 +1717,8 @@ export interface components {
             /** @description Taux de TVA en points de base */
             vat_rate_bp?: number;
             perishable?: boolean;
+            /** @description Faux : le produit se commande sans gestion de stock */
+            track_stock?: boolean;
             is_active?: boolean;
             /** @description Date de suppression douce (null : produit en ligne) */
             deleted_at?: string | null;
@@ -1776,7 +1779,8 @@ export interface components {
         };
         Claim: {
             id: number;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             /** @enum {string} */
             status: "open" | "accepted" | "rejected";
             description?: string | null;
@@ -1815,7 +1819,8 @@ export interface components {
         };
         Delivery: {
             id: number;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             /** @enum {string} */
             status: "pending" | "assigned" | "out_for_delivery" | "delivered" | "failed" | "returned";
             courier_id?: number | null;
@@ -1869,7 +1874,8 @@ export interface components {
         };
         PickList: {
             id: number;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             /** @enum {string} */
             status: "open" | "in_progress" | "completed";
             picker_id?: number | null;
@@ -1978,7 +1984,8 @@ export interface components {
         Invoice: {
             /** @example FAC-2026-000001 */
             number: string;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             issued_at?: string;
             currency?: string;
             /** @description Total TTC */
@@ -2064,7 +2071,11 @@ export interface components {
             created_at?: string | null;
         };
         Order: {
-            id: number;
+            /**
+             * Format: uuid
+             * @description Identifiant public (UUID)
+             */
+            id: string;
             number?: string | null;
             /** @enum {string} */
             status: "draft" | "awaiting_payment" | "payment_failed" | "paid" | "under_review" | "confirmed" | "preparing" | "ready" | "assigned" | "out_for_delivery" | "delivery_failed" | "delivered" | "completed" | "claim" | "refunded" | "returned" | "cancelled";
@@ -2102,7 +2113,8 @@ export interface components {
         Payment: {
             id: number;
             reference: string;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             /** @enum {string} */
             method: "mobile_money" | "card" | "cash_on_delivery";
             /** @enum {string} */
@@ -2116,7 +2128,8 @@ export interface components {
         Refund: {
             id: number;
             reference: string;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             amount_minor: number;
             /** @example EUR */
             currency: string;
@@ -2153,7 +2166,8 @@ export interface components {
         };
         PosSale: {
             id: number;
-            order_id: number;
+            /** Format: uuid */
+            order_id: string;
             order_number: string;
             /** @enum {string} */
             tender: "cash" | "mobile_money" | "card";
@@ -3215,7 +3229,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                orderId: number;
+                orderId: string;
             };
             cookie?: never;
         };
@@ -4034,7 +4048,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                orderId: number;
+                orderId: string;
             };
             cookie?: never;
         };
@@ -5047,7 +5061,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                orderId: number;
+                orderId: string;
             };
             cookie?: never;
         };
@@ -5297,7 +5311,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                order: number;
+                order: string;
             };
             cookie?: never;
         };
@@ -5335,7 +5349,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                order: number;
+                order: string;
             };
             cookie?: never;
         };
@@ -5384,7 +5398,7 @@ export interface operations {
                 "Idempotency-Key"?: string;
             };
             path: {
-                orderId: number;
+                orderId: string;
             };
             cookie?: never;
         };
@@ -5474,7 +5488,7 @@ export interface operations {
             query?: never;
             header?: never;
             path: {
-                orderId: number;
+                orderId: string;
             };
             cookie?: never;
         };
@@ -5511,7 +5525,7 @@ export interface operations {
                 "Idempotency-Key"?: string;
             };
             path: {
-                orderId: number;
+                orderId: string;
             };
             cookie?: never;
         };

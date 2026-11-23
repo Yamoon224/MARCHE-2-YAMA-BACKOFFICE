@@ -74,11 +74,11 @@ async function OrderTable({ searchParams }: { searchParams: SearchParams }) {
           rows={orders.map((order) => ({
             key: order.id,
             cells: [
-              { value: order.number ?? `#${order.id}`, node: <Link href={`/orders/${order.id}`} className="font-medium text-brand-green underline">{order.number ?? `#${order.id}`}</Link> },
+              { value: order.number ?? `#${order.id.slice(0, 8)}`, node: <Link href={`/orders/${order.id}`} className="font-medium text-brand-green underline">{order.number ?? `#${order.id.slice(0, 8)}`}</Link> },
               { value: statusLabel(order.status), node: <StatusBadge status={order.status} /> },
               order.fulfillment === "delivery" ? "Livraison" : "Retrait magasin",
               { value: order.total_minor, text: formatMoney(order.total_minor), node: <span className="font-semibold">{formatMoney(order.total_minor)}</span> },
-              { value: null, node: <OrderDetailsButton orderId={order.id} number={order.number ?? `#${order.id}`} /> },
+              { value: null, node: <OrderDetailsButton orderId={order.id} number={order.number ?? `#${order.id.slice(0, 8)}`} /> },
             ],
           }))}
         />

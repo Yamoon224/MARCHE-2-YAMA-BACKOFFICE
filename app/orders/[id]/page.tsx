@@ -24,14 +24,14 @@ export default function CommandePage(props: Props) {
 
 async function OrderDetail({ params }: Props) {
   const { id } = await params;
-  if (!/^\d+$/.test(id)) notFound();
+  if (!/^[0-9a-f]{8}(-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id)) notFound();
 
   const staff = await requireStaff(`/orders/${id}`);
   if (staff.status === "down") {
     return <p role="status" className="rounded-lg bg-black/5 p-3 text-sm">Service momentanément indisponible. Réessayez dans un instant.</p>;
   }
 
-  const result = await staff.api.GET("/api/v1/orders/{order}", { params: { path: { order: Number(id) } } }).catch(() => null);
+  const result = await staff.api.GET("/api/v1/orders/{order}", { params: { path: { order: id } } }).catch(() => null);
 
   if (result?.response.status === 403 || result?.response.status === 404) notFound();
 
@@ -46,7 +46,7 @@ async function OrderDetail({ params }: Props) {
       <p className="mb-2 text-sm"><Link href="/orders" className="text-brand-green underline">← Toutes les commandes</Link></p>
 
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="text-2xl font-bold">{order.number ?? `Commande ${order.id}`}</h1>
+        <h1 className="text-2xl font-bold">{order.number ?? `Commande ${order.id.slice(0, 8)}`}</h1>
         <StatusBadge status={order.status} />
       </div>
       <p className="mt-1 text-sm text-black/60">
