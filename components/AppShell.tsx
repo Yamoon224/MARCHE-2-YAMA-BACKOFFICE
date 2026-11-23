@@ -87,7 +87,7 @@ export function AppShell({ children }: { children: ReactNode }) {
             <div className="ml-auto flex items-center gap-1">
               <button
                 type="button"
-                onClick={() => update({ theme: document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark" })}
+                onClick={() => update({ theme: "light" })}
                 aria-label="Basculer entre le thème clair et le thème sombre"
                 title="Thème clair / sombre"
                 className="rounded-lg p-2 hover:bg-current/10"
