@@ -162,6 +162,23 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/v1/catalog/products/import": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** Import en masse (lignes déjà lues depuis un CSV, XLSX ou SQL) : crée ou met à jour par référence ; `dry_run` simule sans rien enregistrer */
+        post: operations["02c6cdff73c9c8b7f3b32f319b3ad220"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/v1/catalog/products/{product}": {
         parameters: {
             query?: never;
@@ -1666,6 +1683,50 @@ export interface components {
             track_stock?: boolean;
             is_active?: boolean;
         };
+        ProductImportRow: {
+            /** @description Numéro de ligne dans le fichier (pour le compte rendu) */
+            row?: number;
+            name: string;
+            /** @description Clé de rapprochement ; générée depuis external_id ou le nom si absente */
+            sku?: string | null;
+            external_id?: string | null;
+            barcode?: string | null;
+            description?: string | null;
+            /** @description Nom du rayon (créé s’il n’existe pas) */
+            category?: string | null;
+            /** @enum {string|null} */
+            sale_unit?: "piece" | "kg" | "l" | null;
+            is_weight_variable?: boolean | null;
+            price_minor?: number | null;
+            compare_at_price_minor?: number | null;
+            vat_rate_bp?: number | null;
+            track_stock?: boolean | null;
+            is_active?: boolean | null;
+            /** @description URL d’images (10 au plus) */
+            images?: string[];
+        };
+        ProductImportRequest: {
+            /** @description 5 000 lignes au plus */
+            rows: components["schemas"]["ProductImportRow"][];
+            dry_run?: boolean;
+        };
+        ProductImportReport: {
+            dry_run: boolean;
+            created: number;
+            updated: number;
+            failed: number;
+            categories_created: string[];
+            errors: {
+                row: number;
+                name: string;
+                messages: string[];
+            }[];
+            warnings: {
+                row: number;
+                name: string;
+                message: string;
+            }[];
+        };
         MediaUpload: {
             url: string;
         };
@@ -2676,6 +2737,39 @@ export interface operations {
                 };
             };
             /** @description Validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "02c6cdff73c9c8b7f3b32f319b3ad220": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ProductImportRequest"];
+            };
+        };
+        responses: {
+            /** @description Compte rendu de l'import */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: components["schemas"]["ProductImportReport"];
+                    };
+                };
+            };
+            /** @description Requête invalide (trop de lignes…) */
             422: {
                 headers: {
                     [name: string]: unknown;

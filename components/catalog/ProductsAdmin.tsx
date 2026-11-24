@@ -10,6 +10,7 @@ import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { productState, SALE_UNIT_LABEL, STATE_LABEL, type ProductState, type TrashedFilter } from "@/lib/catalog/products";
 import { formatMoney } from "@/lib/format";
+import { ProductImportModal } from "./ProductImportModal";
 import { ProductFormModal, type Product } from "./ProductFormModal";
 import { danger, Feedback, field, primary, useAction } from "./shared";
 
@@ -17,6 +18,7 @@ type Category = components["schemas"]["Category"];
 
 type Dialog =
   | { kind: "create" }
+  | { kind: "import" }
   | { kind: "edit"; product: Product }
   | { kind: "details"; product: Product }
   | { kind: "delete"; product: Product }
@@ -111,7 +113,10 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
           </label>
           <Btn type="submit" className={primary}>Filtrer</Btn>
         </form>
-        <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouveau produit</Btn>
+        <span className="flex flex-wrap gap-2">
+          <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "import" }); }} className="rounded-full border border-brand-green px-4 py-2 text-sm font-medium text-brand-green">Importer</Btn>
+          <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouveau produit</Btn>
+        </span>
       </div>
 
       <Feedback message={message} />
@@ -182,6 +187,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
         )}
       </div>
 
+      {dialog?.kind === "import" && <ProductImportModal onClose={() => setDialog(null)} />}
       {dialog?.kind === "create" && <ProductFormModal product={null} categories={categories} onClose={() => setDialog(null)} />}
       {dialog?.kind === "edit" && <ProductFormModal product={dialog.product} categories={categories} onClose={() => setDialog(null)} />}
 
