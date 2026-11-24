@@ -2689,6 +2689,8 @@ export interface operations {
         parameters: {
             query?: {
                 q?: string;
+                /** @description Uniquement les produits de ce rayon */
+                category_id?: number;
                 /** @description with : y compris supprimés ; only : uniquement les supprimés */
                 trashed?: "with" | "only";
                 page?: number;

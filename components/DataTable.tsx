@@ -77,6 +77,7 @@ export function DataTable({
   loading = false,
   emptyMessage = "Aucune donnée.",
   searchable = true,
+  paginate = true,
 }: {
   /** Nom des fichiers exportés (« commandes »). */
   name: string;
@@ -89,6 +90,8 @@ export function DataTable({
   loading?: boolean;
   emptyMessage?: string;
   searchable?: boolean;
+  /** Faux : la liste est déjà paginée par le serveur, toutes les lignes reçues sont affichées et la barre de pagination est masquée. */
+  paginate?: boolean;
 }) {
   const [sort, setSort] = useState<SortState>(null);
   const [query, setQuery] = useState("");
@@ -110,7 +113,7 @@ export function DataTable({
     return sortedIndexes(values, columns[sort.column]?.type ?? "text", sort.direction).map((i) => rows[kept[i]]);
   }, [rows, query, sort, columns, dataColumns]);
 
-  const window = pageWindow(ordered.length, size, page);
+  const window = pageWindow(ordered.length, paginate ? size : "all", page);
   const visible = ordered.slice(window.start, window.end);
 
   async function runExport(format: ExportFormat) {
@@ -206,7 +209,7 @@ export function DataTable({
         </table>
       </div>
 
-      <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm">
+      {paginate && <div className="mt-3 flex flex-wrap items-center justify-between gap-3 text-sm">
         <label className="flex items-center gap-2 text-black/70">
           Afficher
           <select
@@ -226,7 +229,7 @@ export function DataTable({
         </nav>
 
         <p className="text-black/70" aria-live="polite">{rangeLabel(window, ordered.length)}{ordered.length !== rows.length && ` (sur ${rows.length})`}</p>
-      </div>
+      </div>}
     </div>
   );
 }

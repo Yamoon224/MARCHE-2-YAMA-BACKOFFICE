@@ -6,6 +6,14 @@ export const IMAGE_TYPES = ["image/jpeg", "image/png", "image/webp"];
 
 export const SALE_UNIT_LABEL: Record<string, string> = { piece: "À la pièce", kg: "Au kilo", l: "Au litre" };
 
+export const PER_PAGE_OPTIONS = [15, 30, 60, 120] as const;
+
+/** Taille de page lue dans l'adresse : une des tailles proposées, 15 sinon. */
+export function parsePerPage(value: unknown): number {
+  const n = Number(value);
+  return (PER_PAGE_OPTIONS as readonly number[]).includes(n) ? n : 15;
+}
+
 /** Valeur du filtre « supprimés » lue dans l'adresse : tout ce qui n'est pas connu retombe sur « actifs seulement ». */
 export function parseTrashed(value: unknown): TrashedFilter {
   return value === "with" || value === "only" ? value : "";

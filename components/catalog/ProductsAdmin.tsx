@@ -5,10 +5,11 @@ import { Btn } from "@/components/Btn";
 import { useState } from "react";
 import { DataTable } from "@/components/DataTable";
 import { Modal } from "@/components/Modal";
-import { Pager, usePageWindow, type PagerSize } from "@/components/Pager";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
-import { productState, SALE_UNIT_LABEL, STATE_LABEL, type ProductState, type TrashedFilter } from "@/lib/catalog/products";
+import { PER_PAGE_OPTIONS, productState, SALE_UNIT_LABEL, STATE_LABEL, type ProductState, type TrashedFilter } from "@/lib/catalog/products";
 import { formatMoney } from "@/lib/format";
 import { ProductImportModal } from "./ProductImportModal";
 import { ProductFormModal, type Product } from "./ProductFormModal";
@@ -24,15 +25,13 @@ type Dialog =
   | { kind: "delete"; product: Product }
   | null;
 
-type Props = { products: Product[]; categories: Category[]; query: string; trashed: TrashedFilter; category: string };
+type Props = { products: Product[]; categories: Category[]; query: string; trashed: TrashedFilter; category: string; page: number; lastPage: number; total: number; perPage: number };
 
 const STATE_CLASS: Record<ProductState, string> = {
   online: "bg-brand-green/10 text-brand-green",
   hidden: "bg-black/10 text-black/70",
   deleted: "bg-brand-red/10 text-brand-red",
 };
-
-const GRID_SIZES = [15, 30, 60, 120, "all"] as const;
 
 const small = "rounded-lg border border-black/20 bg-white px-3 py-1.5 text-xs font-medium hover:bg-black/5 disabled:opacity-40";
 
@@ -52,12 +51,22 @@ function Cover({ product, className }: { product: Product; className: string }) 
   );
 }
 
-export function ProductsAdmin({ products, categories, query, trashed, category }: Props) {
+export function ProductsAdmin({ products, categories, query, trashed, category, page, lastPage, total, perPage }: Props) {
+  const router = useRouter();
   const [tab, setTab] = useState<"grid" | "list">("grid");
   const [dialog, setDialog] = useState<Dialog>(null);
-  const [gridSize, setGridSize] = useState<PagerSize>(15);
-  const [gridPage, setGridPage] = useState(1);
-  const gridWindow = usePageWindow(products.length, gridSize, gridPage);
+
+  /** Adresse d'une page de résultats : les filtres sont conservés, seule la page (ou la taille) change. */
+  const href = (target: number, size = perPage) => {
+    const params = new URLSearchParams();
+    if (query) params.set("q", query);
+    if (trashed) params.set("trashed", trashed);
+    if (category) params.set("category", category);
+    if (size !== 15) params.set("per_page", String(size));
+    if (target > 1) params.set("page", String(target));
+    const text = params.toString();
+    return text ? `/products?${text}` : "/products";
+  };
   const { run, busy, message, setMessage } = useAction();
   const categoryName = (id?: number) => categories.find((c) => c.id === id)?.name ?? "-";
 
@@ -124,7 +133,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
       <div role="tablist" aria-label="Mode d'affichage" className="flex border-b border-black/10">
         <Btn role="tab" type="button" id="tab-grid" aria-selected={tab === "grid"} aria-controls="panel-products" onClick={() => setTab("grid")} className={tabClass(tab === "grid")}>Grille</Btn>
         <Btn role="tab" type="button" id="tab-list" aria-selected={tab === "list"} aria-controls="panel-products" onClick={() => setTab("list")} className={tabClass(tab === "list")}>Liste</Btn>
-        <span className="ml-auto self-center text-xs text-black/60">{products.length} produit{products.length > 1 ? "s" : ""}</span>
+        <span className="ml-auto self-center text-xs text-black/60">{total} produit{total > 1 ? "s" : ""}</span>
       </div>
 
       <div role="tabpanel" id="panel-products" aria-labelledby={tab === "grid" ? "tab-grid" : "tab-list"}>
@@ -133,7 +142,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
         ) : tab === "grid" ? (
           <>
           <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
-            {products.slice(gridWindow.start, gridWindow.end).map((p) => (
+            {products.map((p) => (
               <li key={p.id} data-testid="product-card" className={`flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white ${productState(p) === "deleted" ? "opacity-70" : ""}`}>
                 <Cover product={p} className="aspect-square w-full" />
                 <div className="flex flex-1 flex-col gap-1 p-3">
@@ -153,11 +162,11 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
               </li>
             ))}
           </ul>
-          <Pager total={products.length} size={gridSize} sizes={GRID_SIZES} window={gridWindow} onSize={setGridSize} onPage={setGridPage} />
           </>
         ) : (
           <DataTable
             name="produits"
+            paginate={false}
             title="Produits"
             emptyMessage="Aucun produit."
             columns={[
@@ -186,6 +195,22 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
           />
         )}
       </div>
+
+      <nav aria-label="Pagination" className="flex flex-wrap items-center justify-between gap-3 text-sm">
+        <label className="flex items-center gap-2 text-black/70">
+          Afficher
+          <select value={perPage} onChange={(e) => router.push(href(1, Number(e.target.value)))} className="rounded-lg border border-black/20 bg-white px-2 py-1 text-sm">
+            {PER_PAGE_OPTIONS.map((n) => <option key={n} value={n}>{n}</option>)}
+          </select>
+          par page
+        </label>
+        <span className="flex items-center gap-2">
+          {page > 1 ? <Link href={href(page - 1)} className={small}>Précédent</Link> : <span className={`${small} opacity-40`}>Précédent</span>}
+          <span className="text-black/70">Page {page} / {lastPage}</span>
+          {page < lastPage ? <Link href={href(page + 1)} className={small}>Suivant</Link> : <span className={`${small} opacity-40`}>Suivant</span>}
+        </span>
+        <span className="text-black/70" aria-live="polite">{total === 0 ? "0" : `${(page - 1) * perPage + 1}–${(page - 1) * perPage + products.length}`} / {total}</span>
+      </nav>
 
       {dialog?.kind === "import" && <ProductImportModal onClose={() => setDialog(null)} />}
       {dialog?.kind === "create" && <ProductFormModal product={null} categories={categories} onClose={() => setDialog(null)} />}
