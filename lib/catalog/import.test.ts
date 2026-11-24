@@ -56,7 +56,7 @@ describe("parseXlsx", () => {
     const { rows, ignored } = toRows(table);
     expect(rows).toEqual([{ row: 2, name: "Riz & Co", price_minor: 290, category: "Féculents" }]);
     expect(ignored).toHaveLength(1);
-    expect(ignored[0]).toMatchObject({ row: 3, label: "Riz & Co — Sachet 250g" });
+    expect(ignored[0]).toMatchObject({ row: 3, label: "Riz & Co - Sachet 250g" });
   });
 
   it("rejects a file that is not a zip", () => {

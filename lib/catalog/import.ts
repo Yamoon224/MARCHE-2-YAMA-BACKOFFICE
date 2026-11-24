@@ -374,7 +374,7 @@ export function toRows(table: Table, options: ImportOptions = DEFAULT_OPTIONS): 
 
     if (name === "") {
       const variation = get("variation");
-      if (variation) ignored.push({ row: number, label: lastName ? `${lastName} — ${variation}` : variation, reason: "Variation : les variations ne sont pas importées (seul le produit principal l'est)." });
+      if (variation) ignored.push({ row: number, label: lastName ? `${lastName} - ${variation}` : variation, reason: "Variation : les variations ne sont pas importées (seul le produit principal l'est)." });
       else ignored.push({ row: number, label: "(sans nom)", reason: "Nom du produit manquant." });
       return;
     }

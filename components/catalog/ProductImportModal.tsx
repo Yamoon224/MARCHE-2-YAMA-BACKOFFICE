@@ -205,13 +205,13 @@ export function ProductImportModal({ onClose }: { onClose: () => void }) {
             )}
 
             <Details title="Lignes refusées" tone="error" count={shown.errors.length} open>
-              {shown.errors.map((e) => <li key={e.row}>Ligne {e.row} — <b>{e.name || "(sans nom)"}</b> : {e.messages.join(" ")}</li>)}
+              {shown.errors.map((e) => <li key={e.row}>Ligne {e.row} - <b>{e.name || "(sans nom)"}</b> : {e.messages.join(" ")}</li>)}
             </Details>
             <Details title="Avertissements" count={shown.warnings.length}>
-              {shown.warnings.map((w) => <li key={`${w.row}-${w.message}`}>Ligne {w.row} — <b>{w.name}</b> : {w.message}</li>)}
+              {shown.warnings.map((w) => <li key={`${w.row}-${w.message}`}>Ligne {w.row} - <b>{w.name}</b> : {w.message}</li>)}
             </Details>
             <Details title="Lignes ignorées" count={parsed?.ignored.length ?? 0}>
-              {parsed?.ignored.map((i) => <li key={i.row}>Ligne {i.row} — <b>{i.label}</b> : {i.reason}</li>)}
+              {parsed?.ignored.map((i) => <li key={i.row}>Ligne {i.row} - <b>{i.label}</b> : {i.reason}</li>)}
             </Details>
           </section>
         )}
