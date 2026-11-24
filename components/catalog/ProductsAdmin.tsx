@@ -347,29 +347,96 @@ function ProductDetails({ product, categoryName, onClose, onEdit, onDelete, onRe
   );
 }
 
-
-/** Vide tout le catalogue : action irréversible, confirmée en saisissant « VIDER ». */
+/**
+ * Vide tout le catalogue, en deux confirmations : « VIDER » pour les produits, puis « SUPPRIMER » dès que des
+ * commandes contiennent ces produits (elles sont supprimées avec leurs factures, paiements, livraisons…).
+ */
 function PurgeModal({ total, onClose }: { total: number; onClose: () => void }) {
   const router = useRouter();
+  const [step, setStep] = useState<"products" | "orders">("products");
+  const [orders, setOrders] = useState(0);
   const [text, setText] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  async function purge() {
+  async function purge(withOrders: boolean) {
+    const { error: apiError } = await browserApi().DELETE("/api/v1/catalog/products", {
+      body: withOrders ? { confirm: "VIDER", confirm_orders: "SUPPRIMER" } : { confirm: "VIDER" },
+    });
+    if (apiError) return setError(extractApiError(apiError));
+    onClose();
+    router.push("/products");
+    router.refresh();
+  }
+
+  /** Première étape validée : s'il y a des commandes liées, on demande une confirmation de plus ; sinon on supprime. */
+  async function next() {
     setBusy(true);
     setError(null);
 
     try {
-      const { error: apiError } = await browserApi().DELETE("/api/v1/catalog/products", { body: { confirm: "VIDER" } });
-      if (apiError) return setError(extractApiError(apiError));
-      onClose();
-      router.push("/products");
-      router.refresh();
+      const { data, error: apiError } = await browserApi().GET("/api/v1/catalog/products/purge-preview");
+      if (apiError || !data) return setError(extractApiError(apiError));
+
+      const linked = data.data?.orders ?? 0;
+      if (linked > 0) {
+        setOrders(linked);
+        setText("");
+        setStep("orders");
+      } else await purge(false);
     } catch {
       setError("Service momentanément indisponible. Réessayez.");
     } finally {
       setBusy(false);
     }
+  }
+
+  async function confirmOrders() {
+    setBusy(true);
+    setError(null);
+
+    try {
+      await purge(true);
+    } catch {
+      setError("Service momentanément indisponible. Réessayez.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  const cancel = <Btn type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</Btn>;
+  const errorBox = error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-brand-red">{error}</p>;
+
+  if (step === "orders") {
+    return (
+      <Modal
+        open
+        onClose={onClose}
+        title="Supprimer aussi les commandes liées ?"
+        size="md"
+        footer={
+          <>
+            {cancel}
+            <Btn type="button" disabled={busy || text !== "SUPPRIMER"} onClick={() => void confirmOrders()} className={danger}>
+              {busy ? "Suppression…" : `Supprimer produits et ${orders} commande${orders > 1 ? "s" : ""}`}
+            </Btn>
+          </>
+        }
+      >
+        <div className="space-y-3 text-sm">
+          <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-brand-red">
+            <b>{orders} commande{orders > 1 ? "s" : ""}</b> contiennent ces produits. Pour vider le catalogue, elles seront <b>supprimées définitivement</b>.
+          </p>
+          <p>Seront effacés avec chaque commande : ses lignes et son historique, ses paiements et remboursements, sa facture et ses avoirs, ses réclamations (photos comprises), sa préparation, sa livraison et son créneau, son ticket de caisse et ses réservations de stock.</p>
+          <p className="text-black/70">Le grand livre comptable est en écriture seule : ses écritures sont conservées. Annuler ici abandonne tout : aucun produit ni aucune commande n’est supprimé.</p>
+          <label className="block font-medium">
+            Pour confirmer, tapez <b>SUPPRIMER</b>
+            <input value={text} onChange={(e) => setText(e.target.value)} autoComplete="off" className={field} />
+          </label>
+          {errorBox}
+        </div>
+      </Modal>
+    );
   }
 
   return (
@@ -380,19 +447,19 @@ function PurgeModal({ total, onClose }: { total: number; onClose: () => void }) 
       size="md"
       footer={
         <>
-          <Btn type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</Btn>
-          <Btn type="button" disabled={busy || text !== "VIDER"} onClick={() => void purge()} className={danger}>{busy ? "Suppression…" : "Supprimer définitivement"}</Btn>
+          {cancel}
+          <Btn type="button" disabled={busy || text !== "VIDER"} onClick={() => void next()} className={danger}>{busy ? "Vérification…" : "Continuer"}</Btn>
         </>
       }
     >
       <div className="space-y-3 text-sm">
         <p>Tous les produits de la base vont être <b>supprimés définitivement</b> (même ceux déjà supprimés), avec leurs images et leur place dans les recettes. Les rayons sont conservés.</p>
-        <p className="text-black/70">Les commandes, factures et lots de stock déjà enregistrés gardent leurs références, mais ne pointeront plus vers un produit existant. Aucune restauration n’est possible.</p>
+        <p className="text-black/70">Les commandes qui contiennent ces produits devront aussi être supprimées : une confirmation supplémentaire vous sera demandée à l’étape suivante. Aucune restauration n’est possible.</p>
         <label className="block font-medium">
           Pour confirmer, tapez <b>VIDER</b>{total > 0 && ` (${total} produit${total > 1 ? "s" : ""} concerné${total > 1 ? "s" : ""})`}
           <input value={text} onChange={(e) => setText(e.target.value)} autoComplete="off" className={field} />
         </label>
-        {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-brand-red">{error}</p>}
+        {errorBox}
       </div>
     </Modal>
   );

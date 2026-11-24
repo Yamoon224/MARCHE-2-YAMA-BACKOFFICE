@@ -156,7 +156,7 @@ export interface paths {
         put?: never;
         /** Créer un produit */
         post: operations["02c4b6197db0f817d1b3ad5b54a7f33e"];
-        /** Vider le catalogue : supprime définitivement TOUS les produits (même supprimés) et leurs images. Administrateur seulement. */
+        /** Vider le catalogue : supprime définitivement TOUS les produits (même supprimés), leurs images et les commandes qui les contiennent. Administrateur seulement. */
         delete: operations["129f349d6e1d4498961fefb7b40e295c"];
         options?: never;
         head?: never;
@@ -174,6 +174,23 @@ export interface paths {
         put?: never;
         /** Import en masse (lignes déjà lues depuis un CSV, XLSX ou SQL) : crée ou met à jour par référence ; `dry_run` simule sans rien enregistrer */
         post: operations["02c6cdff73c9c8b7f3b32f319b3ad220"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/v1/catalog/products/purge-preview": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Ce que supprimerait « Vider le catalogue » : produits et commandes liées. Administrateur seulement. */
+        get: operations["aef5204521906b5e08c1acf770367bd3"];
+        put?: never;
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
@@ -2763,6 +2780,11 @@ export interface operations {
                      * @enum {string}
                      */
                     confirm: "VIDER";
+                    /**
+                     * @description Obligatoire quand des commandes sont liées aux produits : confirme leur suppression
+                     * @enum {string}
+                     */
+                    confirm_orders?: "SUPPRIMER";
                 };
             };
         };
@@ -2776,6 +2798,7 @@ export interface operations {
                     "application/json": {
                         data?: {
                             deleted?: number;
+                            orders_deleted?: number;
                         };
                     };
                 };
@@ -2822,6 +2845,38 @@ export interface operations {
             };
             /** @description Requête invalide (trop de lignes…) */
             422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    aef5204521906b5e08c1acf770367bd3: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description Décompte */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: {
+                            products?: number;
+                            orders?: number;
+                        };
+                    };
+                };
+            };
+            /** @description Réservé aux administrateurs */
+            403: {
                 headers: {
                     [name: string]: unknown;
                 };
