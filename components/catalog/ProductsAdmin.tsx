@@ -132,7 +132,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category }
           <p className="rounded-lg bg-black/5 p-6 text-center text-sm text-black/60">Aucun produit ne correspond.</p>
         ) : tab === "grid" ? (
           <>
-          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6">
+          <ul className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
             {products.slice(gridWindow.start, gridWindow.end).map((p) => (
               <li key={p.id} data-testid="product-card" className={`flex flex-col overflow-hidden rounded-xl border border-black/10 bg-white ${productState(p) === "deleted" ? "opacity-70" : ""}`}>
                 <Cover product={p} className="aspect-square w-full" />
