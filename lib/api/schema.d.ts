@@ -156,7 +156,8 @@ export interface paths {
         put?: never;
         /** Créer un produit */
         post: operations["02c4b6197db0f817d1b3ad5b54a7f33e"];
-        delete?: never;
+        /** Vider le catalogue : supprime définitivement TOUS les produits (même supprimés) et leurs images. Administrateur seulement. */
+        delete: operations["129f349d6e1d4498961fefb7b40e295c"];
         options?: never;
         head?: never;
         patch?: never;
@@ -2739,6 +2740,54 @@ export interface operations {
                 };
             };
             /** @description Validation */
+            422: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    "129f349d6e1d4498961fefb7b40e295c": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": {
+                    /**
+                     * @description Confirmation explicite
+                     * @enum {string}
+                     */
+                    confirm: "VIDER";
+                };
+            };
+        };
+        responses: {
+            /** @description Catalogue vidé */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "application/json": {
+                        data?: {
+                            deleted?: number;
+                        };
+                    };
+                };
+            };
+            /** @description Réservé aux administrateurs */
+            403: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Confirmation absente */
             422: {
                 headers: {
                     [name: string]: unknown;

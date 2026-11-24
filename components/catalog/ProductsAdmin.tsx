@@ -10,7 +10,7 @@ import { useRouter } from "next/navigation";
 import { browserApi } from "@/lib/api/client";
 import type { components } from "@/lib/api/schema";
 import { PER_PAGE_OPTIONS, productState, SALE_UNIT_LABEL, STATE_LABEL, type ProductState, type TrashedFilter } from "@/lib/catalog/products";
-import { formatMoney } from "@/lib/format";
+import { extractApiError, formatMoney } from "@/lib/format";
 import { ProductImportModal } from "./ProductImportModal";
 import { ProductFormModal, type Product } from "./ProductFormModal";
 import { danger, Feedback, field, primary, useAction } from "./shared";
@@ -20,12 +20,13 @@ type Category = components["schemas"]["Category"];
 type Dialog =
   | { kind: "create" }
   | { kind: "import" }
+  | { kind: "purge" }
   | { kind: "edit"; product: Product }
   | { kind: "details"; product: Product }
   | { kind: "delete"; product: Product }
   | null;
 
-type Props = { products: Product[]; categories: Category[]; query: string; trashed: TrashedFilter; category: string; page: number; lastPage: number; total: number; perPage: number };
+type Props = { products: Product[]; categories: Category[]; query: string; trashed: TrashedFilter; category: string; page: number; lastPage: number; total: number; perPage: number; canPurge: boolean };
 
 const STATE_CLASS: Record<ProductState, string> = {
   online: "bg-brand-green/10 text-brand-green",
@@ -51,7 +52,7 @@ function Cover({ product, className }: { product: Product; className: string }) 
   );
 }
 
-export function ProductsAdmin({ products, categories, query, trashed, category, page, lastPage, total, perPage }: Props) {
+export function ProductsAdmin({ products, categories, query, trashed, category, page, lastPage, total, perPage, canPurge }: Props) {
   const router = useRouter();
   const [tab, setTab] = useState<"grid" | "list">("grid");
   const [dialog, setDialog] = useState<Dialog>(null);
@@ -123,6 +124,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category, 
           <Btn type="submit" className={primary}>Filtrer</Btn>
         </form>
         <span className="flex flex-wrap gap-2">
+          {canPurge && <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "purge" }); }} className={danger}>Vider le catalogue</Btn>}
           <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "import" }); }} className="rounded-full border border-brand-green px-4 py-2 text-sm font-medium text-brand-green">Importer</Btn>
           <Btn type="button" onClick={() => { setMessage(null); setDialog({ kind: "create" }); }} className={primary}>+ Nouveau produit</Btn>
         </span>
@@ -212,6 +214,7 @@ export function ProductsAdmin({ products, categories, query, trashed, category, 
         <span className="text-black/70" aria-live="polite">{total === 0 ? "0" : `${(page - 1) * perPage + 1}–${(page - 1) * perPage + products.length}`} / {total}</span>
       </nav>
 
+      {dialog?.kind === "purge" && <PurgeModal total={total} onClose={() => setDialog(null)} />}
       {dialog?.kind === "import" && <ProductImportModal onClose={() => setDialog(null)} />}
       {dialog?.kind === "create" && <ProductFormModal product={null} categories={categories} onClose={() => setDialog(null)} />}
       {dialog?.kind === "edit" && <ProductFormModal product={dialog.product} categories={categories} onClose={() => setDialog(null)} />}
@@ -339,6 +342,57 @@ function ProductDetails({ product, categoryName, onClose, onEdit, onDelete, onRe
             <p className="whitespace-pre-line">{product.description || "Aucune description."}</p>
           </div>
         </div>
+      </div>
+    </Modal>
+  );
+}
+
+
+/** Vide tout le catalogue : action irréversible, confirmée en saisissant « VIDER ». */
+function PurgeModal({ total, onClose }: { total: number; onClose: () => void }) {
+  const router = useRouter();
+  const [text, setText] = useState("");
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function purge() {
+    setBusy(true);
+    setError(null);
+
+    try {
+      const { error: apiError } = await browserApi().DELETE("/api/v1/catalog/products", { body: { confirm: "VIDER" } });
+      if (apiError) return setError(extractApiError(apiError));
+      onClose();
+      router.push("/products");
+      router.refresh();
+    } catch {
+      setError("Service momentanément indisponible. Réessayez.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  return (
+    <Modal
+      open
+      onClose={onClose}
+      title="Vider le catalogue ?"
+      size="md"
+      footer={
+        <>
+          <Btn type="button" onClick={onClose} className="rounded-full border border-black/20 px-4 py-2 text-sm font-medium">Annuler</Btn>
+          <Btn type="button" disabled={busy || text !== "VIDER"} onClick={() => void purge()} className={danger}>{busy ? "Suppression…" : "Supprimer définitivement"}</Btn>
+        </>
+      }
+    >
+      <div className="space-y-3 text-sm">
+        <p>Tous les produits de la base vont être <b>supprimés définitivement</b> (même ceux déjà supprimés), avec leurs images et leur place dans les recettes. Les rayons sont conservés.</p>
+        <p className="text-black/70">Les commandes, factures et lots de stock déjà enregistrés gardent leurs références, mais ne pointeront plus vers un produit existant. Aucune restauration n’est possible.</p>
+        <label className="block font-medium">
+          Pour confirmer, tapez <b>VIDER</b>{total > 0 && ` (${total} produit${total > 1 ? "s" : ""} concerné${total > 1 ? "s" : ""})`}
+          <input value={text} onChange={(e) => setText(e.target.value)} autoComplete="off" className={field} />
+        </label>
+        {error && <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-brand-red">{error}</p>}
       </div>
     </Modal>
   );

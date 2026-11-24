@@ -47,6 +47,6 @@ async function Content({ searchParams }: { searchParams: SearchParams }) {
   const list = products?.data?.data ?? [];
 
   return products?.data && categories?.data
-    ? <ProductsAdmin products={list} categories={categories.data.data ?? []} query={q} trashed={trashed} category={category} page={products.data.meta?.current_page ?? page} lastPage={products.data.meta?.last_page ?? 1} total={products.data.meta?.total ?? list.length} perPage={perPage} />
+    ? <ProductsAdmin products={list} categories={categories.data.data ?? []} query={q} trashed={trashed} category={category} page={products.data.meta?.current_page ?? page} lastPage={products.data.meta?.last_page ?? 1} total={products.data.meta?.total ?? list.length} perPage={perPage} canPurge={staff.user.role === "admin"} />
     : <p role="alert" className="rounded-lg bg-brand-red/10 p-3 text-sm text-brand-red">Chargement impossible. Réessayez.</p>;
 }
